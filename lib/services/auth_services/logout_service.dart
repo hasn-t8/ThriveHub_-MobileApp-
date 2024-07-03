@@ -23,7 +23,9 @@ class LogoutService {
       body: jsonEncode({'accessToken': accessToken}),
     );
 
-    if (response.statusCode == 200) {
+    // if (response.statusCode == 200)
+    if (response.statusCode == 404)
+    {
       // Clear shared preferences on successful logout
       await prefs.clear();
       return true;

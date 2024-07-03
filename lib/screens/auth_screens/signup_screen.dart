@@ -49,7 +49,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _confirmPasswordController.dispose();
     super.dispose();
   }
-
   Future<void> _registerUser() async {
     final fullName = _nameController.text.trim();
     final email = _emailController.text.trim();
@@ -103,9 +102,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
         password: password,
       );
 
-      // Save or update the response data in shared preferences
+      // Check if responseData['accessToken'] is not null before using it
+      final accessToken = responseData['access_token'] as String?;
+      if (accessToken == null) {
+        throw Exception('Access token not found in response');
+      }
+
+      // Save the access token to SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('user_data', jsonEncode(responseData));
+      await prefs.setString('access_token', accessToken);
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -132,6 +138,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -234,14 +241,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      'Or Register with',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.black,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Color(0xFFD9D9D9),
+                          thickness: 1,
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Text(
+                          'Or Register with',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Color(0xFFD9D9D9),
+                          thickness: 1,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 16),
                   Column(

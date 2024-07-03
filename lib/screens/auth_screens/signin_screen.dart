@@ -47,34 +47,6 @@ class _SignInScreenState extends State<SignInScreen> {
     await prefs.setString('user', userData['user'].toString());
     await prefs.setString('access_token', userData['access_token']);
     await prefs.setString('expires_in', userData['expires_in']);
-
-    // // Confirm the data is saved
-    // final savedUser = prefs.getString('user');
-    // final savedAccessToken = prefs.getString('access_token');
-    // final savedExpiresIn = prefs.getString('expires_in');
-    //
-    // if (savedUser != null && savedAccessToken != null && savedExpiresIn != null) {
-    //   print('User data saved successfully: $savedUser');
-    //   print('Access Token saved successfully: $savedAccessToken');
-    //   print('Expires In saved successfully: $savedExpiresIn');
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('User data saved successfully'),
-    //       backgroundColor: Colors.green,
-    //     ),
-    //   );
-    // } else {
-    //   print('Failed to save user data');
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(
-    //       content: Text('Failed to save user data'),
-    //       backgroundColor: Colors.red,
-    //     ),
-    //   );
-    // }
-    //
-    // // Print the saved user data
-    // await _printUserData();
   }
 
 
@@ -102,7 +74,6 @@ class _SignInScreenState extends State<SignInScreen> {
           password: _passwordController.text,
         );
         print('Login successful, response: $response');
-
 
         // Save user data to shared preferences
         await _saveUserData(response);
@@ -159,7 +130,6 @@ class _SignInScreenState extends State<SignInScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center, // Center the row
                       children: [
-                        SizedBox(width: 10), // Add some space between the image and the text
                         Text(
                           'Welcome Back!',
                           style: TextStyle(
@@ -167,6 +137,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        SizedBox(width: 10), // Add some space between the image and the text
                         Image.asset(
                           'assets/star.png', // Replace with your image asset
                           width: 49,
@@ -176,12 +147,12 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      'We\'re excited to see you again. Log in to continue your journey with us.',
+                      'We\'re excited to see you again. Log in to continue \nyour journey with us.',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.black,
                       ),
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.center, // Center the text
                     ),
                   ],
                 ),
@@ -263,14 +234,31 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  Center(
-                    child: Text(
-                      'Or Log in with',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: Colors.black,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Divider(
+                          color: Color(0xFFD9D9D9),
+                          thickness: 1,
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Text(
+                          'Or Log in with',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Divider(
+                          color: Color(0xFFD9D9D9),
+                          thickness: 1,
+                        ),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 16),
                   // "Continue with" buttons vertically

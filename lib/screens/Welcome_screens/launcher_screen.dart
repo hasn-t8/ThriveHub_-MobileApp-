@@ -25,7 +25,7 @@ class LauncherScreen extends StatelessWidget {
             Text(
               'Thrive Hub',
               style: TextStyle(
-                fontSize: 26,  // Font size for 'Thrive Hub'
+                fontSize: 28,  // Font size for 'Thrive Hub'
                 fontWeight: FontWeight.bold,
               ),
             ),

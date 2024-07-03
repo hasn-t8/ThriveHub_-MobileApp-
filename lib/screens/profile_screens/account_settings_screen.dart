@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import for date formatting
 import 'package:thrive_hub/widgets/appbar.dart';
 import '../../widgets/input_fields.dart';
 
@@ -24,11 +25,27 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     super.dispose();
   }
 
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != DateTime.now())
+      setState(() {
+        _dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(title: 'Account Settings',showBackButton: true, centerTitle: true),
-
+      appBar: CustomAppBar(
+        title: 'Account Settings',
+        showBackButton: true,
+        centerTitle: true,
+      ),
       body: Column(
         children: [
           Expanded(
@@ -37,15 +54,35 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomInputField(labelText: 'First Name', controller: _firstNameController),
+                  CustomInputField(
+                    labelText: 'First Name',
+                    controller: _firstNameController,
+                  ),
                   SizedBox(height: 16),
-                  CustomInputField(labelText: 'Last Name', controller: _lastNameController),
+                  CustomInputField(
+                    labelText: 'Last Name',
+                    controller: _lastNameController,
+                  ),
                   SizedBox(height: 16),
-                  CustomInputField(labelText: 'Date of Birth', controller: _dateController),
+                  GestureDetector(
+                    onTap: () => _selectDate(context),
+                    child: AbsorbPointer(
+                      child: CustomInputField(
+                        labelText: 'Date of Birth',
+                        controller: _dateController,
+                      ),
+                    ),
+                  ),
                   SizedBox(height: 16),
-                  CustomInputField(labelText: 'Location', controller: _locationController),
+                  CustomInputField(
+                    labelText: 'Location',
+                    controller: _locationController,
+                  ),
                   SizedBox(height: 16),
-                  CustomInputField(labelText: 'Email', controller: _emailController),
+                  CustomInputField(
+                    labelText: 'Email',
+                    controller: _emailController,
+                  ),
                 ],
               ),
             ),

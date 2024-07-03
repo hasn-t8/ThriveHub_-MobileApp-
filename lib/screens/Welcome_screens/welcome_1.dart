@@ -62,10 +62,10 @@ class Welcome1Screen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // Add your onPressed code here!
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MainScreen()),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => MainScreen()),
+                        // );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black, // Background color
@@ -86,7 +86,7 @@ class Welcome1Screen extends StatelessWidget {
                   SizedBox(height: 20),  // Add space between buttons
                   Text(
                     'Go here to find the best products and leave reviews',
-                    style: TextStyle(fontSize: 10),
+                    style: TextStyle(fontSize: 12),
                   ),
                   SizedBox(height: 30),  // Add space between text and button
                   SizedBox(
@@ -114,7 +114,7 @@ class Welcome1Screen extends StatelessWidget {
                   SizedBox(height: 10),  // Add space between button and the final text
                   Text(
                     'Go here to create and manage your business',
-                    style: TextStyle(fontSize: 10),
+                    style: TextStyle(fontSize: 12),
                   ),
                 ],
               ),
