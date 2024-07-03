@@ -32,11 +32,19 @@ class SignUpService {
         print('User registered successfully');
         return responseData;  // Return the response data
       } else {
-        // final errorMessage = responseData['message'] ?? 'Failed to register user';
-        final errorMessage = responseData['Failed to register user'] ?? 'Failed to register user. Please check your credentials';
-        // final errorMessage = responseData['Failed to register user'] ?? 'Email is incorrect';
-        print('Failed to register user: $errorMessage');
-        throw Exception(errorMessage);
+        if (responseData.containsKey('errors')) {
+          final errors = responseData['errors'] as Map<String, dynamic>;
+          // Get the first error message
+          final firstErrorKey = errors.keys.first;
+          final firstErrorMessage = errors[firstErrorKey].values.first;
+
+          print('Failed to register user: $firstErrorMessage');
+          throw Exception(firstErrorMessage);
+        } else {
+          final errorMessage = responseData['message'] ?? 'Failed to register user. Please check your credentials';
+          print('Failed to register user: $errorMessage');
+          throw Exception(errorMessage);
+        }
       }
     } catch (e) {
       print('Error during registration: $e');

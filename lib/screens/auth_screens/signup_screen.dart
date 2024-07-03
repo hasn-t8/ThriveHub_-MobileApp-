@@ -49,6 +49,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _confirmPasswordController.dispose();
     super.dispose();
   }
+
   Future<void> _registerUser() async {
     final fullName = _nameController.text.trim();
     final email = _emailController.text.trim();
@@ -129,8 +130,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
     } catch (e) {
       print(e);
+      String errorMessage = e.toString().replaceAll('Exception:', '').trim();
+
+      // Extract and handle errors if available
+      try {
+        final responseData = jsonDecode(e.toString()) as Map<String, dynamic>;
+        if (responseData.containsKey('errors')) {
+          final errors = responseData['errors'] as Map<String, dynamic>;
+          final firstErrorKey = errors.keys.first;
+          final firstErrorMessage = errors[firstErrorKey].values.first;
+          errorMessage = firstErrorMessage;
+        } else {
+          errorMessage = responseData['message'] ?? errorMessage;
+        }
+      } catch (_) {
+        // Ignore JSON decode errors and use the original error message
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString().replaceAll('Exception:', '').trim())),
+        SnackBar(content: Text(errorMessage)),
       );
     } finally {
       setState(() {
@@ -138,7 +156,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
