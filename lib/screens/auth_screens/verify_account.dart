@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
-
+import 'create_new_password.dart';
 import '../profile_screens/account_settings_screen.dart';
 
 
@@ -161,7 +161,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
                 children: [
                   if (_startTimer > 0)
                     Text(
-                      'Code expire in: ${_startTimer ~/ 60}:${(_startTimer % 60).toString().padLeft(2, '0')}',
+                      'Code expires in: ${_startTimer ~/ 60}:${(_startTimer % 60).toString().padLeft(2, '0')}',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -204,6 +204,12 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   // Add your onPressed code here!
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CreateNewPasswordScreen(),
+                    ),
+                  );
 
                 },
                 style: ElevatedButton.styleFrom(

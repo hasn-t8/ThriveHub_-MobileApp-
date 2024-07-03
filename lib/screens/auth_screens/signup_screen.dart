@@ -1,7 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'signin_screen.dart';
 import '../../widgets/input_fields.dart';
 import '../../widgets/google_facbook_button.dart';
+import '../../services/auth_services/signup_service.dart';
+import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -17,6 +21,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _obscureText1 = true;
   bool _obscureText2 = true;
   bool _isButtonEnabled = false;
+  bool _isLoading = false; // Variable to track loading state
 
   void _updateButtonState() {
     setState(() {
@@ -45,6 +50,88 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
+  Future<void> _registerUser() async {
+    final fullName = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (fullName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('All fields must be filled correctly')),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password must be at least 6 characters long')),
+      );
+      return;
+    }
+
+    final nameParts = fullName.split(' ');
+    final firstName = nameParts[0];
+    final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+
+    if (lastName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please provide full name')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true; // Start the loader
+    });
+
+    try {
+      final responseData = await SignUpService().registerUser(
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        password: password,
+      );
+
+      // Save or update the response data in shared preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('user_data', jsonEncode(responseData));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Account created successfully',
+            style: TextStyle(color: Colors.black), // Text color black
+          ),
+          backgroundColor: Color(0xFFDADADA), // Gray background color
+        ),
+      );
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+            (Route<dynamic> route) => false, // Remove all previous routes
+      );
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString().replaceAll('Exception:', '').trim())),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false; // Stop the loader
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Get Started Now',
+                      'Get Start Now',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -125,11 +212,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _isButtonEnabled
-                          ? () {
-                        // Add your onPressed code here!
-                      }
-                          : null,
+                      onPressed: _isButtonEnabled ? _registerUser : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _isButtonEnabled ? Colors.black : Color(0xFFC3C1C1),
                         shape: RoundedRectangleBorder(
@@ -137,7 +220,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      child: Text(
+                      child: _isLoading // Show loading indicator if _isLoading is true
+                          ? CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      )
+                          : Text(
                         'Create Account',
                         style: TextStyle(
                           color: Colors.white,
@@ -192,12 +279,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => SignInScreen()),
+                              MaterialPageRoute(builder: (context) => SignInScreen()),
                             );
                           },
                           child: Text(
-                            'Sign In',
+                            'Login',
                             style: TextStyle(
                               fontSize: 14,
                               color: Colors.black,

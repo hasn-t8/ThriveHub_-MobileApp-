@@ -16,8 +16,8 @@ class Welcome2Screen extends StatelessWidget {
               children: [
                 // Image in the center
                 Container(
-                  width: 226.39,
                   height: 196.12,
+                  width: 226.39,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/main.png'), // Make sure the path is correct

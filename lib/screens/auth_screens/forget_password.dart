@@ -94,7 +94,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       minimumSize: Size(double.infinity, 50), // Fixed height
                     ),
                     child: Text(
-                      'Verify Account',
+                      'Continue',
                       style: TextStyle(
                         color: Colors.white, // Text color
                         fontSize: 16,

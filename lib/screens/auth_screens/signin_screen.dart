@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'signup_screen.dart';
 import 'create_new_password.dart';
 import 'forget_password.dart';
 import 'verify_account.dart';
 import '../../widgets/input_fields.dart';
+import '../../services/auth_services/signin_service.dart'; // Import SignInService
+import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -12,10 +15,10 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   bool _obscureText = true; // Variable to track whether password is visible or not
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isButtonEnabled = false;
+  bool _isLoading = false; // Variable to track loading state
 
   void _updateButtonState() {
     setState(() {
@@ -29,6 +32,7 @@ class _SignInScreenState extends State<SignInScreen> {
     super.initState();
     _emailController.addListener(_updateButtonState);
     _passwordController.addListener(_updateButtonState);
+    _printUserData(); // Call the method to print shared preferences data
   }
 
   @override
@@ -37,6 +41,105 @@ class _SignInScreenState extends State<SignInScreen> {
     _passwordController.dispose();
     super.dispose();
   }
+
+  Future<void> _saveUserData(Map<String, dynamic> userData) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('user', userData['user'].toString());
+    await prefs.setString('access_token', userData['access_token']);
+    await prefs.setString('expires_in', userData['expires_in']);
+
+    // // Confirm the data is saved
+    // final savedUser = prefs.getString('user');
+    // final savedAccessToken = prefs.getString('access_token');
+    // final savedExpiresIn = prefs.getString('expires_in');
+    //
+    // if (savedUser != null && savedAccessToken != null && savedExpiresIn != null) {
+    //   print('User data saved successfully: $savedUser');
+    //   print('Access Token saved successfully: $savedAccessToken');
+    //   print('Expires In saved successfully: $savedExpiresIn');
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('User data saved successfully'),
+    //       backgroundColor: Colors.green,
+    //     ),
+    //   );
+    // } else {
+    //   print('Failed to save user data');
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     SnackBar(
+    //       content: Text('Failed to save user data'),
+    //       backgroundColor: Colors.red,
+    //     ),
+    //   );
+    // }
+    //
+    // // Print the saved user data
+    // await _printUserData();
+  }
+
+
+  Future<void> _printUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final user = prefs.getString('user') ?? 'No user data';
+    final accessToken = prefs.getString('access_token') ?? 'No access token';
+    final expiresIn = prefs.getString('expires_in') ?? 'No expiry data';
+
+    print('User data is : $user');
+    print('Access Token data is : $accessToken');
+    print('Expires In data is : $expiresIn');
+  }
+
+  Future<void> _login() async {
+    if (_isButtonEnabled) {
+      setState(() {
+        _isLoading = true; // Set loading state to true
+      });
+
+      final signInService = SignInService();
+      try {
+        final response = await signInService.loginUser(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        print('Login successful, response: $response');
+
+
+        // Save user data to shared preferences
+        await _saveUserData(response);
+
+        // Show a SnackBar with a gray background color
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Login successful',
+              style: TextStyle(color: Colors.black), // Text color black
+            ),
+            backgroundColor: Color(0xFFDADADA), // Gray background color
+          ),
+        );
+
+        // Navigate to the main screen and remove all previous screens
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+              (Route<dynamic> route) => false, // Remove all previous routes
+        );
+      } catch (e) {
+        print('Exception during login: $e');
+        // Show an error message to the user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${e.toString().replaceAll('Exception: ', '')}'),
+          ),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false; // Set loading state to false
+        });
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -138,15 +241,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _isButtonEnabled
-                          ? () {
-                        // Add your onPressed code here!
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CreateNewPasswordScreen()),
-                        );
-                      }
-                          : null,
+                      onPressed: _isButtonEnabled ? _login : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _isButtonEnabled ? Colors.black : Color(0xFFC3C1C1), // Background color
                         shape: RoundedRectangleBorder(
@@ -154,7 +249,11 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         minimumSize: Size(double.infinity, 50), // Fixed height
                       ),
-                      child: Text(
+                      child: _isLoading // Show loading indicator if _isLoading is true
+                          ? CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      )
+                          : Text(
                         'Log In',
                         style: TextStyle(
                           color: Colors.white, // Text color remains white

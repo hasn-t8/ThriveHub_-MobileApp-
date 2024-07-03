@@ -1,16 +1,23 @@
+// custom_app_bar.dart
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
-  final bool showBackButton; // Whether to show the back button
-  final bool centerTitle; // Whether to center align the title
-  final VoidCallback? onBackPressed; // Callback for back button press
+  final bool showBackButton;
+  final bool centerTitle;
+  final VoidCallback? onBackPressed;
+  final bool showConfirmationButtons; // Whether to show Yes/No buttons
+  final VoidCallback? onYesPressed; // Callback for Yes button press
+  final VoidCallback? onNoPressed; // Callback for No button press
 
   CustomAppBar({
     required this.title,
     this.showBackButton = false,
-    this.centerTitle = false, // Defaults to left-align title
+    this.centerTitle = false,
     this.onBackPressed,
+    this.showConfirmationButtons = false,
+    this.onYesPressed,
+    this.onNoPressed,
   });
 
   @override
@@ -20,7 +27,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         border: Border(
           bottom: BorderSide(
             color: Color(0xFFDADADA),
-            width: 2.0, // Adjust the width as needed
+            width: 2.0,
           ),
         ),
       ),
@@ -41,10 +48,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.black,
         )
             : null,
+        actions: showConfirmationButtons
+            ? [
+          TextButton(
+            onPressed: onYesPressed,
+            child: Text(
+              'Yes',
+              style: TextStyle(color: Colors.green),
+            ),
+          ),
+          TextButton(
+            onPressed: onNoPressed,
+            child: Text(
+              'No',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ]
+            : [],
       ),
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 2.0); // Adjust height to include the bottom border
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 2.0);
 }

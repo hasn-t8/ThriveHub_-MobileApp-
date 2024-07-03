@@ -149,7 +149,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.reviews_outlined),
-            label: 'Review',
+            label: 'Reviews',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications_outlined),
