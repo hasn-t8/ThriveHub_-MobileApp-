@@ -28,6 +28,7 @@ class SliderScreen extends StatelessWidget {
               child: SmoothPageIndicator(
                 controller: _pageController,
                 count: 3,
+
                 effect: WormEffect(),  // Customize the effect as needed
               ),
             ),

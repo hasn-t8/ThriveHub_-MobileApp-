@@ -1,7 +1,8 @@
+//imports
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+// import '../..';
 class SignInService {
   // Get the base URL from the .env file
   final String _baseUrl = dotenv.env['BASE_URL'] ?? 'BASE_URL not found';

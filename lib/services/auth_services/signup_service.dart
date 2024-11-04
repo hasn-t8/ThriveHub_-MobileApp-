@@ -17,6 +17,7 @@ class SignUpService {
         Uri.parse('$_baseUrl/register'), // Constructing the register endpoint URL
         headers: <String, String>{
           'Content-Type': 'application/json',
+
         },
         body: jsonEncode(<String, dynamic>{
           'first_name': firstName,

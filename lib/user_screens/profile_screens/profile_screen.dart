@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/services/auth_services/logout_service.dart';  // Import the logout service
-import 'package:thrive_hub/screens/Welcome_screens/slider_screen.dart';
+import 'package:thrive_hub/user_screens/Welcome_screens/slider_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override
@@ -12,6 +12,32 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false;
+  String _firstName = '';
+  String _lastName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    final accessToken = prefs.getString('access_token');
+    final expiresIn = prefs.getString('expires_in');
+
+    print('Access Token: $accessToken');
+    print('Expires In: $expiresIn');
+    String? userJson = prefs.getString('user');
+    if (userJson != null) {
+      Map<String, dynamic> userMap = jsonDecode(userJson);
+      setState(() {
+        _firstName = userMap['first_name'] ?? '';
+        _lastName = userMap['last_name'] ?? '';
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               alignment: Alignment.center,
               children: [
                 Container(
+
                   width: 98,
                   height: 98,
                   decoration: BoxDecoration(
@@ -40,6 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       image: AssetImage('assets/avtar.jpg'), // Replace with your image path
                       fit: BoxFit.cover,
                     ),
+
                   ),
                 ),
                 Positioned(
@@ -60,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(height: 16),
             // Name and Location
             Text(
-              'Name Surname',
+              '$_firstName $_lastName',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -97,6 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildListItem(context, Icons.help, 'Help Center', Icons.arrow_forward_ios, '/help-center'),
             SizedBox(height: 16), // Add space before the Logout button
             _buildLogoutItem(context, Icons.logout, 'Logout'),
+
           ],
         ),
       ),
@@ -138,6 +167,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(10),
           border: Border(
+
             bottom: BorderSide(
               color: Colors.grey,
               width: 2.0,
@@ -178,6 +208,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         bool success = await logoutService.logout();
 
         setState(() {
+
           _isLoading = false;
         });
 

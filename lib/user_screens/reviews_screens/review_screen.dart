@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/screens/reviews_screens/create_review_screen.dart';
+import 'package:thrive_hub/user_screens/reviews_screens/create_review_screen.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/tab_buttons.dart';
@@ -26,6 +26,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
       'reviewText': 'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'likes': 43,
     },
+
   );
 
   final List<Map<String, dynamic>> myReviews = []; // Empty list for my reviews

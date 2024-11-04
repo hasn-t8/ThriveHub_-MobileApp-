@@ -16,7 +16,7 @@ class CompanyCard extends StatefulWidget {
     required this.title,
     required this.rating,
     required this.reviews,
-    required this.service,
+    this.service= ' ', // Make `service` optional with a default empty string,
     required this.description,
     required this.isBookmarked,
     required this.onBookmarkToggle,
@@ -50,6 +50,8 @@ class _CompanyCardState extends State<CompanyCard> {
         borderRadius: BorderRadius.circular(10.0),
         side: BorderSide(color: Colors.grey, width: 1.0),
       ),
+      // elevation: 5.0,
+      // shadowColor: Colors.grey.withOpacity(0.5),
       color: Colors.white, // Set card background color to white
       child: Padding(
         padding: EdgeInsets.all(8.0),
@@ -105,17 +107,18 @@ class _CompanyCardState extends State<CompanyCard> {
                         ],
                       ),
                       SizedBox(height: 8.0),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(12.0),
+                      if (widget.service != null && widget.service.isNotEmpty) // Check for both null and empty
+                        Container(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Text(
+                            widget.service,
+                            style: TextStyle(fontSize: 12.0, color: Colors.black),
+                          ),
                         ),
-                        child: Text(
-                          widget.service,
-                          style: TextStyle(fontSize: 12.0, color: Colors.black),
-                        ),
-                      ),
                     ],
                   ),
                 ),

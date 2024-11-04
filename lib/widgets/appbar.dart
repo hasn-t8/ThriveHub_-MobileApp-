@@ -57,6 +57,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               style: TextStyle(color: Colors.green),
             ),
           ),
+
+          
           TextButton(
             onPressed: onNoPressed,
             child: Text(
@@ -68,6 +70,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             : [],
       ),
     );
+
   }
 
   @override

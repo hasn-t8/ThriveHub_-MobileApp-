@@ -15,17 +15,19 @@ class LogoutService {
       return false;
     }
 
+    print("Access token retrieved: $accessToken"); // Logging access token
+    print("Base URL: $_baseUrl"); // Logging base URL
+
     final response = await http.post(
       Uri.parse('$_baseUrl/logout'),
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken',
       },
       body: jsonEncode({'accessToken': accessToken}),
     );
 
-    // if (response.statusCode == 200)
-    if (response.statusCode == 404)
-    {
+    if (response.statusCode == 404) {
       // Clear shared preferences on successful logout
       await prefs.clear();
       return true;

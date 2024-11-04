@@ -1,3 +1,4 @@
+//imports
 import 'package:flutter/material.dart';
 
 class ReviewCard extends StatelessWidget {
@@ -99,6 +100,7 @@ class ReviewCard extends StatelessWidget {
                           location,
                           style: TextStyle(
                             fontSize: 14.0,
+
                             color: Color(0xFF777777),
                           ),
                         ),

@@ -1,9 +1,9 @@
 //
 // import 'package:flutter/material.dart';
-// import 'package:thrive_hub/screens/search_screens/search_screen.dart';
-// import 'package:thrive_hub/screens/reviews_screens/review_screen.dart';
-// import 'package:thrive_hub/screens/notifications_screens/notification_screen.dart';
-// import 'package:thrive_hub/screens/profile_screens/profile_screen.dart';
+// import 'package:thrive_hub/user_screens/search_screens/business_search_screen.dart';
+// import 'package:thrive_hub/user_screens/reviews_screens/business_review_screen.dart';
+// import 'package:thrive_hub/user_screens/notifications_screens/business_notification_screen.dart';
+// import 'package:thrive_hub/user_screens/profile_screens/business_profile_screen.dart';
 //
 // class MainScreen extends StatefulWidget {
 //   @override
@@ -108,10 +108,10 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/screens/search_screens/search_screen.dart';
-import 'package:thrive_hub/screens/reviews_screens/review_screen.dart';
-import 'package:thrive_hub/screens/notifications_screens/notification_screen.dart';
-import 'package:thrive_hub/screens/profile_screens/profile_screen.dart';
+import 'package:thrive_hub/user_screens/search_screens/search_screen.dart';
+import 'package:thrive_hub/user_screens/reviews_screens/review_screen.dart';
+import 'package:thrive_hub/user_screens/notifications_screens/notification_screen.dart';
+import 'package:thrive_hub/user_screens/profile_screens/profile_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override

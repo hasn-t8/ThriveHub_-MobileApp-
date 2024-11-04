@@ -1,18 +1,16 @@
-import 'dart:convert';
+//imports
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'signin_screen.dart';
+import 'business_signin_screen.dart';
 import '../../widgets/input_fields.dart';
 import '../../widgets/google_facbook_button.dart';
-import '../../services/auth_services/signup_service.dart';
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
-class SignUpScreen extends StatefulWidget {
+class BusinessSignUpScreen extends StatefulWidget {
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _BusinessSignUpScreenState createState() => _BusinessSignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -21,7 +19,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _obscureText1 = true;
   bool _obscureText2 = true;
   bool _isButtonEnabled = false;
-  bool _isLoading = false; // Variable to track loading state
 
   void _updateButtonState() {
     setState(() {
@@ -31,6 +28,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           _confirmPasswordController.text.isNotEmpty;
     });
   }
+
 
   @override
   void initState() {
@@ -48,113 +46,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
-  }
-
-  Future<void> _registerUser() async {
-    final fullName = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _passwordController.text.trim();
-    final confirmPassword = _confirmPasswordController.text.trim();
-
-    if (fullName.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('All fields must be filled correctly')),
-      );
-      return;
-    }
-
-    if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Passwords do not match')),
-      );
-      return;
-    }
-
-    if (password.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password must be at least 6 characters long')),
-      );
-      return;
-    }
-
-    final nameParts = fullName.split(' ');
-    final firstName = nameParts[0];
-    final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
-
-    if (lastName.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please provide full name')),
-      );
-      return;
-    }
-
-    setState(() {
-      _isLoading = true; // Start the loader
-    });
-
-    try {
-      final responseData = await SignUpService().registerUser(
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password,
-      );
-
-      // Check if responseData['accessToken'] is not null before using it
-      final accessToken = responseData['access_token'] as String?;
-      if (accessToken == null) {
-        throw Exception('Access token not found in response');
-      }
-
-      // Save the access token to SharedPreferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('access_token', accessToken);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Account created successfully',
-            style: TextStyle(color: Colors.black), // Text color black
-          ),
-          backgroundColor: Color(0xFFDADADA), // Gray background color
-        ),
-      );
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-            (Route<dynamic> route) => false, // Remove all previous routes
-      );
-    } catch (e) {
-      print(e);
-      String errorMessage = e.toString().replaceAll('Exception:', '').trim();
-
-      // Extract and handle errors if available
-      try {
-        final responseData = jsonDecode(e.toString()) as Map<String, dynamic>;
-        if (responseData.containsKey('errors')) {
-          final errors = responseData['errors'] as Map<String, dynamic>;
-          final firstErrorKey = errors.keys.first;
-          final firstErrorMessage = errors[firstErrorKey].values.first;
-          errorMessage = firstErrorMessage;
-        } else {
-          errorMessage = responseData['message'] ?? errorMessage;
-        }
-      } catch (_) {
-        // Ignore JSON decode errors and use the original error message
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
-      );
-    } finally {
-      setState(() {
-        _isLoading = false; // Stop the loader
-      });
-    }
   }
 
   @override
@@ -196,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomInputField(
-                    labelText: 'Full Name',
+                    labelText: 'Company Name',
                     controller: _nameController,
                   ),
                   SizedBox(height: 12),
@@ -236,19 +127,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _isButtonEnabled ? _registerUser : null,
+                      onPressed: _isButtonEnabled
+                          ? () {
+                        // Add your onPressed code here!
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Account creation logic goes here.')),
+                        );
+                      }
+                          : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isButtonEnabled ? Colors.black : Color(0xFFC3C1C1),
+                        backgroundColor: Color(0xFF828282), // Change the color to #828282
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      child: _isLoading // Show loading indicator if _isLoading is true
-                          ? CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
-                          : Text(
+                      child: Text(
                         'Create Account',
                         style: TextStyle(
                           color: Colors.white,
@@ -320,7 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => SignInScreen()),
+                              MaterialPageRoute(builder: (context) => BusinessSignInScreen()),
                             );
                           },
                           child: Text(

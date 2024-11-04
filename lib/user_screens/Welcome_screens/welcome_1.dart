@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 import 'welcome_2.dart';
+import 'package:thrive_hub/business_screens/auth_screens/business_signin_screen.dart';
 
 
 class Welcome1Screen extends StatelessWidget {
@@ -62,10 +63,7 @@ class Welcome1Screen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // Add your onPressed code here!
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => MainScreen()),
-                        // );
+
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black, // Background color
@@ -83,7 +81,7 @@ class Welcome1Screen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: 20),  // Add space between buttons
+                  SizedBox(height: 10),  // Add space between buttons
                   Text(
                     'Go here to find the best products and leave reviews',
                     style: TextStyle(fontSize: 12),
@@ -94,6 +92,10 @@ class Welcome1Screen extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: () {
                         // Add your onPressed code here!
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BusinessSignInScreen()),
+                        );
                       },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: Color(0xFFD8DADC), width: 2), // Border color and width

@@ -1,3 +1,4 @@
+//import
 import 'package:flutter/material.dart';
 
 class SocialMediaButton extends StatelessWidget {
@@ -21,7 +22,8 @@ class SocialMediaButton extends StatelessWidget {
         style: TextStyle(color: Colors.black), // Set text color to black
       ),
       style: OutlinedButton.styleFrom(
-        side: BorderSide(color: Color(0xFFD8DADC), width: 3), // Border color and width
+        side: BorderSide(color: Color(0xFFD8DADC), width: 3),
+        // Border color and width
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10), // Reduced corner radius
         ),
@@ -30,3 +32,4 @@ class SocialMediaButton extends StatelessWidget {
     );
   }
 }
+

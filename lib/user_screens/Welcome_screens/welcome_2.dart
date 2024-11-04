@@ -14,7 +14,7 @@ class Welcome2Screen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Image in the center
+                //   Image in the center
                 Container(
                   height: 196.12,
                   width: 226.39,
@@ -41,6 +41,7 @@ class Welcome2Screen extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
+
                         text: 'Welcome to ',
                         style: TextStyle(
                           fontSize: 20, // Font size for the normal text
