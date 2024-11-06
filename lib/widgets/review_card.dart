@@ -1,4 +1,3 @@
-//imports
 import 'package:flutter/material.dart';
 
 class ReviewCard extends StatelessWidget {
@@ -12,6 +11,7 @@ class ReviewCard extends StatelessWidget {
   final int likes;
   final VoidCallback onLike;
   final VoidCallback onShare;
+  final bool showShareButton; // New parameter to control share button visibility
 
   ReviewCard({
     required this.imageUrl,
@@ -24,27 +24,28 @@ class ReviewCard extends StatelessWidget {
     required this.likes,
     required this.onLike,
     required this.onShare,
+    this.showShareButton = true, // Default to true to show share button
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0), // Full screen width
+      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 0.0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
       ),
       shadowColor: Colors.grey.withOpacity(0.5),
-      elevation: 4, // Add shadow
-      color: Color(0xFFF1F3F4), // Match the background color
+      elevation: 4,
+      color: Color(0xFFF1F3F4),
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: Color(0xFFF1F3F4), // Match the screen background color
+          color: Color(0xFFFFFFFF),
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
+              color: Colors.grey.withOpacity(0),
               spreadRadius: 2,
               blurRadius: 4,
               offset: Offset(0, 2),
@@ -100,7 +101,6 @@ class ReviewCard extends StatelessWidget {
                           location,
                           style: TextStyle(
                             fontSize: 14.0,
-
                             color: Color(0xFF777777),
                           ),
                         ),
@@ -137,7 +137,6 @@ class ReviewCard extends StatelessWidget {
               reviewText,
               style: TextStyle(
                 fontSize: 12.0,
-                // color: Colors.black,
                 color: Color(0xFF777777),
               ),
             ),
@@ -149,17 +148,18 @@ class ReviewCard extends StatelessWidget {
                   onTap: onLike,
                   child: Row(
                     children: [
-                      Icon(Icons.favorite, color: Color(0xFF434242)), // Change heart color here
+                      Icon(Icons.favorite, color: Color(0xFF434242)),
                       SizedBox(width: 4.0),
                       Text(likes.toString()),
                     ],
                   ),
                 ),
                 SizedBox(width: 16.0),
-                GestureDetector(
-                  onTap: onShare,
-                  child: Icon(Icons.share_outlined, color: Colors.black),
-                ),
+                if (showShareButton) // Conditionally show the share button
+                  GestureDetector(
+                    onTap: onShare,
+                    child: Icon(Icons.share_outlined, color: Colors.black),
+                  ),
               ],
             ),
           ],
