@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CategoriesWidget extends StatelessWidget {
   final int selectedBoxIndex;
   final Function(int) onBoxSelected;
-  final List<Map<String, String>> categories; // Accepts a list of maps for categories
+  final List<Map<String, String>> categories;
 
   CategoriesWidget({
     required this.selectedBoxIndex,
@@ -20,7 +20,7 @@ class CategoriesWidget extends StatelessWidget {
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
-        itemCount: categories.length, // Use the length of categories
+        itemCount: categories.length,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
           mainAxisSpacing: 6,
@@ -28,14 +28,22 @@ class CategoriesWidget extends StatelessWidget {
           childAspectRatio: 168 / 188,
         ),
         itemBuilder: (context, index) {
-          final category = categories[index]; // Get the current category map
+          final category = categories[index];
+          final isSelected = selectedBoxIndex == index;
           return GestureDetector(
             onTap: () => onBoxSelected(index),
             child: Container(
               decoration: BoxDecoration(
-                color: selectedBoxIndex == index ? Color(0xFFBFBFBF) : Colors.white,
+                color: isSelected ? Color(0xFFBFBFBF) : Colors.white,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color(0x1F000000), // Equivalent to #0000001F
+                    offset: Offset(0, 1),
+                    blurRadius: 30,
+                    spreadRadius: 0,
+                  ),
+                ],
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -44,16 +52,21 @@ class CategoriesWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      category['title'] ?? '', // Display dynamic title
+                      category['title'] ?? '',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 14,
+                        color: isSelected ? Colors.white : Colors.black,
                       ),
                     ),
                     SizedBox(height: 4),
                     Text(
-                      category['description'] ?? '', // Display dynamic description
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      category['description'] ?? '',
+                      style: TextStyle(
+
+                        fontSize: 10,
+                        color: isSelected ? Colors.white : Colors.grey,
+                      ),
                     ),
                   ],
                 ),
