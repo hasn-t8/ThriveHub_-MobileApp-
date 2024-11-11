@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:thrive_hub/business_screens/widgets/business_bottom_navigation_bar.dart';
+import 'package:thrive_hub/user_screens/search_screens/sub_categories_screen.dart';
 import 'user_screens/Welcome_screens/slider_screen.dart';
 import 'user_screens/Welcome_screens/launcher_screen.dart';
-import 'user_screens/Welcome_screens/welcome_1.dart';
-import 'user_screens/Welcome_screens/welcome_2.dart';
+import 'user_screens/Welcome_screens/welcome_one.dart';
+import 'user_screens/Welcome_screens/welcome_two.dart';
 import 'user_screens/auth_screens/signup_screen.dart';
 import 'user_screens/profile_screens/my_companies_screen.dart';
 import 'user_screens/profile_screens/account_settings_screen.dart';
@@ -49,6 +51,8 @@ class MyApp extends StatelessWidget {
         '/my-companies': (context) => MyCompaniesScreen(),
         '/account-settings': (context) => AccountSettingsScreen(),
         '/help-center': (context) => HelpCenterScreen(),
+        '/home': (context) => MainScreen(),
+        '/subcategory': (context) => SubcategoriesScreen(categoryTitle: '',),
 
 
         //business screens

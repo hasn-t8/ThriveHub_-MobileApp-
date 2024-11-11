@@ -1,8 +1,9 @@
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
-import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/categories.dart';
+import 'package:thrive_hub/widgets/top_bar.dart'; // Import your new HeaderWidget file
+import 'package:thrive_hub/user_screens/search_screens/sub_categories_screen.dart';
+
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -10,44 +11,46 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+
   int selectedBoxIndex = -1;
 
   final List<Map<String, String>> categories = [
-    {'title': 'Category 1', 'description': 'Description for category 1'},
-    {'title': 'Category 2', 'description': 'Description for category 2'},
-    {'title': 'Category 3', 'description': 'Description for category 3'},
-    {'title': 'Category 4', 'description': 'Description for category 4'},
+    {'title': 'Tech', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
+    {'title': 'Wellness', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
+    {'title': 'Finance', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
+    {'title': 'Home Electronics', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
   ];
+
+  void _navigateToSubcategories(String categoryTitle) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SubcategoriesScreen(categoryTitle: categoryTitle),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: TextField(
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: Color(0xFFE9E9EA),
-            hintText: 'Search',
-            hintStyle: TextStyle(color: Color(0xFFBFBFBF)),
-            prefixIcon: Icon(Icons.search, color: Color(0xFFBFBFBF)),
-            suffixIcon: Icon(Icons.mic, color: Color(0xFFBFBFBF)),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(30),
-              borderSide: BorderSide.none,
-            ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(121),
+        child: SafeArea(
+          child: HeaderWidget(
+            heading: 'Hi, Olivia!',
+            showHeading: true,
+            showSearchBar: true,
+            showLine: true,
           ),
         ),
       ),
       body: Stack(
         children: [
-          // Main content scroll view
           SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 26),
+                SizedBox(height: 1),
                 Text(
                   'Categories',
                   style: TextStyle(
@@ -59,13 +62,14 @@ class _SearchScreenState extends State<SearchScreen> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 26),
+                SizedBox(height: 16),
                 CategoriesWidget(
                   selectedBoxIndex: selectedBoxIndex,
                   onBoxSelected: (index) {
                     setState(() {
                       selectedBoxIndex = index;
                     });
+                    _navigateToSubcategories(categories[index]['title'] ?? '');
                   },
                   categories: categories,
                 ),
@@ -73,16 +77,15 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
           ),
-          // DraggableScrollableSheet for bottom sheet reviews section
           DraggableScrollableSheet(
             initialChildSize: 0.2,
             minChildSize: 0.2,
             maxChildSize: 0.8,
             builder: (context, scrollController) {
               return Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                padding: EdgeInsets.symmetric(horizontal: 4.0),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Color(0xFFEDEDED),
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(16),
                   ),
@@ -90,8 +93,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     BoxShadow(
                       color: Colors.black26,
                       blurRadius: 10,
-                      spreadRadius: 5,
+                      spreadRadius: 1,
                     ),
+
                   ],
                 ),
                 child: SingleChildScrollView(
@@ -109,8 +113,7 @@ class _SearchScreenState extends State<SearchScreen> {
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 36),
-                      // List of review cards
+                      SizedBox(height: 20),
                       ListView.builder(
                         controller: scrollController,
                         shrinkWrap: true,
@@ -124,9 +127,9 @@ class _SearchScreenState extends State<SearchScreen> {
                             location: 'USA',
                             timeAgo: '1 day ago',
                             reviewerName: 'Reviewer $index',
-                            reviewText:
-                            'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                            reviewText: 'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                             likes: 43,
+                            showShareButton: false,
                             onLike: () {
                               setState(() {
                                 // Handle like action here

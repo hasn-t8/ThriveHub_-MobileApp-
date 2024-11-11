@@ -1,74 +1,133 @@
 import 'package:flutter/material.dart';
 
-class SubCategoriesWidget extends StatelessWidget {
+class SubcategoriesWidget extends StatefulWidget {
+  final String categoryTitle; // Title of the category
+  final List<String> items; // List of items to display in boxes
+  final VoidCallback? onSeeAllTap; // Optional callback for the "See All" button
+  final Color containerColor; // Background color of the main container
+  final Color dropBoxColor; // Background color of the drop boxes
+
+  const SubcategoriesWidget({
+    Key? key,
+    required this.categoryTitle,
+    required this.items,
+    this.onSeeAllTap,
+    this.containerColor = Colors.white, // Default color for the main container
+    this.dropBoxColor = const Color(0xFFE9E8E8), // Default color for drop boxes
+  }) : super(key: key);
+
+  @override
+  _SubcategoriesWidgetState createState() => _SubcategoriesWidgetState();
+}
+
+class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
+  int? selectedIndex; // Tracks the selected index, ensures only one selection
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity, // Full width
-      height: 396, // Specified height
-      color: Color(0xFFFFFFFF), // Background color #FFFFFF
-      padding: EdgeInsets.all(16.0),
+      width: 394,
+      height: 193,
+      padding: const EdgeInsets.only(top: 22),
+      decoration: BoxDecoration(
+        color: widget.containerColor,
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0x0D000000), // Lighter shadow color with lower opacity
+            offset: const Offset(0, 1),
+            blurRadius: 8, // Slightly reduced blur radius for a softer shadow
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header section
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Heading', // Replace with your heading text
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+          // Row for the title and "See All" button
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start, // Align items to the top
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.categoryTitle,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2, // Allows the title to break onto a second line if needed
+                    overflow: TextOverflow.ellipsis, // Adds ellipsis if text is too long
+                  ),
                 ),
-              ),
-              InkWell(
-                onTap: () {
-                  // Handle "See All" tap here
-                },
-                child: Row(
-                  children: [
-                    Text(
-                      'See All',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.blue, // Customize color if needed
+                GestureDetector(
+                  onTap: widget.onSeeAllTap,
+                  child: Row(
+                    children: [
+                      Text(
+                        'See All',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Colors.black,
+                        size: 20,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          // Horizontal scrollable row of boxes, aligned to start
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widget.items.asMap().entries.map((entry) {
+                  final int index = entry.key;
+                  final String item = entry.value;
+
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        selectedIndex = index; // Set the selected box
+                      });
+                      print('Clicked on $item');
+                    },
+                    child: Container(
+                      width: 131,
+                      height: 117,
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: selectedIndex == index
+                            ? const Color(0xFFBFBFBF) // Selected background color
+                            : widget.dropBoxColor, // Default background color
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Text(
+                          item,
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: selectedIndex == index
+                                ? Colors.white // Selected text color
+                                : Colors.black, // Default text color
+                          ),
+                        ),
                       ),
                     ),
-                    Icon(
-                      Icons.arrow_right,
-                      color: Colors.blue, // Customize color if needed
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16), // Space between header and box below
-
-          // Box below the header
-          Container(
-            width: 131, // Fixed width
-            height: 117, // Fixed height
-            padding: EdgeInsets.only(top: 12),
-            decoration: BoxDecoration(
-              color: Color(0xFFE9E8E8), // Background color #E9E8E8
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                'Subheading', // Replace with your subheading text
-                style: TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF414141),
-                  height: 22 / 14, // Line height ratio
-                  letterSpacing: -0.41,
-                ),
+                  );
+                }).toList(),
               ),
             ),
           ),

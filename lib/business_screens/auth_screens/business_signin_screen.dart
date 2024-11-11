@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:thrive_hub/business_screens/widgets/business_bottom_navigation_bar.dart';
 import 'business_signup_screen.dart';
 import '../../widgets/input_fields.dart';
-import '../Slider_screens/business_category_screen.dart';
-import '../Slider_screens/business_SliderScreen.dart';
+import '../slider_screens/business_category_screen.dart';
+import '../slider_screens/business_slider_screen.dart';
 
 class BusinessSignInScreen extends StatefulWidget {
   const BusinessSignInScreen({super.key});

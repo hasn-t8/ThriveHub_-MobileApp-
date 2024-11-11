@@ -16,7 +16,7 @@ class CompanyCard extends StatefulWidget {
     required this.title,
     required this.rating,
     required this.reviews,
-    this.service= ' ', // Make `service` optional with a default empty string,
+    this.service = ' ', // Make `service` optional with a default empty string
     required this.description,
     required this.isBookmarked,
     required this.onBookmarkToggle,
@@ -50,8 +50,6 @@ class _CompanyCardState extends State<CompanyCard> {
         borderRadius: BorderRadius.circular(10.0),
         side: BorderSide(color: Colors.grey, width: 1.0),
       ),
-      // elevation: 5.0,
-      // shadowColor: Colors.grey.withOpacity(0.5),
       color: Colors.white, // Set card background color to white
       child: Padding(
         padding: EdgeInsets.all(8.0),
@@ -64,10 +62,16 @@ class _CompanyCardState extends State<CompanyCard> {
                 Container(
                   width: 93,
                   height: 93,
-                  color: Color(0xFFD9D9D9),
-                  child: Image.network(
-                    widget.imageUrl,
-                    fit: BoxFit.cover,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0), // Rounded corners for image
+                    color: Color(0xFFD9D9D9),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(15.0), // Ensures image is clipped with rounded corners
+                    child: Image.network(
+                      widget.imageUrl,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
                 SizedBox(width: 8.0),
@@ -107,7 +111,7 @@ class _CompanyCardState extends State<CompanyCard> {
                         ],
                       ),
                       SizedBox(height: 8.0),
-                      if (widget.service != null && widget.service.isNotEmpty) // Check for both null and empty
+                      if (widget.service.isNotEmpty) // Check if the service is not empty
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           decoration: BoxDecoration(
