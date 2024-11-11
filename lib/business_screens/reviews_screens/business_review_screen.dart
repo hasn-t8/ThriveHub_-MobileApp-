@@ -64,9 +64,9 @@ class _BusinessReviewScreenState extends State<BusinessReviewScreen> {
             onFilter: () {
               // Handle filter action
             },
-            onSort: () {
-              // Handle sort action
-            },
+            // onSort: () {
+            //   // Handle sort action
+            // },
           ),
           SizedBox(height: 8.0), // Space between filter/sort buttons and review cards
           Expanded(
