@@ -1,47 +1,82 @@
-# Miscellaneous
-*.class
-*.log
-*.pyc
-*.swp
-.DS_Store
-.atom/
-.buildlog/
-.history
-.svn/
-migrate_working_dir/
-
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
-
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
 # Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.pub-cache/
-.pub/
-/build/
+.packages
+build/
+pubspec.lock
+.flutter/
 
-# Symbolication related
-app.*.symbols
+# iOS
+ios/Flutter/.last_build_id
+ios/Pods
+ios/.symlinks
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/ServiceDefinitions.json
+ios/Runner.xcworkspace
+ios/Podfile.lock
+*.mobileprovision  # Exclude provisioning profiles
+*.xcuserstate
+*.xcworkspace
+*.xcodeproj/project.xcworkspace/
 
-# Obfuscation related
-app.*.map.json
+# Android
+android/.gradle
+android/app/*.iml
+android/local.properties
+android/.idea
+android/gradle/wrapper/gradle-wrapper.properties
+android/.cxx/
+*.lock
+*.log
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# Web
+web/.dart_tool/
+web/.packages
 
+# macOS
+macos/Flutter/ephemeral/
 
-# Add .env file to gitignore
+# Windows
+windows/Flutter/ephemeral/
+
+# Linux
+linux/Flutter/ephemeral/
+
+# VS Code
+.vscode/
+
+# IntelliJ
+.idea/
+*.iml
+
+# Generated files
+*.class
+*.log
+*.pyc
+*.pyo
+*.swp
+.DS_Store
+*.tmp
+
+# Obfuscation files
+*.symbols
+
+# Package configuration files
+.packages
+
+# Flutter environment files
 .env
+.env.local
+
+# Android key store files (if applicable)
+*.keystore
+
+# Byte-compiled files
+*.pyc
+
+# Secrets
+# Uncomment and replace <your_file_name> if you have specific environment or secrets files
+# <your_file_name>.env
