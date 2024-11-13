@@ -1,8 +1,11 @@
 # thrive_hub
 
-A new Flutter project.
+## Quick start
+1. ```flutter pub get ```   
+2. ```flutter doctor ``` to get an overview of the devices/simulators available on machine   
+3. ```flutter run ``` to run the flutter app
 
-## Getting Started
+## Reference
 
 This project is a starting point for a Flutter application.
 
