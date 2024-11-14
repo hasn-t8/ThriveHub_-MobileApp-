@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/validators/email_validator.dart';
 import 'signin_screen.dart';
 import '../../widgets/input_fields.dart';
 import '../../widgets/google_facbook_button.dart';
@@ -13,6 +15,7 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -57,13 +60,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
     await prefs.setString('expires_in', userData['expires_in']);
   }
 
+  void _validateEmail() {
+    final email = _emailController.text.trim();
+    final validationError = emailValidator(email);
+    if (validationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(validationError),
+          backgroundColor: Colors.black,
+        ),
+      );
+      return;
+    }
+    _registerUser();
+  }
+
   Future<void> _registerUser() async {
     final fullName = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
-    if (fullName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+    if (fullName.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('All fields must be filled correctly')),
       );
@@ -116,7 +137,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => MainScreen()),
-            (Route<dynamic> route) => false, // Remove all previous routes
+        (Route<dynamic> route) => false, // Remove all previous routes
       );
     } catch (e) {
       print(e);
@@ -149,188 +170,278 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFF4F4F4),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              color: Color(0xFFD8DADC),
-              width: double.infinity,
-              padding: const EdgeInsets.only(top: 70.0, bottom: 6.0),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Get Start Now',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Image.asset(
-                      'assets/star.png',
-                      width: 30,
-                      height: 30,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomInputField(
-                    labelText: 'Full Name',
-                    controller: _nameController,
+    final passwordsMatch =
+        _passwordController.text == _confirmPasswordController.text;
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.white, // White background for the status bar
+        statusBarIconBrightness:
+            Brightness.dark, // Dark icons for the status bar
+      ),
+      child: Scaffold(
+        backgroundColor: Color(0xFFD8DADC),
+        body: SingleChildScrollView(
+          child: Form(
+            key: _formKey, // Attach the form key
+            child: Column(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft:
+                        Radius.circular(20), // Rounded bottom-left corner
+                    bottomRight:
+                        Radius.circular(20), // Rounded bottom-right corner
                   ),
-                  SizedBox(height: 12),
-                  CustomInputField(
-                    labelText: 'Email',
-                    controller: _emailController,
-                  ),
-                  SizedBox(height: 12),
-                  CustomInputField(
-                    labelText: 'Password',
-                    controller: _passwordController,
-                    obscureText: _obscureText1,
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscureText1 ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText1 = !_obscureText1;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  CustomInputField(
-                    labelText: 'Confirm Password',
-                    controller: _confirmPasswordController,
-                    obscureText: _obscureText2,
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscureText2 ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText2 = !_obscureText2;
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  SizedBox(
+                  child: Container(
+                    color: Color(0xFFD8DADC),
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isButtonEnabled ? _registerUser : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _isButtonEnabled ? Colors.black : Color(0xFFC3C1C1),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        minimumSize: Size(double.infinity, 50),
-                      ),
-                      child: _isLoading // Show loading indicator if _isLoading is true
-                          ? CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      )
-                          : Text(
-                        'Create Account',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: Color(0xFFD9D9D9),
-                          thickness: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'Or Register with',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Color(0xFFD9D9D9),
-                          thickness: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  Column(
-                    children: [
-                      SocialMediaButton(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        icon: Icons.g_translate,
-                        label: 'Continue with Google',
-                      ),
-                      SizedBox(height: 10),
-                      SocialMediaButton(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        icon: Icons.facebook,
-                        label: 'Continue with Facebook',
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Already have an account? ',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => SignInScreen()),
-                            );
-                          },
-                          child: Text(
-                            'Login',
+                    padding: const EdgeInsets.only(top: 70.0, bottom: 6.0),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Get Start Now',
                             style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 28,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
+                          SizedBox(width: 10),
+                          Image.asset(
+                            'assets/star.png',
+                            width: 49,
+                            height: 49,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                // SizedBox(height: 10),
+
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white, // Background color of the form
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20), // Rounded top-left corner
+                      topRight: Radius.circular(20), // Rounded top-right corner
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3), // Shadow position
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.all(16.0), // Adjust internal padding
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomInputField(
+                          labelText: 'Full Name',
+                          hintText:
+                              'Enter your full name', // Pass custom hint text here
+                          controller: _nameController,
                         ),
+                        SizedBox(height: 12),
+                        CustomInputField(
+                          labelText: 'Email',
+                          hintText:
+                              'Enter your Email', // Pass custom hint text here
+                          controller: _emailController,
+                        ),
+                        SizedBox(height: 12),
+                        CustomInputField(
+                          labelText: 'Password',
+                          hintText:
+                              'Create Password', // Pass custom hint text here
+                          controller: _passwordController,
+                          obscureText: _obscureText1,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText1
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: _obscureText1
+                                  ? Color(0xFFACB5BB)
+                                  : Colors.black,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText1 = !_obscureText1;
+                              });
+                            },
+                          ),
+                          borderColor: passwordsMatch
+                              ? Color(0xFFEDF1F3)
+                              : Color(0xFF0C9809), // Dynamic border color
+                        ),
+
+                        SizedBox(height: 12),
+                        CustomInputField(
+                          labelText: 'Confirm Password',
+                          hintText:
+                              'Repeat your password', // Pass custom hint text here
+                          controller: _confirmPasswordController,
+                          obscureText: _obscureText2,
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText2
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: _obscureText2
+                                  ? Color(0xFFACB5BB)
+                                  : Colors.black,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText2 = !_obscureText2;
+                              });
+                            },
+                          ),
+                          borderColor: passwordsMatch
+                              ? Color(0xFFEDF1F3)
+                              : Color(0xFF0C9809), // Dynamic border color
+                        ),
+                        SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _validateEmail,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _isButtonEnabled
+                                  ? Color(0XFF313131)
+                                  : Color(0xFFC3C1C1),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              minimumSize: Size(double.infinity, 50),
+                            ),
+                            child: _isLoading
+                                ? CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  )
+                                : Text(
+                                    'Create Account',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: 'Inter',
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        // Add additional form content here if needed
+                        SizedBox(height: 10),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                color: Color(0xFFD9D9D9),
+                                thickness: 1,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Text(
+                                'Or Register with',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.black.withOpacity(
+                                      0.7), // Black with 70% opacity
+                                  fontFamily:
+                                      'Inter', // Set the font family to 'Inter'
+                                  fontWeight:
+                                      FontWeight.w400, // Set font weight to 400
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                color: Color(0xFFD9D9D9),
+                                thickness: 1,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12),
+                        Column(
+                          children: [
+                            SocialMediaButton(
+                              onPressed: () {
+                                // Add your onPressed code here!
+                              },
+                              image: AssetImage('assets/google.png'),
+                              label: 'Continue with Google',
+                            ),
+                            SizedBox(height: 10),
+                            SocialMediaButton(
+                              onPressed: () {
+                                // Add your onPressed code here!
+                              },
+                              image: AssetImage('assets/facebook.png'),
+                              label: 'Continue with Facebook',
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12),
+                        Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Already have an account? ',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black.withOpacity(
+                                      0.7), // Black with 70% opacity
+                                  fontFamily:
+                                      'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                  fontWeight:
+                                      FontWeight.w400, // Set font weight to 400
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SignInScreen()),
+                                  );
+                                },
+                                child: Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                    fontFamily:
+                                        'SF Pro Display', // Set the font family to 'Inter'
+                                    fontWeight: FontWeight
+                                        .w500, // Set font weight to 500
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20),
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -5,12 +5,16 @@ class CustomInputField extends StatelessWidget {
   final TextEditingController controller;
   final bool obscureText;
   final Widget? suffixIcon;
+  final String? hintText;
+  final Color borderColor; // Add a borderColor property
 
   CustomInputField({
     required this.labelText,
     required this.controller,
     this.obscureText = false,
     this.suffixIcon,
+    this.hintText,
+    this.borderColor = const Color(0xFFEDF1F3), // Default border color
   });
 
   @override
@@ -20,28 +24,52 @@ class CustomInputField extends StatelessWidget {
       children: [
         Text(
           labelText,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
-            fontWeight: FontWeight.bold,
-            // color: Color(0xFF5A5A5A), // Set the label color here
-            color: Color(0xFF000000), // Set the label color to black
+            fontFamily: 'Inter',
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF000000),
           ),
         ),
-        SizedBox(height: 4),
-        TextField(
-          controller: controller,
-          obscureText: obscureText,
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(color: Color(0xFFA5A5A5)),
+        const SizedBox(height: 4),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: borderColor, // Use the customizable border color
+              width: 1,
             ),
-            contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-            hintText: '$labelText',
-            suffixIcon: suffixIcon,
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x3DE4E5E7),
+                offset: Offset(0, 1),
+                blurRadius: 2,
+              ),
+            ],
+            borderRadius: BorderRadius.circular(10),
+            color: Colors.white,
           ),
-          style: TextStyle(fontSize: 14),
-        ),
+          child: TextField( // Use TextField instead of TextFormField
+            controller: controller,
+            obscureText: obscureText,
+            decoration: InputDecoration(
+              border: InputBorder.none,
+              contentPadding:
+              const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+              hintText: hintText ?? labelText, // Use hintText if provided, fallback to labelText
+              hintStyle: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                letterSpacing: -0.01,
+                height: 19.6 / 14,
+                textBaseline: TextBaseline.alphabetic,
+                color: Color(0xFFA5A5A5),
+              ),
+              suffixIcon: suffixIcon,
+            ),
+            style: const TextStyle(fontSize: 14),
+          ),
+        )
       ],
     );
   }
