@@ -26,7 +26,8 @@ class LauncherScreen extends StatelessWidget {
               'Thrive Hub',
               style: TextStyle(
                 fontSize: 28,  // Font size for 'Thrive Hub'
-                fontWeight: FontWeight.bold,
+                fontFamily: 'Inter', // Set the font family to 'Inter'
+                fontWeight: FontWeight.w700, // Set font weight to 500
               ),
             ),
             SizedBox(height: 10),
@@ -36,6 +37,8 @@ class LauncherScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,  // Font size for the normal text
                 color: Colors.black,
+                fontFamily: 'Inter', // Set the font family to 'Inter'
+                fontWeight: FontWeight.w500, // Set font weight to 500
               ),
             ),
           ],

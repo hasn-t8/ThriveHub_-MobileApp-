@@ -20,8 +20,9 @@ class Welcome1Screen extends StatelessWidget {
               child: Text(
                 'Choose your path',
                 style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 28,
+                  fontFamily: 'Inter', // Set the font family to 'Inter'
+                  fontWeight: FontWeight.w700, // Set font weight to 500
                 ),
               ),
             ),
@@ -46,14 +47,17 @@ class Welcome1Screen extends StatelessWidget {
                     child: Center(
                       child: Text(
                         'Select the option that best suits your needs: create a business or discover and review products',
-                        style: TextStyle(fontSize: 12),
+                        style: TextStyle(fontSize: 12,
+                          fontFamily: 'Inter', // Set the font family to 'Inter'
+                          fontWeight: FontWeight.w500, // Set font weight to 500
+                        ),
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ),
                   SizedBox(height: 40),  // Add space between container and image
                   Image.asset(
-                    'assets/main.png',  // Ensure the image is placed in the assets folder
+                    'assets/splash_logo.png',  // Ensure the image is placed in the assets folder
                     width: 143.61,
                     height: 124.41,
                   ),
@@ -66,17 +70,19 @@ class Welcome1Screen extends StatelessWidget {
 
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black, // Background color
+                        backgroundColor: Color(0xFF313131), // Background color
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10), // Reduced corner radius
                         ),
-                        minimumSize: Size(335, 50), // Fixed width
+                        minimumSize: Size(335, 60), // Fixed width
                       ),
                       child: Text(
                         'Discover Products',
                         style: TextStyle(
                           color: Colors.white, // Text color
                           fontSize: 16,
+                          fontFamily: 'Inter', // Set the font family to 'Inter'
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -84,7 +90,9 @@ class Welcome1Screen extends StatelessWidget {
                   SizedBox(height: 10),  // Add space between buttons
                   Text(
                     'Go here to find the best products and leave reviews',
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 12,
+                      fontFamily: 'Inter', // Set the font family to 'Inter'
+                      fontWeight: FontWeight.w500,),
                   ),
                   SizedBox(height: 30),  // Add space between text and button
                   SizedBox(
@@ -102,13 +110,15 @@ class Welcome1Screen extends StatelessWidget {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10), // Reduced corner radius
                         ),
-                        minimumSize: Size(335, 50), // Fixed width
+                        minimumSize: Size(335, 60), // Fixed width
                       ),
                       child: Text(
                         'Create a Business',
                         style: TextStyle(
                           color: Colors.black, // Text color
-                          fontSize: 17,
+                          fontSize: 16,
+                          fontFamily: 'Inter', // Set the font family to 'Inter'
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -116,7 +126,9 @@ class Welcome1Screen extends StatelessWidget {
                   SizedBox(height: 10),  // Add space between button and the final text
                   Text(
                     'Go here to create and manage your business',
-                    style: TextStyle(fontSize: 12),
+                    style: TextStyle(fontSize: 12,
+                      fontFamily: 'Inter', // Set the font family to 'Inter'
+                      fontWeight: FontWeight.w500,),
                   ),
                 ],
               ),

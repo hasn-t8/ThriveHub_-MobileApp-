@@ -31,21 +31,22 @@ class Welcome2Screen extends StatelessWidget {
                   'Hello!',
                   style: TextStyle(
                     fontSize: 34, // Font size for 'Hello!'
-                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Inter', // Set the font family to 'Inter'
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(height: 10),
                 // Normal text followed by bold text
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
                     children: [
                       TextSpan(
-
                         text: 'Welcome to ',
                         style: TextStyle(
                           fontSize: 20, // Font size for the normal text
                           color: Colors.black,
+                          fontFamily: 'Inter', // Set the font family to 'Inter'
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                       TextSpan(
@@ -53,7 +54,8 @@ class Welcome2Screen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 20, // Font size for 'Thrive Hub'
                           color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Inter', // Set the font family to 'Inter'
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
@@ -78,17 +80,20 @@ class Welcome2Screen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black, // Background color
+
+                      backgroundColor: Color(0xFF313131), // Background color
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10), // Reduced corner radius
                       ),
-                      minimumSize: Size(335, 50), // Fixed width
+                      minimumSize: Size(335,60), // Fixed width
                     ),
                     child: Text(
                       'Create account',
                       style: TextStyle(
                         color: Colors.white, // Text color
-                        fontSize: 19,
+                        fontSize: 16,
+                        fontFamily: 'Inter', // Set the font family to 'Inter'
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -109,13 +114,15 @@ class Welcome2Screen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10), // Reduced corner radius
                       ),
-                      minimumSize: Size(335, 50), // Fixed width
+                      minimumSize: Size(335, 60), // Fixed width
                     ),
                     child: Text(
                       'Sign in',
                       style: TextStyle(
                         color: Colors.black, // Text color
-                        fontSize: 19,
+                        fontSize: 16,
+                        fontFamily: 'Inter', // Set the font family to 'Inter'
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
