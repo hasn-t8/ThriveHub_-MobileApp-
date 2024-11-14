@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/validators/email_validator.dart';
+import 'package:thrive_hub/widgets/google_facbook_button.dart';
 import 'signup_screen.dart';
 import 'dart:convert';
 import 'create_new_password.dart';
@@ -63,6 +65,17 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Future<void> _login() async {
+    final email = _emailController.text.trim();
+    final validationError = emailValidator(email);
+    if (validationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(validationError),
+          backgroundColor: Colors.black,
+        ),
+      );
+      return;
+    }
     if (_isButtonEnabled) {
       setState(() {
         _isLoading = true; // Set loading state to true
@@ -121,9 +134,9 @@ class _SignInScreenState extends State<SignInScreen> {
           children: [
             // Top section with the first background color and heading
             Container(
-              color: Color(0xFFD8DADC),
+              color: Color(0xFFF4F4F4),
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 80.0, bottom: 6.0,), // Adjusted padding
+              padding: const EdgeInsets.only(top: 70.0, bottom: 6.0,), // Adjusted padding
               child: Center(
                 child: Column(
                   children: [
@@ -133,11 +146,12 @@ class _SignInScreenState extends State<SignInScreen> {
                         Text(
                           'Welcome Back!',
                           style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 28,
+                            fontFamily: 'Inter', // Set the font family to 'Inter'
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                        SizedBox(width: 10), // Add some space between the image and the text
+                        SizedBox(width: 6), // Add some space between the image and the text
                         Image.asset(
                           'assets/star.png', // Replace with your image asset
                           width: 49,
@@ -145,26 +159,47 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 10),
                     Text(
                       'We\'re excited to see you again. Log in to continue \nyour journey with us.',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.black,
+                        fontFamily: 'Inter', // Set the font family to 'Inter'
+                        fontWeight: FontWeight.w400,
                       ),
                       textAlign: TextAlign.center, // Center the text
                     ),
+                    SizedBox(height: 10),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20),
+
             // Form container
-            Padding(
+      Container(
+        width: 375,
+        height: 601,
+        decoration: BoxDecoration(
+          color: Colors.white, // Background color of the form
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20), // Rounded top-left corner
+            topRight: Radius.circular(20), // Rounded top-right corner
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 3), // Shadow position
+            ),
+          ],
+        ),
+            child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 30),
                   // Email field
                   CustomInputField(
                     labelText: 'Email',
@@ -177,7 +212,14 @@ class _SignInScreenState extends State<SignInScreen> {
                     controller: _passwordController,
                     obscureText: _obscureText,
                     suffixIcon: IconButton(
-                      icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(
+                        _obscureText
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: _obscureText
+                            ? Color(0xFFACB5BB)
+                            : Colors.black,
+                      ),
                       onPressed: () {
                         setState(() {
                           _obscureText = !_obscureText; // Toggle the _obscureText variable
@@ -200,9 +242,10 @@ class _SignInScreenState extends State<SignInScreen> {
                       child: Text(
                         'Forget Password?',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Inter', // Set the font family to 'Inter'
+                          fontWeight: FontWeight.w600,
                           decoration: TextDecoration.underline,
                         ),
                       ),
@@ -214,11 +257,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: ElevatedButton(
                       onPressed: _isButtonEnabled ? _login : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isButtonEnabled ? Colors.black : Color(0xFFC3C1C1), // Background color
+                        backgroundColor: _isButtonEnabled ? Color(0XFF313131) : Color(0xFFC3C1C1), // Background color
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10), // Reduced corner radius
                         ),
-                        minimumSize: Size(double.infinity, 50), // Fixed height
+                        minimumSize: Size(double.infinity, 48), // Fixed height
                       ),
                       child: _isLoading // Show loading indicator if _isLoading is true
                           ? CircularProgressIndicator(
@@ -229,6 +272,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         style: TextStyle(
                           color: Colors.white, // Text color remains white
                           fontSize: 16,
+                          fontFamily: 'Inter', // Set the font family to 'Inter'
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
@@ -247,8 +292,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: Text(
                           'Or Log in with',
                           style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black,
+                            fontSize: 12,
+                            fontFamily: 'Inter', // Set the font family to 'Inter'
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black.withOpacity(0.7), // Black with 70% opacity
                           ),
                         ),
                       ),
@@ -264,40 +311,20 @@ class _SignInScreenState extends State<SignInScreen> {
                   // "Continue with" buttons vertically
                   Column(
                     children: [
-                      OutlinedButton.icon(
+                      SocialMediaButton(
                         onPressed: () {
                           // Add your onPressed code here!
                         },
-                        icon: Icon(Icons.g_translate),
-                        label: Text(
-                          'Continue with Google',
-                          style: TextStyle(color: Colors.black), // Set text color to black
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Color(0xFFD8DADC), width: 3), // Border color and width
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // Reduced corner radius
-                          ),
-                          minimumSize: Size(double.infinity, 50), // Fixed width and height
-                        ),
+                        image: AssetImage('assets/google.png'),
+                        label: 'Continue with Google',
                       ),
                       SizedBox(height: 10),
-                      OutlinedButton.icon(
+                      SocialMediaButton(
                         onPressed: () {
                           // Add your onPressed code here!
                         },
-                        icon: Icon(Icons.facebook),
-                        label: Text(
-                          'Continue with Facebook',
-                          style: TextStyle(color: Colors.black), // Set text color to black
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Color(0xFFD8DADC), width: 3), // Border color and width
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // Reduced corner radius
-                          ),
-                          minimumSize: Size(double.infinity, 50), // Fixed width and height
-                        ),
+                        image: AssetImage('assets/facebook.png'),
+                        label: 'Continue with Facebook',
                       ),
                     ],
                   ),
@@ -310,8 +337,10 @@ class _SignInScreenState extends State<SignInScreen> {
                         Text(
                           'Don\'t have an account? ',
                           style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
+                            fontSize: 14,
+                            color: Colors.black.withOpacity(0.7), // Black with 70% opacity
+                            fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                            fontWeight: FontWeight.w400, // Set font weight to 400
                           ),
                         ),
                         GestureDetector(
@@ -326,9 +355,10 @@ class _SignInScreenState extends State<SignInScreen> {
                             'Sign up',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.black,
+                              color: Colors.black, // Black with 70% opacity
+                              fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                              fontWeight: FontWeight.w500, // Set font weight to 500
                               decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -338,6 +368,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 ],
               ),
             ),
+           ),
           ],
         ),
       ),
