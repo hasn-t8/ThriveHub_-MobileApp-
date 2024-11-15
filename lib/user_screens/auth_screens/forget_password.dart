@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thrive_hub/validators/email_validator.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'verify_account.dart'; // Import the VerifyAccountScreen
 import '../../widgets/input_fields.dart';
@@ -26,6 +27,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     _isEmailEmpty.dispose();
     super.dispose();
   }
+  void _validateEmail() {
+    final email = _emailController.text.trim();
+    final validationError = emailValidator(email);
+    if (validationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(validationError),
+          backgroundColor: Colors.black,
+        ),
+      );
+      return;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,19 +59,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   Text(
                     'Forgot Password',
                     style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                      fontFamily: 'Inter', // Set the font family to 'Inter'
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF333333),
                     ),
                   ),
                   SizedBox(height: 10),
                   Text(
                     'No worries! Enter your email address below and we will send you a code to reset your password.',
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.black,
+                      fontSize: 14,
+                      fontFamily: 'Inter', // Set the font family to 'Inter'
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF475569),
+                      height: 22 / 14, // Line height (line-height divided by font-size)
+                      letterSpacing: 0.01, // Letter spacing
                     ),
                     textAlign: TextAlign.center,
                   ),
+
                 ],
               ),
             ),
@@ -64,6 +86,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             // Email field using CustomInputField
             CustomInputField(
               labelText: 'Email',
+              hintText:
+              'Enter your email', // Pass custom hint text here
               controller: _emailController,
             ),
             Spacer(),
@@ -76,15 +100,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     onPressed: isEmailEmpty
                         ? null
                         : () {
-                      String email = _emailController.text;
-                      if (email.isNotEmpty) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => VerifyAccountScreen(email: email),
+                      String email = _emailController.text.trim();
+
+                      // Validate email before navigating
+                      final validationError = emailValidator(email);
+                      if (validationError != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(validationError),
+                            backgroundColor: Colors.black,
                           ),
                         );
+                        return; // Stop execution if validation fails
                       }
+
+                      // Navigate to VerifyAccountScreen if email is valid
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => VerifyAccountScreen(email: email),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isEmailEmpty ? Color(0xFF6A6A6A) : Color(0xFF313131), // Button background color
@@ -97,7 +133,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       'Continue',
                       style: TextStyle(
                         color: Colors.white, // Text color
-                        fontSize: 16,
+                        fontSize: 14,
+                        fontFamily: 'Inter', // Set the font family to 'Inter'
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),

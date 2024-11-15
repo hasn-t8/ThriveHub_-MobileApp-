@@ -32,7 +32,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
       child: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xFFFCFCFC),
         title: Text(
           title,
           style: TextStyle(color: Colors.black),
@@ -43,7 +43,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         automaticallyImplyLeading: showBackButton,
         leading: showBackButton
             ? IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back_ios),
           onPressed: onBackPressed ?? () => Navigator.of(context).pop(),
           color: Colors.black,
         )
