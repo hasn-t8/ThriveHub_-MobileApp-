@@ -9,11 +9,12 @@ class BusinessSignInScreen extends StatefulWidget {
   const BusinessSignInScreen({super.key});
 
   @override
-_BusinessSignInScreenState createState() => _BusinessSignInScreenState();
+  _BusinessSignInScreenState createState() => _BusinessSignInScreenState();
 }
 
 class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
-  bool _obscureText = true; // Variable to track whether password is visible or not
+  bool _obscureText =
+      true; // Variable to track whether password is visible or not
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isButtonEnabled = false;
@@ -49,7 +50,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
         // MaterialPageRoute(builder: (context) => MainScreen()),
       );
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Login successful'),
         ),
       );
@@ -68,21 +69,27 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
             Container(
               color: Color(0xFFD8DADC),
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 80.0, bottom: 6.0,), // Adjusted padding
+              padding: const EdgeInsets.only(
+                top: 80.0,
+                bottom: 6.0,
+              ), // Adjusted padding
               child: Center(
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center the row
+                      mainAxisAlignment:
+                          MainAxisAlignment.center, // Center the row
                       children: [
-                        Text(
+                        const Text(
                           'Welcome Back!',
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(width: 10), // Add some space between the image and the text
+                        const SizedBox(
+                            width:
+                                10), // Add some space between the image and the text
                         Image.asset(
                           'assets/star.png', // Replace with your image asset
                           width: 49,
@@ -91,7 +98,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                       ],
                     ),
                     SizedBox(height: 10),
-                    Text(
+                    const Text(
                       'We\'re excited to see you again. Log in to continue \nyour journey with us.',
                       style: TextStyle(
                         fontSize: 12,
@@ -103,7 +110,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Form container
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -115,22 +122,25 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     labelText: 'Email',
                     controller: _emailController,
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   // Password field
                   CustomInputField(
                     labelText: 'Password',
                     controller: _passwordController,
                     obscureText: _obscureText,
                     suffixIcon: IconButton(
-                      icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(_obscureText
+                          ? Icons.visibility_off
+                          : Icons.visibility),
                       onPressed: () {
                         setState(() {
-                          _obscureText = !_obscureText; // Toggle the _obscureText variable
+                          _obscureText =
+                              !_obscureText; // Toggle the _obscureText variable
                         });
                       },
                     ),
                   ),
-                  SizedBox(height: 12),
+                  const SizedBox(height: 12),
                   // Forget password
                   Align(
                     alignment: Alignment.centerRight,
@@ -138,7 +148,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                       onTap: () {
                         // Add your onTap code here!
                       },
-                      child: Text(
+                      child: const Text(
                         'Forget Password?',
                         style: TextStyle(
                           fontSize: 14,
@@ -149,19 +159,22 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _isButtonEnabled ? _login : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isButtonEnabled ? Color(0xFF828282) : Color(0xFFC3C1C1), // Background color
+                        backgroundColor: _isButtonEnabled
+                            ? Color(0xFF828282)
+                            : Color(0xFFC3C1C1), // Background color
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10), // Reduced corner radius
+                          borderRadius: BorderRadius.circular(
+                              10), // Reduced corner radius
                         ),
                         minimumSize: Size(double.infinity, 50), // Fixed height
                       ),
-                      child: Text(
+                      child: const Text(
                         'Log In',
                         style: TextStyle(
                           color: Colors.white, // Text color remains white
@@ -171,7 +184,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  Row(
+                  const Row(
                     children: [
                       Expanded(
                         child: Divider(
@@ -180,7 +193,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: Text(
                           'Or Log in with',
                           style: TextStyle(
@@ -197,7 +210,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   // "Continue with" buttons vertically
                   Column(
                     children: [
@@ -206,16 +219,21 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                           // Add your onPressed code here!
                         },
                         icon: Icon(Icons.g_translate),
-                        label: Text(
+                        label: const Text(
                           'Continue with Google',
-                          style: TextStyle(color: Colors.black), // Set text color to black
+                          style: TextStyle(
+                              color: Colors.black), // Set text color to black
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Color(0xFFD8DADC), width: 3), // Border color and width
+                          side: const BorderSide(
+                              color: Color(0xFFD8DADC),
+                              width: 3), // Border color and width
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // Reduced corner radius
+                            borderRadius: BorderRadius.circular(
+                                10), // Reduced corner radius
                           ),
-                          minimumSize: Size(double.infinity, 50), // Fixed width and height
+                          minimumSize: const Size(
+                              double.infinity, 50), // Fixed width and height
                         ),
                       ),
                       SizedBox(height: 10),
@@ -224,16 +242,21 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                           // Add your onPressed code here!
                         },
                         icon: Icon(Icons.facebook),
-                        label: Text(
+                        label: const Text(
                           'Continue with Facebook',
-                          style: TextStyle(color: Colors.black), // Set text color to black
+                          style: TextStyle(
+                              color: Colors.black), // Set text color to black
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Color(0xFFD8DADC), width: 3), // Border color and width
+                          side: const BorderSide(
+                              color: Color(0xFFD8DADC),
+                              width: 3), // Border color and width
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // Reduced corner radius
+                            borderRadius: BorderRadius.circular(
+                                10), // Reduced corner radius
                           ),
-                          minimumSize: Size(double.infinity, 50), // Fixed width and height
+                          minimumSize: const Size(
+                              double.infinity, 50), // Fixed width and height
                         ),
                       ),
                     ],
@@ -244,7 +267,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Don\'t have an account? ',
                           style: TextStyle(
                             fontSize: 12,
@@ -256,10 +279,11 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                             // Add your onTap code here!
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => BusinessSignUpScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => BusinessSignUpScreen()),
                             );
                           },
-                          child: Text(
+                          child: const Text(
                             'Sign up',
                             style: TextStyle(
                               fontSize: 14,
