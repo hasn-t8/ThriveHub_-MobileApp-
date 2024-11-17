@@ -26,9 +26,9 @@ class TabButtons extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 1,
-            offset: Offset(0, 2),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: Offset(0, 1),
           ),
         ],
       ),
@@ -53,6 +53,11 @@ class TabButtons extends StatelessWidget {
                 allText,
                 style: TextStyle(
                   color: isAllSelected ? Colors.black : Colors.grey,
+                  fontFamily:
+                  'Inter', // Set the font family to 'Inter'
+                  fontWeight:
+                  FontWeight.w600, // Set font weight to 600
+                  fontSize: 13,
                 ),
               ),
             ),
@@ -75,6 +80,11 @@ class TabButtons extends StatelessWidget {
                 myReviewsText,
                 style: TextStyle(
                   color: isAllSelected ? Colors.grey : Colors.black,
+                  fontFamily:
+                  'Inter', // Set the font family to 'Inter'
+                  fontWeight:
+                  FontWeight.w600, // Set font weight to 600
+                  fontSize: 13,
                 ),
               ),
             ),

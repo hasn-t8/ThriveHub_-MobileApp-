@@ -6,7 +6,10 @@ class CustomInputField extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final String? hintText;
-  final Color borderColor; // Add a borderColor property
+  final Color borderColor; // Border color for the input field
+  final Color labelColor; // Label text color
+  final double labelFontSize; // Label font size
+  final List<BoxShadow>? boxShadow; // Box shadow for the container
 
   CustomInputField({
     required this.labelText,
@@ -15,6 +18,15 @@ class CustomInputField extends StatelessWidget {
     this.suffixIcon,
     this.hintText,
     this.borderColor = const Color(0xFFEDF1F3), // Default border color
+    this.labelColor = const Color(0xFF000000), // Default label color
+    this.labelFontSize = 12, // Default label font size
+    this.boxShadow = const [
+      BoxShadow(
+        color: Color(0x3DE4E5E7), // Default shadow color
+        offset: Offset(0, 1), // Default shadow offset
+        blurRadius: 2, // Default shadow blur radius
+      ),
+    ], // Default box shadow
   });
 
   @override
@@ -24,11 +36,11 @@ class CustomInputField extends StatelessWidget {
       children: [
         Text(
           labelText,
-          style: const TextStyle(
-            fontSize: 12,
+          style: TextStyle(
+            fontSize: labelFontSize, // Use customizable label font size
             fontFamily: 'Inter',
             fontWeight: FontWeight.w500,
-            color: Color(0xFF000000),
+            color: labelColor, // Use customizable label color
           ),
         ),
         const SizedBox(height: 4),
@@ -38,24 +50,18 @@ class CustomInputField extends StatelessWidget {
               color: borderColor, // Use the customizable border color
               width: 1,
             ),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x3DE4E5E7),
-                offset: Offset(0, 1),
-                blurRadius: 2,
-              ),
-            ],
+            boxShadow: boxShadow, // Use the customizable box shadow
             borderRadius: BorderRadius.circular(10),
             color: Colors.white,
           ),
-          child: TextField( // Use TextField instead of TextFormField
+          child: TextField(
             controller: controller,
             obscureText: obscureText,
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding:
               const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-              hintText: hintText ?? labelText, // Use hintText if provided, fallback to labelText
+              hintText: hintText ?? labelText, // Use hintText if provided
               hintStyle: const TextStyle(
                 fontFamily: 'Inter',
                 fontSize: 14,
@@ -69,7 +75,7 @@ class CustomInputField extends StatelessWidget {
             ),
             style: const TextStyle(fontSize: 14),
           ),
-        )
+        ),
       ],
     );
   }
