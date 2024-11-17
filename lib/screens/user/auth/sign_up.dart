@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
-import 'signin_screen.dart';
+import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
 import '../../../widgets/google_facbook_button.dart';
 import '../../../services/auth_services/signup_service.dart';
