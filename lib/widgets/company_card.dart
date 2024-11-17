@@ -46,17 +46,31 @@ class _CompanyCardState extends State<CompanyCard> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell( // Wrap the entire card with InkWell
+    return InkWell(
       onTap: widget.onTap, // Trigger onTap when the card is clicked
       child: Card(
-        margin: EdgeInsets.all(8.0),
+        margin: EdgeInsets.only(left: 8.0, right: 8.0, top: 6.0),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-          side: BorderSide(color: Colors.grey, width: 1.0),
+          borderRadius: BorderRadius.all(
+            Radius.circular(16.0),
+          ), // Rounded corner only at the top left
         ),
-        color: Colors.white, // Set card background color to white
-        child: Padding(
-          padding: EdgeInsets.all(8.0),
+        child: Container(
+          width: 344.0, // Fixed width
+          height: 238.0, // Fixed height
+          decoration: BoxDecoration(
+            color: Color(0xFFFFFFFF),
+            borderRadius: BorderRadius.circular(16.0),
+            boxShadow: [
+              BoxShadow(
+                color: Color(0x1F000000),
+                blurRadius: 2.0,
+                spreadRadius: 2, // Adjust the blur for softness
+                offset: Offset(0, 2), // Adjust the offset
+              ),
+            ],
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 20.0), // Padding
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -67,18 +81,18 @@ class _CompanyCardState extends State<CompanyCard> {
                     width: 93,
                     height: 93,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0), // Rounded corners for image
+                      borderRadius: BorderRadius.circular(16.0),
                       color: Color(0xFFD9D9D9),
                     ),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0), // Ensures image is clipped with rounded corners
+                      borderRadius: BorderRadius.circular(15.0),
                       child: Image.network(
                         widget.imageUrl,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  SizedBox(width: 8.0),
+                  SizedBox(width: 16.0),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,16 +100,23 @@ class _CompanyCardState extends State<CompanyCard> {
                         Text(
                           widget.title,
                           style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0,
+                            fontSize: 18.0,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w600,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis, // Show "..." if the text overflows
                         ),
                         SizedBox(height: 4.0),
                         Row(
                           children: [
                             Text(
                               widget.rating.toString(),
-                              style: TextStyle(fontSize: 14.0),
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                             Icon(
                               Icons.star,
@@ -105,26 +126,36 @@ class _CompanyCardState extends State<CompanyCard> {
                             SizedBox(width: 4.0),
                             Text(
                               '|',
-                              style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                              style: TextStyle(fontSize: 14.0, color: Color(0xFFA5A5A5)),
                             ),
                             SizedBox(width: 4.0),
                             Text(
                               '${widget.reviews} Reviews',
-                              style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Color(0xFF888686),
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ],
                         ),
-                        SizedBox(height: 8.0),
-                        if (widget.service.isNotEmpty) // Check if the service is not empty
+                        SizedBox(height: 4.0),
+                        if (widget.service.isNotEmpty)
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
+                              border: Border.all(color: Color(0xFFA5A5A5)),
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             child: Text(
                               widget.service,
-                              style: TextStyle(fontSize: 12.0, color: Colors.black),
+                              style: TextStyle(
+                                fontSize: 12.0,
+                                color: Color(0xFF4D4D4D),
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                       ],
@@ -143,11 +174,18 @@ class _CompanyCardState extends State<CompanyCard> {
               Text(
                 widget.description,
                 style: TextStyle(
-                  fontSize: 12.0,
-                  color: Colors.black,
+                  fontFamily: 'Inter',
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w400,
+                  height: 17.5 / 14.0,
+                  color: Color(0xFFA5A5A5),
+                  decoration: TextDecoration.none,
                 ),
+                textAlign: TextAlign.left,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
-              SizedBox(height: 4.0), // Add some space between the description and the "Learn more" text
+              SizedBox(height: 4.0),
               GestureDetector(
                 onTap: () {
                   // Handle the "Learn more" tap
@@ -155,9 +193,13 @@ class _CompanyCardState extends State<CompanyCard> {
                 child: Text(
                   'Learn more',
                   style: TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.grey,
+                    fontSize: 15.0,
+                    color: Color(0xFFA5A5A5),
                     decoration: TextDecoration.underline,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w400,
+                    decorationColor: Color(0xFFA5A5A5),
+                    decorationThickness: 1.5,
                   ),
                 ),
               ),
