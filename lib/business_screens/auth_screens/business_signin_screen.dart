@@ -3,6 +3,7 @@ import '../../core/constants/text_styles.dart';
 import 'business_signup_screen.dart';
 import '../../widgets/input_fields.dart';
 import '../slider_screens/business_slider_screen.dart';
+import 'login_form.dart';
 
 class BusinessSignInScreen extends StatefulWidget {
   const BusinessSignInScreen({super.key});
@@ -68,7 +69,8 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Welcome Back!', style: kHeadingTextStyle), // Constant text style
+                        Text('Welcome Back!',
+                            style: kHeadingTextStyle), // Constant text style
                         const SizedBox(width: 10),
                         Image.asset('assets/star.png', width: 49, height: 49),
                       ],
@@ -84,9 +86,19 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
               ),
             ),
             const SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: LoginForm(
+                onSubmit: () {
+                  // Handle login success here
+                  print('Login Successful');
+                },
+              ),
+            ),
             // Form Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -119,7 +131,8 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                       onTap: () {
                         // Forget password logic
                       },
-                      child: Text('Forget Password?', style: kUnderlineTextStyle),
+                      child:
+                          Text('Forget Password?', style: kUnderlineTextStyle),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -129,9 +142,8 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     child: ElevatedButton(
                       onPressed: _isButtonEnabled ? _login : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _isButtonEnabled
-                            ? kPrimaryColor
-                            : kSecondaryColor,
+                        backgroundColor:
+                            _isButtonEnabled ? kPrimaryColor : kSecondaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -144,12 +156,15 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                   // Or Divider
                   const Row(
                     children: [
-                      Expanded(child: Divider(color: kDividerColor, thickness: 1)),
+                      Expanded(
+                          child: Divider(color: kDividerColor, thickness: 1)),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text('Or Log in with', style: kSubheadingTextStyle),
+                        child:
+                            Text('Or Log in with', style: kSubheadingTextStyle),
                       ),
-                      Expanded(child: Divider(color: kDividerColor, thickness: 1)),
+                      Expanded(
+                          child: Divider(color: kDividerColor, thickness: 1)),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -166,11 +181,13 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                           style: TextStyle(color: kTextColor),
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: kDividerColor, width: 3),
+                          side:
+                              const BorderSide(color: kDividerColor, width: 3),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          minimumSize: const Size(double.infinity, kButtonHeight),
+                          minimumSize:
+                              const Size(double.infinity, kButtonHeight),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -184,11 +201,13 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                           style: TextStyle(color: kTextColor),
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: kDividerColor, width: 3),
+                          side:
+                              const BorderSide(color: kDividerColor, width: 3),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          minimumSize: const Size(double.infinity, kButtonHeight),
+                          minimumSize:
+                              const Size(double.infinity, kButtonHeight),
                         ),
                       ),
                     ],
@@ -199,12 +218,14 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Don\'t have an account? ', style: kSubheadingTextStyle),
+                        const Text('Don\'t have an account? ',
+                            style: kSubheadingTextStyle),
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => BusinessSignUpScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => BusinessSignUpScreen()),
                             );
                           },
                           child: Text('Sign up', style: kUnderlineTextStyle),
