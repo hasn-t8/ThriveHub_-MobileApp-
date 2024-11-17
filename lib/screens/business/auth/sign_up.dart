@@ -1,8 +1,11 @@
 //imports
 import 'package:flutter/material.dart';
+import '../../../core/constants/text_styles.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
 import '../../../widgets/google_facbook_button.dart';
+import '../../../widgets/forms/social_login.dart';
+import '../../../widgets/headers/custom_header_1.dart';
 
 class BusinessSignUpScreen extends StatefulWidget {
   @override
@@ -54,25 +57,14 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
         child: Column(
           children: [
             Container(
-              color: Color(0xFFD8DADC),
+              color: kDividerColor, // Use constant for divider color
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 70.0, bottom: 6.0),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              child: const Center(
+                child: Column(
                   children: [
-                    Text(
-                      'Get Start Now',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Image.asset(
-                      'assets/star.png',
-                      width: 30,
-                      height: 30,
+                    CustomHeaderTh(
+                      headingText: 'Get Start Now',
+                      headingImagePath: 'assets/star.png',
                     ),
                   ],
                 ),
@@ -140,7 +132,7 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                         ),
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Create Account',
                         style: TextStyle(
                           color: Colors.white,
@@ -150,7 +142,7 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-                  Row(
+                  const Row(
                     children: [
                       Expanded(
                         child: Divider(
@@ -159,7 +151,7 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: Text(
                           'Or Register with',
                           style: TextStyle(
@@ -177,31 +169,23 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                     ],
                   ),
                   SizedBox(height: 16),
-                  Column(
-                    children: [
-                      SocialMediaButton(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        icon: Icons.g_translate,
-                        label: 'Continue with Google',
-                      ),
-                      SizedBox(height: 10),
-                      SocialMediaButton(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        icon: Icons.facebook,
-                        label: 'Continue with Facebook',
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: SocialLoginButtons(
+                      onGoogleLogin: () {
+                        print('Google Login Clicked');
+                      },
+                      onFacebookLogin: () {
+                        print('Facebook Login Clicked');
+                      },
+                    ),
                   ),
                   SizedBox(height: 20),
                   Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
+                        const Text(
                           'Already have an account? ',
                           style: TextStyle(
                             fontSize: 14,
@@ -215,7 +199,7 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                               MaterialPageRoute(builder: (context) => BusinessSignInScreen()),
                             );
                           },
-                          child: Text(
+                          child: const Text(
                             'Login',
                             style: TextStyle(
                               fontSize: 14,
@@ -228,7 +212,7 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 100),
                 ],
               ),
             ),
