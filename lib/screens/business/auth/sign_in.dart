@@ -136,7 +136,8 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                                   builder: (context) => BusinessSignUpScreen()),
                             );
                           },
-                          child: Text('Sign up', style: kUnderlineTextStyle),
+                          child:
+                              const Text('Sign up', style: kUnderlineTextStyle),
                         ),
                         const SizedBox(height: 100),
                       ],
