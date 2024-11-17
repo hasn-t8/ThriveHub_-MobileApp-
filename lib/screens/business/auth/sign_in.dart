@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/text_styles.dart';
 import 'sign_up.dart';
-import '../../../widgets/input_fields.dart';
 import '../slider_screens/business_slider_screen.dart';
 import '../../../widgets/forms/login_form.dart';
 import '../../../widgets/forms/social_login.dart';
+import '../../../widgets/headers/custom_header_1.dart';
 
 class BusinessSignInScreen extends StatefulWidget {
   const BusinessSignInScreen({super.key});
@@ -63,24 +63,14 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
             Container(
               color: kDividerColor, // Use constant for divider color
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 80.0, bottom: 6.0),
-              child: Center(
+              child: const Center(
                 child: Column(
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Welcome Back!',
-                            style: kHeadingTextStyle), // Constant text style
-                        const SizedBox(width: 10),
-                        Image.asset('assets/star.png', width: 49, height: 49),
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'We\'re excited to see you again. Log in to continue \nyour journey with us.',
-                      style: kSubheadingTextStyle, // Constant text style
-                      textAlign: TextAlign.center,
+                    CustomHeaderTh(
+                      headingText: 'Welcome Back!',
+                      headingImagePath: 'assets/star.png',
+                      subheadingText:
+                          'We\'re excited to see you again. Log in to continue \nyour journey with us.',
                     ),
                   ],
                 ),
@@ -148,6 +138,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                           },
                           child: Text('Sign up', style: kUnderlineTextStyle),
                         ),
+                        const SizedBox(height: 100),
                       ],
                     ),
                   ),

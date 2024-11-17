@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
 import '../../../widgets/google_facbook_button.dart';
-import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
 class BusinessSignUpScreen extends StatefulWidget {
   @override
@@ -28,7 +27,6 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
           _confirmPasswordController.text.isNotEmpty;
     });
   }
-
 
   @override
   void initState() {
