@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/widgets/google_facbook_button.dart';
-import 'signup_screen.dart';
+import 'sign_up.dart';
 import 'dart:convert';
 import 'create_new_password.dart';
 import 'forget_password.dart';

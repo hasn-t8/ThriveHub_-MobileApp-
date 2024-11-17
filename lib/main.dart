@@ -8,11 +8,11 @@ import 'screens/main_screen.dart';
 import 'screens/welcome_screens/first_screen.dart';
 import 'screens/welcome_screens/welcome_one.dart';
 import 'screens/welcome_screens/welcome_two.dart';
-import 'screens/user/auth_screens/signup_screen.dart';
+import 'screens/user/auth/sign_up.dart';
 import 'screens/user/profile_screens/my_companies_screen.dart';
 import 'screens/user/profile_screens/account_settings_screen.dart';
 import 'screens/user/profile_screens/help_center_screen.dart';
-import 'package:thrive_hub/screens/user/auth_screens/signin_screen.dart'; // Assuming you have a login screen
+import 'package:thrive_hub/screens/user/auth/sign_in.dart'; // Assuming you have a login screen
 import 'package:thrive_hub/screens/business/notification_screens/business_notification_screen.dart';
 import 'package:thrive_hub/screens/business/profile_screens/business_help_center.dart';
 import 'package:thrive_hub/screens/business/profile_screens/business_edit_account.dart';
