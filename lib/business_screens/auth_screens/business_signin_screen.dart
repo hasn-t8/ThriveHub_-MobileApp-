@@ -3,8 +3,8 @@ import '../../core/constants/text_styles.dart';
 import 'business_signup_screen.dart';
 import '../../widgets/input_fields.dart';
 import '../slider_screens/business_slider_screen.dart';
-import 'login_form.dart';
-import 'social_login.dart';
+import '../../widgets/forms/login_form.dart';
+import '../../widgets/forms/social_login.dart';
 
 class BusinessSignInScreen extends StatefulWidget {
   const BusinessSignInScreen({super.key});
