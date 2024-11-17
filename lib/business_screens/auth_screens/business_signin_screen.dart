@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/business_screens/widgets/business_bottom_navigation_bar.dart';
+import '../../shared/constants.dart';
 import 'business_signup_screen.dart';
 import '../../widgets/input_fields.dart';
-import '../slider_screens/business_category_screen.dart';
 import '../slider_screens/business_slider_screen.dart';
 
 class BusinessSignInScreen extends StatefulWidget {
@@ -13,8 +12,7 @@ class BusinessSignInScreen extends StatefulWidget {
 }
 
 class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
-  bool _obscureText =
-      true; // Variable to track whether password is visible or not
+  bool _obscureText = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isButtonEnabled = false;
@@ -41,257 +39,175 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
   }
 
   void _login() {
-    // Simulate a login action
     if (_isButtonEnabled) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SliderScreen()),
-        //remove this
-        // MaterialPageRoute(builder: (context) => MainScreen()),
       );
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successful'),
-        ),
+        const SnackBar(content: Text('Login successful')),
       );
-      // Navigate to the main screen or perform other actions
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4F4F4), // Set the background color
+      backgroundColor: kBackgroundColor, // Use constant for background color
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Top section with the first background color and heading
+            // Top Section
             Container(
-              color: Color(0xFFD8DADC),
+              color: kDividerColor, // Use constant for divider color
               width: double.infinity,
-              padding: const EdgeInsets.only(
-                top: 80.0,
-                bottom: 6.0,
-              ), // Adjusted padding
+              padding: const EdgeInsets.only(top: 80.0, bottom: 6.0),
               child: Center(
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center, // Center the row
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Welcome Back!',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(
-                            width:
-                                10), // Add some space between the image and the text
-                        Image.asset(
-                          'assets/star.png', // Replace with your image asset
-                          width: 49,
-                          height: 49,
-                        ),
+                        Text('Welcome Back!', style: kHeadingTextStyle), // Constant text style
+                        const SizedBox(width: 10),
+                        Image.asset('assets/star.png', width: 49, height: 49),
                       ],
                     ),
-                    SizedBox(height: 10),
-                    const Text(
+                    const SizedBox(height: 10),
+                    Text(
                       'We\'re excited to see you again. Log in to continue \nyour journey with us.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center, // Center the text
+                      style: kSubheadingTextStyle, // Constant text style
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 20),
-            // Form container
+            // Form Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Email field
+                  // Email Field
                   CustomInputField(
                     labelText: 'Email',
                     controller: _emailController,
                   ),
                   const SizedBox(height: 12),
-                  // Password field
+                  // Password Field
                   CustomInputField(
                     labelText: 'Password',
                     controller: _passwordController,
                     obscureText: _obscureText,
                     suffixIcon: IconButton(
-                      icon: Icon(_obscureText
-                          ? Icons.visibility_off
-                          : Icons.visibility),
+                      icon: Icon(
+                        _obscureText ? Icons.visibility_off : Icons.visibility,
+                      ),
                       onPressed: () {
                         setState(() {
-                          _obscureText =
-                              !_obscureText; // Toggle the _obscureText variable
+                          _obscureText = !_obscureText;
                         });
                       },
                     ),
                   ),
                   const SizedBox(height: 12),
-                  // Forget password
                   Align(
                     alignment: Alignment.centerRight,
                     child: GestureDetector(
                       onTap: () {
-                        // Add your onTap code here!
+                        // Forget password logic
                       },
-                      child: const Text(
-                        'Forget Password?',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
+                      child: Text('Forget Password?', style: kUnderlineTextStyle),
                     ),
                   ),
                   const SizedBox(height: 24),
+                  // Log In Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _isButtonEnabled ? _login : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: _isButtonEnabled
-                            ? Color(0xFF828282)
-                            : Color(0xFFC3C1C1), // Background color
+                            ? kPrimaryColor
+                            : kSecondaryColor,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              10), // Reduced corner radius
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        minimumSize: Size(double.infinity, 50), // Fixed height
+                        minimumSize: const Size(double.infinity, kButtonHeight),
                       ),
-                      child: const Text(
-                        'Log In',
-                        style: TextStyle(
-                          color: Colors.white, // Text color remains white
-                          fontSize: 16,
-                        ),
-                      ),
+                      child: Text('Log In', style: kButtonTextStyle),
                     ),
                   ),
-                  SizedBox(height: 16),
-                  const Row(
+                  const SizedBox(height: 16),
+                  // Or Divider
+                  Row(
                     children: [
-                      Expanded(
-                        child: Divider(
-                          color: Color(0xFFD9D9D9),
-                          thickness: 1,
-                        ),
-                      ),
-                      Padding(
+                      Expanded(child: Divider(color: kDividerColor, thickness: 1)),
+                      const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'Or Log in with',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black,
-                          ),
-                        ),
+                        child: Text('Or Log in with', style: kSubheadingTextStyle),
                       ),
-                      Expanded(
-                        child: Divider(
-                          color: Color(0xFFD9D9D9),
-                          thickness: 1,
-                        ),
-                      ),
+                      Expanded(child: Divider(color: kDividerColor, thickness: 1)),
                     ],
                   ),
                   const SizedBox(height: 16),
-                  // "Continue with" buttons vertically
+                  // Social Login Buttons
                   Column(
                     children: [
                       OutlinedButton.icon(
                         onPressed: () {
-                          // Add your onPressed code here!
+                          // Google login logic
                         },
-                        icon: Icon(Icons.g_translate),
+                        icon: const Icon(Icons.g_translate),
                         label: const Text(
                           'Continue with Google',
-                          style: TextStyle(
-                              color: Colors.black), // Set text color to black
+                          style: TextStyle(color: kTextColor),
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                              color: Color(0xFFD8DADC),
-                              width: 3), // Border color and width
+                          side: const BorderSide(color: kDividerColor, width: 3),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                10), // Reduced corner radius
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          minimumSize: const Size(
-                              double.infinity, 50), // Fixed width and height
+                          minimumSize: const Size(double.infinity, kButtonHeight),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       OutlinedButton.icon(
                         onPressed: () {
-                          // Add your onPressed code here!
+                          // Facebook login logic
                         },
-                        icon: Icon(Icons.facebook),
+                        icon: const Icon(Icons.facebook),
                         label: const Text(
                           'Continue with Facebook',
-                          style: TextStyle(
-                              color: Colors.black), // Set text color to black
+                          style: TextStyle(color: kTextColor),
                         ),
                         style: OutlinedButton.styleFrom(
-                          side: const BorderSide(
-                              color: Color(0xFFD8DADC),
-                              width: 3), // Border color and width
+                          side: const BorderSide(color: kDividerColor, width: 3),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                                10), // Reduced corner radius
+                            borderRadius: BorderRadius.circular(10),
                           ),
-                          minimumSize: const Size(
-                              double.infinity, 50), // Fixed width and height
+                          minimumSize: const Size(double.infinity, kButtonHeight),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 80),
-                  // "Don't have an account" row
+                  const SizedBox(height: 80),
+                  // Sign Up Prompt
                   Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Don\'t have an account? ',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                        ),
+                        const Text('Don\'t have an account? ', style: kSubheadingTextStyle),
                         GestureDetector(
                           onTap: () {
-                            // Add your onTap code here!
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (context) => BusinessSignUpScreen()),
+                              MaterialPageRoute(builder: (context) => BusinessSignUpScreen()),
                             );
                           },
-                          child: const Text(
-                            'Sign up',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: Text('Sign up', style: kUnderlineTextStyle),
                         ),
                       ],
                     ),
