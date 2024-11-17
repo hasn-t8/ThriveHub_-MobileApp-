@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/text_styles.dart';
-import 'business_signup_screen.dart';
+import 'sign_up.dart';
 import '../../widgets/input_fields.dart';
 import 'slider_screens/business_slider_screen.dart';
 import '../../widgets/forms/login_form.dart';
