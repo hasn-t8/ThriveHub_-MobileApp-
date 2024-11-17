@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:thrive_hub/widgets/feedback_bottom_sheet.dart';
 import 'package:thrive_hub/widgets/rating_card.dart';
 import 'package:thrive_hub/widgets/service_card.dart';
@@ -29,6 +30,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
       'reviewText':
       'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'likes': 43,
+      'isLiked': false,
     },
   );
 
@@ -156,13 +158,25 @@ class _ServicesScreenState extends State<ServicesScreen> {
                         reviewerName: review['reviewerName'],
                         reviewText: review['reviewText'],
                         likes: review['likes'],
+                        isLiked:review['isLiked'],
+                        onTap: () {
+                          print('ReviewCard tapped: ${review['title']}');
+                        },
                         onLike: () {
                           setState(() {
-                            review['likes'] += 1;
+                            if (review['isLiked']) {
+                              review['likes'] -= 1;
+                            } else {
+                              review['likes'] += 1;
+                            }
+                            review['isLiked'] = !review['isLiked'];
                           });
                         },
                         onShare: () {
-                          print('Share clicked for ${review['title']}');
+                          Share.share(
+                            'Check out this review on Thrive Hub:\n\n"${review['reviewText']}"\nRead more at: https://example.com/review/${review['title']}',
+                            subject: 'Review of ${review['title']}',
+                          );
                         },
                       );
                     },

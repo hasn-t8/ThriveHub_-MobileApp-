@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/categories.dart';
 import 'package:thrive_hub/widgets/top_bar.dart'; // Import your new HeaderWidget file
@@ -130,10 +131,15 @@ class _SearchScreenState extends State<SearchScreen> {
                             reviewText: 'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                             likes: 43,
                             showShareButton: false,
+                            isLiked:false,
+                            onTap: () {
+                              print('ReviewCard tapped');
+                            },
                             onLike: () {
-                              setState(() {
-                                // Handle like action here
-                              });
+                              Share.share(
+                                'Check out this review on Thrive Hub:\n\n""\nRead more at: https://example.com/review}',
+                                subject: 'Review of ',
+                              );
                             },
                             onShare: () {
                               // Handle share action here

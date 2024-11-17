@@ -1,4 +1,3 @@
-// custom_app_bar.dart
 import 'package:flutter/material.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -9,6 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showConfirmationButtons; // Whether to show Yes/No buttons
   final VoidCallback? onYesPressed; // Callback for Yes button press
   final VoidCallback? onNoPressed; // Callback for No button press
+  final VoidCallback? onAddPressed; // Callback for the + icon press
 
   CustomAppBar({
     required this.title,
@@ -18,6 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showConfirmationButtons = false,
     this.onYesPressed,
     this.onNoPressed,
+    this.onAddPressed, // Receive the callback for the + icon
   });
 
   @override
@@ -53,29 +54,36 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           color: Colors.black,
         )
             : null,
-        actions: showConfirmationButtons
-            ? [
-          TextButton(
-            onPressed: onYesPressed,
-            child: Text(
-              'Yes',
-              style: TextStyle(color: Colors.green),
+        actions: [
+          if (showConfirmationButtons)
+            TextButton(
+              onPressed: onYesPressed,
+              child: Text(
+                'Yes',
+                style: TextStyle(color: Colors.green),
+              ),
             ),
-          ),
-
-          
-          TextButton(
-            onPressed: onNoPressed,
-            child: Text(
-              'No',
-              style: TextStyle(color: Colors.red),
+          if (showConfirmationButtons)
+            TextButton(
+              onPressed: onNoPressed,
+              child: Text(
+                'No',
+                style: TextStyle(color: Colors.red),
+              ),
             ),
-          ),
-        ]
-            : [],
+          if (onAddPressed != null) // Conditionally show the + icon
+            IconButton(
+              icon: Icon(
+                Icons.add,
+                size: 28, // Size of the + icon
+                color: Colors.black,
+              ),
+              onPressed: onAddPressed,
+            ),
+          SizedBox(width: 8), // You can adjust the width as needed
+        ],
       ),
     );
-
   }
 
   @override
