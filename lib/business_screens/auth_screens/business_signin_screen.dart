@@ -102,57 +102,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Email Field
-                  CustomInputField(
-                    labelText: 'Email',
-                    controller: _emailController,
-                  ),
-                  const SizedBox(height: 12),
-                  // Password Field
-                  CustomInputField(
-                    labelText: 'Password',
-                    controller: _passwordController,
-                    obscureText: _obscureText,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        // Forget password logic
-                      },
-                      child:
-                          Text('Forget Password?', style: kUnderlineTextStyle),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  // Log In Button
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isButtonEnabled ? _login : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            _isButtonEnabled ? kPrimaryColor : kSecondaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        minimumSize: const Size(double.infinity, kButtonHeight),
-                      ),
-                      child: Text('Log In', style: kButtonTextStyle),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 40),
                   // Or Divider
                   const Row(
                     children: [
@@ -167,7 +117,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                           child: Divider(color: kDividerColor, thickness: 1)),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 40),
                   // Social Login Buttons
                   Column(
                     children: [
