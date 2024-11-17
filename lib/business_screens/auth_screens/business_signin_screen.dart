@@ -4,6 +4,7 @@ import 'business_signup_screen.dart';
 import '../../widgets/input_fields.dart';
 import '../slider_screens/business_slider_screen.dart';
 import 'login_form.dart';
+import 'social_login.dart';
 
 class BusinessSignInScreen extends StatefulWidget {
   const BusinessSignInScreen({super.key});
@@ -118,49 +119,16 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     ],
                   ),
                   const SizedBox(height: 40),
-                  // Social Login Buttons
-                  Column(
-                    children: [
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          // Google login logic
-                        },
-                        icon: const Icon(Icons.g_translate),
-                        label: const Text(
-                          'Continue with Google',
-                          style: TextStyle(color: kTextColor),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side:
-                              const BorderSide(color: kDividerColor, width: 3),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          minimumSize:
-                              const Size(double.infinity, kButtonHeight),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          // Facebook login logic
-                        },
-                        icon: const Icon(Icons.facebook),
-                        label: const Text(
-                          'Continue with Facebook',
-                          style: TextStyle(color: kTextColor),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side:
-                              const BorderSide(color: kDividerColor, width: 3),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          minimumSize:
-                              const Size(double.infinity, kButtonHeight),
-                        ),
-                      ),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: SocialLoginButtons(
+                      onGoogleLogin: () {
+                        print('Google Login Clicked');
+                      },
+                      onFacebookLogin: () {
+                        print('Facebook Login Clicked');
+                      },
+                    ),
                   ),
                   const SizedBox(height: 80),
                   // Sign Up Prompt
