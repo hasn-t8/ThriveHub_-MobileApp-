@@ -120,7 +120,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 80),
+                  // const SizedBox(height: 20),
                   // Sign Up Prompt
                   Center(
                     child: Row(
@@ -130,11 +130,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                             style: kSubheadingTextStyle),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BusinessSignUpScreen()),
-                            );
+                            Navigator.pushNamed(context, '/business-sign-up'); // Navigate to signup
                           },
                           child:
                               const Text('Sign up', style: kUnderlineTextStyle),

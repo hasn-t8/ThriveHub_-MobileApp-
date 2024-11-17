@@ -194,10 +194,11 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => BusinessSignInScreen()),
-                            );
+                              Navigator.pushNamed(context, '/business-sign-in'); // Navigate to signup
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => BusinessSignInScreen()),
+                            // );
                           },
                           child: const Text(
                             'Login',
