@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/constants.dart';
+import '../../core/constants/text_styles.dart';
 import 'business_signup_screen.dart';
 import '../../widgets/input_fields.dart';
 import '../slider_screens/business_slider_screen.dart';
