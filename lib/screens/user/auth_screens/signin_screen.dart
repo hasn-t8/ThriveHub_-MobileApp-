@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thrive_hub/validators/email_validator.dart';
+import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/widgets/google_facbook_button.dart';
 import 'signup_screen.dart';
 import 'dart:convert';

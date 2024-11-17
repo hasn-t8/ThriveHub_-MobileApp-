@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import for date formatting
 import 'package:thrive_hub/widgets/appbar.dart';
 import '../../../widgets/input_fields.dart';
-import 'package:thrive_hub/validators/email_validator.dart'; // Import the file where emailValidator is defined.
+import 'package:thrive_hub/core/utils/email_validator.dart'; // Import the file where emailValidator is defined.
 
 class AccountSettingsScreen extends StatefulWidget {
   @override
