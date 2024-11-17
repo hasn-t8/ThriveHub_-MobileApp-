@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/business_screens/widgets/business_bottom_navigation_bar.dart';
+import '../../core/constants/text_styles.dart';
 import 'business_signup_screen.dart';
 import '../../widgets/input_fields.dart';
-import '../slider_screens/business_category_screen.dart';
 import '../slider_screens/business_slider_screen.dart';
+import 'login_form.dart';
+import 'social_login.dart';
 
 class BusinessSignInScreen extends StatefulWidget {
   const BusinessSignInScreen({super.key});
 
   @override
-_BusinessSignInScreenState createState() => _BusinessSignInScreenState();
+  _BusinessSignInScreenState createState() => _BusinessSignInScreenState();
 }
 
 class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
-  bool _obscureText = true; // Variable to track whether password is visible or not
+  bool _obscureText = true;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isButtonEnabled = false;
@@ -40,234 +41,112 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
   }
 
   void _login() {
-    // Simulate a login action
     if (_isButtonEnabled) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => SliderScreen()),
-        //remove this
-        // MaterialPageRoute(builder: (context) => MainScreen()),
       );
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Login successful'),
-        ),
+        const SnackBar(content: Text('Login successful')),
       );
-      // Navigate to the main screen or perform other actions
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF4F4F4), // Set the background color
+      backgroundColor: kBackgroundColor, // Use constant for background color
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // Top section with the first background color and heading
+            // Top Section
             Container(
-              color: Color(0xFFD8DADC),
+              color: kDividerColor, // Use constant for divider color
               width: double.infinity,
-              padding: const EdgeInsets.only(top: 80.0, bottom: 6.0,), // Adjusted padding
+              padding: const EdgeInsets.only(top: 80.0, bottom: 6.0),
               child: Center(
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center the row
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Welcome Back!',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(width: 10), // Add some space between the image and the text
-                        Image.asset(
-                          'assets/star.png', // Replace with your image asset
-                          width: 49,
-                          height: 49,
-                        ),
+                        Text('Welcome Back!',
+                            style: kHeadingTextStyle), // Constant text style
+                        const SizedBox(width: 10),
+                        Image.asset('assets/star.png', width: 49, height: 49),
                       ],
                     ),
-                    SizedBox(height: 10),
-                    Text(
+                    const SizedBox(height: 10),
+                    const Text(
                       'We\'re excited to see you again. Log in to continue \nyour journey with us.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center, // Center the text
+                      style: kSubheadingTextStyle, // Constant text style
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            // Form container
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: LoginForm(
+                onSubmit: () {
+                  // Handle login success here
+                  print('Login Successful');
+                },
+              ),
+            ),
+            // Form Section
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: kPaddingHorizontal),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Email field
-                  CustomInputField(
-                    labelText: 'Email',
-                    controller: _emailController,
-                  ),
-                  SizedBox(height: 12),
-                  // Password field
-                  CustomInputField(
-                    labelText: 'Password',
-                    controller: _passwordController,
-                    obscureText: _obscureText,
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscureText ? Icons.visibility_off : Icons.visibility),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText; // Toggle the _obscureText variable
-                        });
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  // Forget password
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        // Add your onTap code here!
-                      },
-                      child: Text(
-                        'Forget Password?',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isButtonEnabled ? _login : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: _isButtonEnabled ? Color(0xFF828282) : Color(0xFFC3C1C1), // Background color
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10), // Reduced corner radius
-                        ),
-                        minimumSize: Size(double.infinity, 50), // Fixed height
-                      ),
-                      child: Text(
-                        'Log In',
-                        style: TextStyle(
-                          color: Colors.white, // Text color remains white
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 16),
-                  Row(
+                  const SizedBox(height: 40),
+                  // Or Divider
+                  const Row(
                     children: [
                       Expanded(
-                        child: Divider(
-                          color: Color(0xFFD9D9D9),
-                          thickness: 1,
-                        ),
-                      ),
+                          child: Divider(color: kDividerColor, thickness: 1)),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'Or Log in with',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black,
-                          ),
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        child:
+                            Text('Or Log in with', style: kSubheadingTextStyle),
                       ),
                       Expanded(
-                        child: Divider(
-                          color: Color(0xFFD9D9D9),
-                          thickness: 1,
-                        ),
-                      ),
+                          child: Divider(color: kDividerColor, thickness: 1)),
                     ],
                   ),
-                  SizedBox(height: 16),
-                  // "Continue with" buttons vertically
-                  Column(
-                    children: [
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        icon: Icon(Icons.g_translate),
-                        label: Text(
-                          'Continue with Google',
-                          style: TextStyle(color: Colors.black), // Set text color to black
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Color(0xFFD8DADC), width: 3), // Border color and width
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // Reduced corner radius
-                          ),
-                          minimumSize: Size(double.infinity, 50), // Fixed width and height
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      OutlinedButton.icon(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        icon: Icon(Icons.facebook),
-                        label: Text(
-                          'Continue with Facebook',
-                          style: TextStyle(color: Colors.black), // Set text color to black
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Color(0xFFD8DADC), width: 3), // Border color and width
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10), // Reduced corner radius
-                          ),
-                          minimumSize: Size(double.infinity, 50), // Fixed width and height
-                        ),
-                      ),
-                    ],
+                  const SizedBox(height: 40),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: SocialLoginButtons(
+                      onGoogleLogin: () {
+                        print('Google Login Clicked');
+                      },
+                      onFacebookLogin: () {
+                        print('Facebook Login Clicked');
+                      },
+                    ),
                   ),
-                  SizedBox(height: 80),
-                  // "Don't have an account" row
+                  const SizedBox(height: 80),
+                  // Sign Up Prompt
                   Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Don\'t have an account? ',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                        ),
+                        const Text('Don\'t have an account? ',
+                            style: kSubheadingTextStyle),
                         GestureDetector(
                           onTap: () {
-                            // Add your onTap code here!
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => BusinessSignUpScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => BusinessSignUpScreen()),
                             );
                           },
-                          child: Text(
-                            'Sign up',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black,
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: Text('Sign up', style: kUnderlineTextStyle),
                         ),
                       ],
                     ),
