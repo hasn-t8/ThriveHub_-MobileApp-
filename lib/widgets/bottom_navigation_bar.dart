@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/user_screens/search_screens/search_screen.dart';
-import 'package:thrive_hub/user_screens/reviews_screens/review_screen.dart';
-import 'package:thrive_hub/user_screens/notifications_screens/notification_screen.dart';
-import 'package:thrive_hub/user_screens/profile_screens/profile_screen.dart';
-import 'package:thrive_hub/user_screens/search_screens/sub_categories_screen.dart';
+import 'package:thrive_hub/screens/user/search_screens/search_screen.dart';
+import 'package:thrive_hub/screens/user/reviews_screens/review_screen.dart';
+import 'package:thrive_hub/screens/user/notifications_screens/notification_screen.dart';
+import 'package:thrive_hub/screens/user/profile_screens/profile_screen.dart';
+import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
 
 //
 // class MainScreen extends StatefulWidget {

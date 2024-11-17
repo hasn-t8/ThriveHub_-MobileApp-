@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/user_screens/reviews_screens/create_review_screen.dart';
+import 'package:thrive_hub/screens/user/reviews_screens/create_review_screen.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/tab_buttons.dart';
 import 'package:thrive_hub/widgets/filter_sort_buttons.dart'; // Import the new FilterSortButtons widget
 
-class ReviewScreen extends StatefulWidget {
+class BusinessReviewScreen extends StatefulWidget {
   @override
-  _ReviewScreenState createState() => _ReviewScreenState();
+  _BusinessReviewScreenState createState() => _BusinessReviewScreenState();
 }
 
-class _ReviewScreenState extends State<ReviewScreen> {
+class _BusinessReviewScreenState extends State<BusinessReviewScreen> {
   bool isSavedSelected = true; // Initially, Saved button is selected
 
   // Sample data for reviews
@@ -26,7 +26,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
       'reviewText': 'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
       'likes': 43,
     },
-
   );
 
   final List<Map<String, dynamic>> myReviews = []; // Empty list for my reviews
@@ -38,7 +37,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Reviews',
-        showBackButton: true,
+        showBackButton: false,
         centerTitle: true,
       ),
       backgroundColor: Color(0xFFF1F3F4), // Set background color of the screen

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 import 'welcome_two.dart';
-import 'package:thrive_hub/business_screens/auth_screens/business_signin_screen.dart';
+import 'package:thrive_hub/screens/business/sign_in.dart';
 
 
 class Welcome1Screen extends StatelessWidget {

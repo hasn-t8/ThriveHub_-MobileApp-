@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/user_screens/search_screens/all_categories.dart';
+import 'package:thrive_hub/screens/user/search_screens/all_categories.dart';
 import 'package:thrive_hub/widgets/sub_categories.dart';
 import 'package:thrive_hub/widgets/search_bar.dart'; // Adjust the import path for your reusable search bar
 import 'package:thrive_hub/widgets/categories_top_bar.dart'; // Import CategoriesTopBar

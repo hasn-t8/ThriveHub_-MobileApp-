@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/categories.dart';
 import 'package:thrive_hub/widgets/top_bar.dart'; // Import your new HeaderWidget file
-import 'package:thrive_hub/user_screens/search_screens/sub_categories_screen.dart';
+import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
 
 
 class SearchScreen extends StatefulWidget {
