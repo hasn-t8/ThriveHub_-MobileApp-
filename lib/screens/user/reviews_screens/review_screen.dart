@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/user_screens/reviews_screens/create_review_screen.dart';
+import 'package:thrive_hub/screens/user/reviews_screens/create_review_screen.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/tab_buttons.dart';

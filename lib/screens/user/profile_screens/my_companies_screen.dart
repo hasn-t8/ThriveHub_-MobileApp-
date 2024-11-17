@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/company_card.dart'; // Import the CompanyCard widget
 import 'package:thrive_hub/widgets/appbar.dart';
-import '../../widgets/tab_buttons.dart';
+import '../../../widgets/tab_buttons.dart';
 
 class MyCompaniesScreen extends StatefulWidget {
   @override

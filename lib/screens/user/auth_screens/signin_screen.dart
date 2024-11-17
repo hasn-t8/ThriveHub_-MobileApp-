@@ -7,8 +7,8 @@ import 'dart:convert';
 import 'create_new_password.dart';
 import 'forget_password.dart';
 import 'verify_account.dart';
-import '../../widgets/input_fields.dart';
-import '../../services/auth_services/signin_service.dart'; // Import SignInService
+import '../../../widgets/input_fields.dart';
+import '../../../services/auth_services/signin_service.dart'; // Import SignInService
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
 class SignInScreen extends StatefulWidget {

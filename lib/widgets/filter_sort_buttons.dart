@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:thrive_hub/user_screens/search_screens/filter_screen.dart';
+import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
 
 class FilterSortButtons extends StatefulWidget {
   final VoidCallback onFilter;
