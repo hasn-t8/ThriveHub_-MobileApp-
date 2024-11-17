@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../shared/constants.dart';
+import '../../core/constants.dart';
 import 'business_signup_screen.dart';
 import '../../widgets/input_fields.dart';
 import '../slider_screens/business_slider_screen.dart';
@@ -74,7 +74,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Text(
+                    const Text(
                       'We\'re excited to see you again. Log in to continue \nyour journey with us.',
                       style: kSubheadingTextStyle, // Constant text style
                       textAlign: TextAlign.center,
@@ -142,10 +142,10 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                   ),
                   const SizedBox(height: 16),
                   // Or Divider
-                  Row(
+                  const Row(
                     children: [
                       Expanded(child: Divider(color: kDividerColor, thickness: 1)),
-                      const Padding(
+                      Padding(
                         padding: EdgeInsets.symmetric(horizontal: 10.0),
                         child: Text('Or Log in with', style: kSubheadingTextStyle),
                       ),
