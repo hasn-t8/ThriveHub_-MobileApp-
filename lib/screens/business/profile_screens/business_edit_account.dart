@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/business_screens/widgets/edit_account_form.dart';
+import 'package:thrive_hub/screens/business/widgets/edit_account_form.dart';
 import 'package:thrive_hub/widgets/alert_box.dart';
 
 

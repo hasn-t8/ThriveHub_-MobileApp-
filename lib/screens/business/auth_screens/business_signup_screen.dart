@@ -1,8 +1,8 @@
 //imports
 import 'package:flutter/material.dart';
 import 'business_signin_screen.dart';
-import '../../widgets/input_fields.dart';
-import '../../widgets/google_facbook_button.dart';
+import '../../../widgets/input_fields.dart';
+import '../../../widgets/google_facbook_button.dart';
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
 class BusinessSignUpScreen extends StatefulWidget {
