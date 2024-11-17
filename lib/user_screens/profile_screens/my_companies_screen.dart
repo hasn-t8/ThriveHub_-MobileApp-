@@ -16,7 +16,7 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
     10,
         (index) => {
       'imageUrl': 'https://via.placeholder.com/93',
-      'title': 'Saved Company $index',
+      'title': 'BlueHost $index',
       'rating': 4.8,
       'reviews': 4123,
       'service': 'Web Hosting Services',
@@ -29,11 +29,11 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
     10,
         (index) => {
       'imageUrl': 'https://via.placeholder.com/93',
-      'title': 'History Company $index',
+      'title': 'HostGator $index',
       'rating': 4.5,
       'reviews': 3000,
       'service': 'Cloud Services',
-      'description': 'Description for history company $index',
+      'description': 'Our goal is to help you achieve a balanced lifestyle, improve your overall health, and enhance your quality of life. $index',
       'isBookmarked': false,
     },
   );
@@ -44,48 +44,55 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(title: 'My Companies', showBackButton: true, centerTitle: true),
-      body: Column(
-        children: [
-          SizedBox(height: 10.0), // Space between AppBar and buttons
-          TabButtons(
-            isAllSelected: isSavedSelected,
-            onSelectAll: () {
-              setState(() {
-                isSavedSelected = true;
-              });
-            },
-            onSelectMyReviews: () {
-              setState(() {
-                isSavedSelected = false;
-              });
-            },
-            allText: 'Saved',
-            myReviewsText: 'History',
-          ),
-          SizedBox(height: 8.0), // Space between buttons and cards
-          Expanded(
-            child: ListView.builder(
-              itemCount: companies.length, // Use dynamic data length
-              itemBuilder: (context, index) {
-                final company = companies[index];
-                return CompanyCard(
-                  imageUrl: company['imageUrl'],
-                  title: company['title'],
-                  rating: company['rating'],
-                  reviews: company['reviews'],
-                  service: company['service'],
-                  description: company['description'],
-                  isBookmarked: company['isBookmarked'],
-                  onBookmarkToggle: () {
-                    setState(() {
-                      company['isBookmarked'] = !company['isBookmarked'];
-                    });
-                  },
-                );
+      body: Container(
+        color: Color(0xFFFFFFFF), // Set the background color to white
+        child: Column(
+          children: [
+            SizedBox(height: 10.0), // Space between AppBar and buttons
+            TabButtons(
+              isAllSelected: isSavedSelected,
+              onSelectAll: () {
+                setState(() {
+                  isSavedSelected = true;
+                });
               },
+              onSelectMyReviews: () {
+                setState(() {
+                  isSavedSelected = false;
+                });
+              },
+              allText: 'Saved',
+              myReviewsText: 'History',
             ),
-          ),
-        ],
+            SizedBox(height: 8.0), // Space between buttons and cards
+            Expanded(
+              child: ListView.builder(
+                itemCount: companies.length, // Use dynamic data length
+                itemBuilder: (context, index) {
+                  final company = companies[index];
+                  return CompanyCard(
+                    imageUrl: company['imageUrl'],
+                    title: company['title'],
+                    rating: company['rating'],
+                    reviews: company['reviews'],
+                    service: company['service'],
+                    description: company['description'],
+                    isBookmarked: company['isBookmarked'],
+                    onBookmarkToggle: () {
+                      setState(() {
+                        company['isBookmarked'] = !company['isBookmarked'];
+                      });
+                    },
+                    onTap: () {
+                      print('CompanyCard tapped: ${company['title']}');
+                      // Navigate to another screen or perform an action
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
