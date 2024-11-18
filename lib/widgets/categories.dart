@@ -15,7 +15,7 @@ class CategoriesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 380,
+      height: 370,
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -35,12 +35,12 @@ class CategoriesWidget extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 color: isSelected ? Color(0xFFBFBFBF) : Colors.white,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
                     color: Color(0x1F000000), // Equivalent to #0000001F
                     offset: Offset(0, 1),
-                    blurRadius: 30,
+                    blurRadius: 10,
                     spreadRadius: 0,
                   ),
                 ],
@@ -54,17 +54,23 @@ class CategoriesWidget extends StatelessWidget {
                     Text(
                       category['title'] ?? '',
                       style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        color: isSelected ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Inter',
+                        fontSize: 15,
+                        height: 20/15,
+                        letterSpacing: -0.24,
+                        color: isSelected ? Colors.white : Color(0xFF1C1B1F),
                       ),
                     ),
                     SizedBox(height: 4),
                     Text(
                       category['description'] ?? '',
                       style: TextStyle(
-
                         fontSize: 10,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w400,
+                        height: 12.5/10,
+                        letterSpacing: -0.24,
                         color: isSelected ? Colors.white : Colors.grey,
                       ),
                     ),

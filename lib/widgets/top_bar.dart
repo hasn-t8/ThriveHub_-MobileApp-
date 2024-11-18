@@ -16,7 +16,7 @@ class HeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 16),
+      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 16),
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +26,7 @@ class HeaderWidget extends StatelessWidget {
               heading!,
               style: TextStyle(
                 fontFamily: 'SF Pro Display',
-                fontSize: 24,
+                fontSize: 34,
                 fontWeight: FontWeight.w700,
                 height: 1.23,
                 letterSpacing: 0.374,
@@ -43,9 +43,9 @@ class HeaderWidget extends StatelessWidget {
                   filled: true,
                   fillColor: Color(0xFFE9E9EA),
                   hintText: 'Search',
-                  hintStyle: TextStyle(color: Color(0xFFBFBFBF)),
-                  prefixIcon: Icon(Icons.search, color: Color(0xFFBFBFBF)),
-                  suffixIcon: Icon(Icons.mic, color: Color(0xFFBFBFBF)),
+                  hintStyle: TextStyle(color: Color(0xFF3C3C43).withOpacity(0.6)),
+                  prefixIcon: Icon(Icons.search, color: Color(0xFF3C3C43).withOpacity(0.6)),
+                  suffixIcon: Icon(Icons.mic, color: Color(0xFF3C3C43).withOpacity(0.6)),
                   contentPadding: EdgeInsets.symmetric(vertical: 10),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -54,7 +54,8 @@ class HeaderWidget extends StatelessWidget {
                 ),
               ),
             ),
-          if (showSearchBar) SizedBox(height: 9),
+          if (showSearchBar)
+            SizedBox(height: 9),
           if (showLine)
             Container(
               height: 1,

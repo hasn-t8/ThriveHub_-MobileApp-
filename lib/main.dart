@@ -1,5 +1,6 @@
 // imports
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
@@ -25,6 +26,13 @@ Future<void> main() async {
 // Debug prints
   print('Current directory: ${Directory.current.path}');
   print('Does .env file exist? ${File('.env').existsSync()}');
+
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.white, // Status bar color
+    statusBarIconBrightness: Brightness.dark, // For Android: dark icons
+    statusBarBrightness: Brightness.light, // For iOS: dark icons
+  ));
   runApp(MyApp());
 }
 
