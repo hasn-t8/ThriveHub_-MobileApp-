@@ -16,8 +16,8 @@ import 'package:thrive_hub/screens/user/auth/sign_in.dart'; // Assuming you have
 import 'package:thrive_hub/screens/business/notification_screens/business_notification_screen.dart';
 import 'package:thrive_hub/screens/business/profile_screens/business_help_center.dart';
 import 'package:thrive_hub/screens/business/profile_screens/business_edit_account.dart';
-
-
+import 'package:thrive_hub/screens/business/auth/sign_up.dart';
+import 'package:thrive_hub/screens/business/auth/sign_in.dart';
 
 Future<void> main() async {
   // Load the .env file
@@ -56,6 +56,8 @@ class MyApp extends StatelessWidget {
 
 
         //business screens
+        '/business-sign-up':(context)=> BusinessSignUpScreen(),
+        '/business-sign-in':(context)=> BusinessSignInScreen(),
         '/business-notification':(context)=> BusinessNotificationScreen(),
         '/business-help-center':(context) => BusinessHelpCenterScreen(),
         '/business-account-settings' : (context) => BusinessAccountScreen(),
