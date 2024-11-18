@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
-import 'package:thrive_hub/screens/business/Slider_screens/business_category_screen.dart';
-import 'package:thrive_hub/screens/business/Slider_screens/business_company_logo_screen.dart';
-import 'package:thrive_hub/screens/business/Slider_screens/business_about_screen.dart';
-import 'package:thrive_hub/screens/business/Slider_screens/business_verify_screen.dart';
-import 'package:thrive_hub/screens/business/Slider_screens/business_code_verify_screen.dart';
+import 'package:thrive_hub/screens/business/slider_screens/business_category_screen.dart';
+import 'package:thrive_hub/screens/business/slider_screens/business_company_logo_screen.dart';
+import 'package:thrive_hub/screens/business/slider_screens/business_about_screen.dart';
+import 'package:thrive_hub/screens/business/slider_screens/business_verify_screen.dart';
+import 'package:thrive_hub/screens/business/slider_screens/business_code_verify_screen.dart';
 
 class SliderScreen extends StatefulWidget {
   @override
