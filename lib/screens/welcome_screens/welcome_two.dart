@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../auth_screens/signup_screen.dart';
-import '../auth_screens/signin_screen.dart';
+import '../user/auth/sign_up.dart';
+import '../user/auth/sign_in.dart';
 
 class Welcome2Screen extends StatelessWidget {
   @override

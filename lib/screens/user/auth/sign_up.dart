@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thrive_hub/validators/email_validator.dart';
-import 'signin_screen.dart';
-import '../../widgets/input_fields.dart';
-import '../../widgets/google_facbook_button.dart';
-import '../../services/auth_services/signup_service.dart';
+import 'package:thrive_hub/core/utils/email_validator.dart';
+import 'sign_in.dart';
+import '../../../widgets/input_fields.dart';
+import '../../../widgets/google_facbook_button.dart';
+import '../../../services/auth_services/signup_service.dart';
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
 class SignUpScreen extends StatefulWidget {

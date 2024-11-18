@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../core/constants/text_styles.dart';
+import '../../../core/constants/text_styles.dart';
 import 'sign_up.dart';
-import '../../widgets/input_fields.dart';
-import 'slider_screens/business_slider_screen.dart';
-import '../../widgets/forms/login_form.dart';
-import '../../widgets/forms/social_login.dart';
+import '../../../widgets/input_fields.dart';
+import '../slider_screens/business_slider_screen.dart';
+import '../../../widgets/forms/login_form.dart';
+import '../../../widgets/forms/social_login.dart';
 
 class BusinessSignInScreen extends StatefulWidget {
   const BusinessSignInScreen({super.key});

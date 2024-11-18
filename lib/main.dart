@@ -2,20 +2,20 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:thrive_hub/business_screens/widgets/business_bottom_navigation_bar.dart';
-import 'package:thrive_hub/user_screens/search_screens/sub_categories_screen.dart';
-import 'user_screens/Welcome_screens/slider_screen.dart';
-import 'user_screens/Welcome_screens/launcher_screen.dart';
-import 'user_screens/Welcome_screens/welcome_one.dart';
-import 'user_screens/Welcome_screens/welcome_two.dart';
-import 'user_screens/auth_screens/signup_screen.dart';
-import 'user_screens/profile_screens/my_companies_screen.dart';
-import 'user_screens/profile_screens/account_settings_screen.dart';
-import 'user_screens/profile_screens/help_center_screen.dart';
-import 'package:thrive_hub/user_screens/auth_screens/signin_screen.dart'; // Assuming you have a login screen
-import 'package:thrive_hub/business_screens/notification_screens/business_notification_screen.dart';
-import 'package:thrive_hub/business_screens/profile_screens/business_help_center.dart';
-import 'package:thrive_hub/business_screens/profile_screens/business_edit_account.dart';
+import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
+import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
+import 'screens/welcome_screens/main_screen.dart';
+import 'screens/welcome_screens/first_screen.dart';
+import 'screens/welcome_screens/welcome_one.dart';
+import 'screens/welcome_screens/welcome_two.dart';
+import 'screens/user/auth/sign_up.dart';
+import 'screens/user/profile_screens/my_companies_screen.dart';
+import 'screens/user/profile_screens/account_settings_screen.dart';
+import 'screens/user/profile_screens/help_center_screen.dart';
+import 'package:thrive_hub/screens/user/auth/sign_in.dart'; // Assuming you have a login screen
+import 'package:thrive_hub/screens/business/notification_screens/business_notification_screen.dart';
+import 'package:thrive_hub/screens/business/profile_screens/business_help_center.dart';
+import 'package:thrive_hub/screens/business/profile_screens/business_edit_account.dart';
 
 
 
