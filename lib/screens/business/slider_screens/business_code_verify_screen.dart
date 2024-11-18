@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:thrive_hub/widgets/appbar.dart';
-import 'package:thrive_hub/business_screens/widgets/business_bottom_navigation_bar.dart';
+import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
 
 class BusinessCodeVerifyScreen extends StatefulWidget {
   final VoidCallback onDone; // Callback to handle the done action

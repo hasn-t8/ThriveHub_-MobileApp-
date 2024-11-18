@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD:lib/user_screens/reviews_screens/review_screen.dart
 import 'package:share_plus/share_plus.dart';
-import 'package:thrive_hub/user_screens/reviews_screens/create_review_screen.dart';
-=======
 import 'package:thrive_hub/screens/user/reviews_screens/create_review_screen.dart';
->>>>>>> d2cd9cf52ecb82b2b2f44d6144f401404faf4713:lib/screens/user/reviews_screens/review_screen.dart
+import 'package:thrive_hub/screens/user/reviews_screens/review_screen.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/tab_buttons.dart';

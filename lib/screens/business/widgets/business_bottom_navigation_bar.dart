@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/business_screens/profile_screens/business_profile_screen.dart';
-import 'package:thrive_hub/business_screens/reviews_screens/business_review_screen.dart';
-import 'package:thrive_hub/business_screens/notification_screens/business_notification_screen.dart';
-import 'package:thrive_hub/business_screens/search_screens/business_search_screen.dart';
+import 'package:thrive_hub/screens/business/profile_screens/business_profile_screen.dart';
+import 'package:thrive_hub/screens/business/reviews_screens/business_review_screen.dart';
+import 'package:thrive_hub/screens/business/notification_screens/business_notification_screen.dart';
+import 'package:thrive_hub/screens/business/search_screens/business_search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override

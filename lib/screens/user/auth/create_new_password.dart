@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
-import '../../widgets/input_fields.dart';
+import '../../../widgets/input_fields.dart';
 
 class CreateNewPasswordScreen extends StatefulWidget {
   @override
