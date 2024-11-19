@@ -1,0 +1,476 @@
+[33mcommit b23182a7ea12bfa06d05778c15066672ba6d8d2e[m[33m ([m[1;36mHEAD -> [m[1;32mfix/AT-220-UI-Search-Tab-Screen[m[33m, [m[1;31morigin/fix/AT-220-UI-Search-Tab-Screen[m[33m, [m[1;32mfix/AT-233-UI-searchtab-sub-categories-screens[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Tue Nov 19 10:28:19 2024 +0500
+
+    updated to latest of share_plus
+
+[33mcommit 09dbebb056e02391dc4144cb8746c13c2954d6e3[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Mon Nov 18 12:24:38 2024 +0500
+
+    fix: resolved Search-tab-screen ui issues and functionality mention with in the comments
+
+[33mcommit 0368840a16bdd90295a64e3c18a518e0539d0252[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 50aa7e8 cc32494
+Author: Shafia <shafia@techchaps.com>
+Date:   Mon Nov 18 05:44:41 2024 +0000
+
+    Merge branch 'fix/AT-228-UI-Reviews-screens' into 'main'
+    
+    fix: resolved Reviews screens ui issues and functionality mention with in the comments
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!21
+
+[33mcommit cc324941221f736c5c945337ff46bf6ffaa2b156[m[33m ([m[1;31morigin/fix/AT-228-UI-Reviews-screens[m[33m, [m[1;32mfix/AT-228-UI-Reviews-screens[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Mon Nov 18 10:34:51 2024 +0500
+
+    Conflict resolved
+
+[33mcommit 2a7752ae833f36e7d4ef74393f6cb57c80b09135[m
+Merge: 088bfce 50aa7e8
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Mon Nov 18 09:41:55 2024 +0500
+
+    Merge branch 'main' of https://gitlab.techchaps.net/development/clientelle/thrive-hub/front-end/mobile-app into fix/AT-228-UI-Reviews-screens
+
+[33mcommit 088bfcebceb5faf65e31976fd47c6250505f3fda[m
+Merge: b2f8d6f 0d23e26
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Mon Nov 18 09:40:41 2024 +0500
+
+    Merge branch 'main' of https://gitlab.techchaps.net/development/clientelle/thrive-hub/front-end/mobile-app into fix/AT-228-UI-Reviews-screens
+
+[33mcommit 50aa7e85661c2748032988f0ba149763650dd456[m
+Merge: d47bf92 d620d8f
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 13:16:39 2024 +0000
+
+    Merge branch 'refactor/use-nav-routes' into 'main'
+    
+    refactor: use routes to navigate
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!27
+
+[33mcommit d620d8f3ea044118105754222539c215c4a8ee1f[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 13:16:17 2024 +0000
+
+    remove comments
+
+[33mcommit 7e3b9fe8593b21fb98d9119454b0e8e26e1a798c[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 13:15:26 2024 +0000
+
+    refactor: use routes to navigate
+
+[33mcommit d47bf928a5b605ba5258857a5f9a09ce45fc037e[m
+Merge: e6c6f79 1298849
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 13:01:38 2024 +0000
+
+    Merge branch 'refactor/widget-use-biz-signup' into 'main'
+    
+    Refactor/widget use biz signup
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!26
+
+[33mcommit 129884961d02a5d3c05b9b4339fdd9c49ed1c643[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 13:01:22 2024 +0000
+
+    use social login widget
+
+[33mcommit ce9889e57ad00ac063a2e3c3bb66a5c1a4791ed7[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:59:03 2024 +0000
+
+    add header widget
+
+[33mcommit e6c6f79af22263f0a94c10a4794516c6672e2157[m
+Merge: 0d23e26 93759e8
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:49:09 2024 +0000
+
+    Merge branch 'feat/widget-custom-header' into 'main'
+    
+    create widget and use in sign_in for business
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!25
+
+[33mcommit 93759e8e800df3d88dc1527b6bab6baa59afb1c0[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:48:54 2024 +0000
+
+    create widget and use in sign_in for business
+
+[33mcommit b2f8d6f099b22e9c7c53195b544c2d5f78527d74[m
+Merge: 27daa45 d2cd9cf
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 17:27:27 2024 +0500
+
+    Confilct resolved
+
+[33mcommit 0d23e26d829675b3f1ec7c8e30da95abc7b19707[m
+Merge: 753ec15 4a2ed30
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:13:23 2024 +0000
+
+    Merge branch 'restructure/welcome-screens' into 'main'
+    
+    move welcome screens
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!24
+
+[33mcommit 4a2ed3093a8396385523933fbdac2dd1c71d246e[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:13:07 2024 +0000
+
+    move welcome screens
+
+[33mcommit 753ec152b14bdb79dc563ee7fc4d0f178727f070[m
+Merge: 3eb19d5 7e5a86a
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:10:58 2024 +0000
+
+    Merge branch 'restructure/user-auth' into 'main'
+    
+    move auth for user to auth, business auth to auth
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!23
+
+[33mcommit 7e5a86a6aad018c04bd74f5e34fc77982533cbfb[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:10:41 2024 +0000
+
+    move auth for user to auth, business auth to auth
+
+[33mcommit 3eb19d51ec8aa6305c2d336f2562bf1c43321687[m
+Merge: d2cd9cf 8dbd2c4
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:02:25 2024 +0000
+
+    Merge branch 'restructure/user-screens' into 'main'
+    
+    move screens, welcome screens
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!22
+
+[33mcommit 8dbd2c40131b6fc12371ab3dfc5337e015b8c737[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 12:02:07 2024 +0000
+
+    move screens, welcome screens
+
+[33mcommit 27daa453122f0d4034b1f3a3f7aa0f2d343e6bb8[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 16:53:08 2024 +0500
+
+    fix: resolved Reviews screens ui issues and functionality mention with in the comments
+
+[33mcommit d2cd9cf52ecb82b2b2f44d6144f401404faf4713[m
+Merge: c3a003d fd0c231
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:48:02 2024 +0000
+
+    Merge branch 'feat/restructure' into 'main'
+    
+    Feat/restructure
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!20
+
+[33mcommit fd0c2315c9a41378cd4429f572f3ec8ee2ab7c5f[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:44:04 2024 +0000
+
+    refstructure screens for user
+
+[33mcommit 72d9f263755c0f246992d74620dc86a210e29e8c[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:35:48 2024 +0000
+
+    fix signin link
+
+[33mcommit 39928f3b4849b6c5c257a89fae0dff1ba76c6f53[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:34:44 2024 +0000
+
+    rename signin, signup screens
+
+[33mcommit 1d3e918f14bf9d266a4fcda18be4d9c8462a6435[m
+Merge: 738a5de c3a003d
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:30:24 2024 +0000
+
+    Merge branch 'main' into feat/restructure
+
+[33mcommit c3a003dd8dde080fb090cbb82c042fb391c4e5ae[m
+Merge: cb2761c beb0a2d
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:29:01 2024 +0000
+
+    Merge branch 'refactor/sytles' into 'main'
+    
+    move login widgets to widets folder
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!19
+
+[33mcommit 738a5de8fa388dc33e086ad066a1f1225939331a[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:27:10 2024 +0000
+
+    add screen folder, moved business screens to screens
+
+[33mcommit cb2761c7f1c4a0d45e24ca03c46a8c03a15c4f5e[m
+Merge: cd2c7ca 0a7276b
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:26:17 2024 +0000
+
+    Merge branch 'refactor/sytles' into 'main'
+    
+    Refactor/sytles
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!18
+
+[33mcommit beb0a2d3d3d08d0dce9f4f23824c04c591e96f76[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:15:15 2024 +0000
+
+    move login widgets to widets folder
+
+[33mcommit 0a7276bfc7ed68d9e5bf16aaf6b761bd5cbfd10a[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:12:01 2024 +0000
+
+    move social login to separate widget file
+
+[33mcommit 8dd24584ba09bfee92a1108319a67ad0053fe4d5[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:03:29 2024 +0000
+
+    remove old login form from business sign-in screen
+
+[33mcommit 2fc30fbc40f0ac9e286771c8378a432d3beca3d0[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 11:00:40 2024 +0000
+
+    crete login form, moved logic to use it
+
+[33mcommit cd2c7ca6220e1cab4fee373575155626547dd91d[m
+Merge: 2e0f9ea 67fbe6d
+Author: Shafia <shafia@techchaps.com>
+Date:   Sun Nov 17 10:41:47 2024 +0000
+
+    Merge branch 'fix/AT-240-UI-help-center' into 'main'
+    
+    Fix/at 240 ui help center
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!17
+
+[33mcommit 2e0f9ea34cc66fd50da8d36a8a52f971564cca7f[m
+Merge: ab2d8d0 087ce53
+Author: Shafia <shafia@techchaps.com>
+Date:   Sun Nov 17 10:41:10 2024 +0000
+
+    Merge branch 'fix/AT-224-UI-Profile-screen' into 'main'
+    
+    Fix/at 224 ui profile screens
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!16
+
+[33mcommit dad3ef2efc746fbe07ea7be0736320edf6f3d9e7[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 10:39:49 2024 +0000
+
+    restructure
+
+[33mcommit 82c991ed42ace5c927d38fe12387a787ddd5ad99[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 10:35:00 2024 +0000
+
+    rename const folder to cor
+
+[33mcommit 86cb561d74f944db23f19ece73a49d656da1722e[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 10:30:30 2024 +0000
+
+    use constant file for constants
+
+[33mcommit 9024e46ee2dd2d1e5589bdaa097feada988f5997[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sun Nov 17 10:24:36 2024 +0000
+
+    add constants
+
+[33mcommit 67fbe6dcb26e8a94dd9cba6c5e8bb2ff57a17534[m[33m ([m[1;31morigin/fix/AT-240-UI-help-center[m[33m, [m[1;32mfix/AT-240-UI-help-center[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 11:38:49 2024 +0500
+
+    fix: resolved Help screen ui issues  mention with in  the comments
+
+[33mcommit 087ce530f62829981c839af3fcfd47d5f1984352[m[33m ([m[1;31morigin/fix/AT-224-UI-Profile-screen[m[33m, [m[1;32mfix/AT-224-UI-Profile-screen[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 09:46:40 2024 +0500
+
+    Update Tab Buttons widget to enhance functionality and customization
+
+[33mcommit 452a313077054063c2623dbc6c20d528e5b49f12[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 09:45:16 2024 +0500
+
+    Fix and refine Profile List Item widget functionality; make the widget reusable
+
+[33mcommit 433a13859274360c85cfae4b20ceb21e6c912d11[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 09:43:37 2024 +0500
+
+    Add updated Edit Profile image asset
+
+[33mcommit 3ad314fe5a26ca3c08a52b24600708e14e6d720e[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 09:43:12 2024 +0500
+
+    Update the Input Fields widget with more customization options
+
+[33mcommit 9a1c81bc2dbb980f45dacd62786c88dff06eb6d4[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 09:41:22 2024 +0500
+
+    Enhance Company Card widget UI
+
+[33mcommit aacfc25b4b9e45eccdb66e2f2ad3cbe0d9f057c3[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 09:40:51 2024 +0500
+
+    Update Profile screen UI and address functionality feedback
+
+[33mcommit fb988215a5d253801c4a45d7ea94919f89fe9417[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 09:40:25 2024 +0500
+
+    Resolve UI and functionality issues in My Companies screen
+
+[33mcommit 29f0b9d5265b4fcb54937b0742bbcaff39e8541f[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Sun Nov 17 09:40:02 2024 +0500
+
+    Fix UI and functionality issues in Account Settings screen as per comments
+
+[33mcommit ab2d8d00144d1509e4947a0c473a0ac7d3779450[m
+Merge: acec03f 17a9ab0
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sat Nov 16 09:05:32 2024 +0000
+
+    Merge branch 'feat/hot-reload' into 'main'
+    
+    add hot-reload
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!15
+
+[33mcommit 17a9ab029cfadca332e62822c2e211ecaa7167eb[m
+Author: Ahmed Fareed <ahmed@techchaps.com>
+Date:   Sat Nov 16 09:05:06 2024 +0000
+
+    add hot-reload
+
+[33mcommit acec03f342cf8e29b561b8501187b7cdb086a1d7[m
+Merge: 0296176 89011e6
+Author: Shafia <shafia@techchaps.com>
+Date:   Fri Nov 15 13:07:14 2024 +0000
+
+    Merge branch 'fix/AT-227-UI-notification-screens' into 'main'
+    
+    fix: resolved Notification screens ui issues in mention functionality within comments
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!14
+
+[33mcommit 89011e68d95cf8239eceb79c7593aff94c47d365[m[33m ([m[1;31morigin/fix/AT-227-UI-notification-screens[m[33m, [m[1;32mfix/AT-227-UI-notification-screens[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Fri Nov 15 17:38:17 2024 +0500
+
+    fix: resolved Notification screens ui issues in mention functionality within comments
+
+[33mcommit 0296176b7e8e714b39b3c008eab28e68f593672a[m
+Merge: afc0155 53a4b64
+Author: Shafia <shafia@techchaps.com>
+Date:   Fri Nov 15 07:47:21 2024 +0000
+
+    Merge branch 'fix/AT-223-ui-forget-password-screens' into 'main'
+    
+    fix: resolved forget password screens ui issues in mention functionality within comments
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!13
+
+[33mcommit 53a4b64c875aec3f7ef4d9873614ff443a9a90a2[m[33m ([m[1;31morigin/fix/AT-223-ui-forget-password-screens[m[33m, [m[1;32mfix/AT-223-ui-forget-password-screens[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Fri Nov 15 12:28:54 2024 +0500
+
+    fix: resolved forget password screens ui issues in mention functionality within comments
+
+[33mcommit afc0155a123bd14b17b97e446dd2becd11a56620[m
+Merge: 18e50cd 11d4e91
+Author: Shafia <shafia@techchaps.com>
+Date:   Thu Nov 14 17:57:34 2024 +0000
+
+    Merge branch 'fix/AT-222-signin-ui' into 'main'
+    
+    fix: resolved signin UI issues in mention functionality within comments
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!12
+
+[33mcommit 11d4e91b12ff88cefd29d5c4628c46477fdcf6b4[m[33m ([m[1;31morigin/fix/AT-222-signin-ui[m[33m, [m[1;32mfix/AT-222-signin-ui[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Thu Nov 14 22:53:17 2024 +0500
+
+    fix: resolved signin UI issues in mention functionality within comments
+
+[33mcommit 18e50cdc9ea9f1aa5fb41fd0e693e70790f5d854[m
+Merge: a517045 ad33255
+Author: Shafia <shafia@techchaps.com>
+Date:   Thu Nov 14 16:46:25 2024 +0000
+
+    Merge branch 'fix/AT-217-signup-ui' into 'main'
+    
+    Fix/at 217 signup ui
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!11
+
+[33mcommit ad332550ffeb0389623d73cb78b196846b172ad6[m[33m ([m[1;31morigin/fix/AT-217-signup-ui[m[33m, [m[1;32mfix/AT-217-signup-ui[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Thu Nov 14 21:19:19 2024 +0500
+
+    fix: resolved signup UI issues in mention functionality within comments
+
+[33mcommit a9f25dcde4dbaf7cfc6caaa506015f84994f5693[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Thu Nov 14 21:18:21 2024 +0500
+
+    add email validator
+
+[33mcommit a5170450c229c908c8cd4bb336372fe9de0e2af4[m
+Merge: 59c1407 040feac
+Author: Shafia <shafia@techchaps.com>
+Date:   Thu Nov 14 06:30:29 2024 +0000
+
+    Merge branch 'fix/AT-221-update-welcome' into 'main'
+    
+    fix: resolved UI issues in mention functionality within comments
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!10
+
+[33mcommit 040feac2db817c3615e0d1ca53150061d77585d2[m[33m ([m[1;31morigin/fix/AT-221-update-welcome[m[33m, [m[1;32mfix/AT-221-update-welcome[m[33m)[m
+Author: Hassan Talha <hassan.talha@techchaps.com>
+Date:   Thu Nov 14 11:26:50 2024 +0500
+
+    fix: resolved UI issues in mention functionality within comments
+
+[33mcommit 59c14071d7de82afb698617789ec7aec9f4d0305[m
+Merge: dc9b8c5 71ab097
+Author: Shafia <shafia@techchaps.com>
+Date:   Thu Nov 14 04:56:14 2024 +0000
+
+    Merge branch 'feat/AT-238-Service-page-screen' into 'main'
+    
+    Feat/at 238 service page screen
+    
+    See merge request development/clientelle/thrive-hub/front-end/mobile-app!9
