@@ -22,16 +22,16 @@ class ServiceCard extends StatelessWidget {
     required this.location,
     required this.onWriteReview,
     required this.onTryService,
-    this.showWriteReviewButton = true, // Default to show Write Review button
-    this.showTryServiceButton = true,  // Default to show Try Service button
-    this.writeReviewText = 'Write a Review', // Default text for Write Review button
-    this.tryServiceText = 'Try Service', // Default text for Try Service button
+    this.showWriteReviewButton = true,
+    this.showTryServiceButton = true,
+    this.writeReviewText = 'Write a Review',
+    this.tryServiceText = 'Try Service',
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 300),
       width: double.infinity,
       height: 270.0,
       decoration: BoxDecoration(
@@ -40,23 +40,25 @@ class ServiceCard extends StatelessWidget {
       ),
       child: AnimatedOpacity(
         opacity: 1.0,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Image and Info Section
             Container(
               width: double.infinity,
               height: 128.0,
-              padding: EdgeInsets.symmetric(vertical: 16.0),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              decoration: const BoxDecoration(
                 color: Colors.transparent,
               ),
               child: Row(
                 children: [
+                  // Image Container
                   Container(
                     width: 90.0,
                     height: 96.0,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(12.0),
                         topRight: Radius.circular(0),
@@ -71,46 +73,47 @@ class ServiceCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(width: 13.0),
+                  const SizedBox(width: 13.0),
+                  // Info Section
                   Expanded(
-                    child: Container(
+                    child: SizedBox(
                       height: 96.0,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             serviceName,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Inter',
                               fontSize: 22.0,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 0.35,
                             ),
                           ),
-                          SizedBox(height: 4.0),
+                          const SizedBox(height: 4.0),
                           Row(
                             children: [
-                              Text('$rating', style: TextStyle(color: Color(0xFF888686))),
-                              Icon(Icons.star, color: Color(0xFF888686)),
-                              SizedBox(width: 8.0),
-                              Text('|', style: TextStyle(color: Color(0xFFA5A5A5))),
-                              SizedBox(width: 8.0),
-                              Text('$reviewCount Reviews', style: TextStyle(color: Color(0xFF888686))),
+                              Text('$rating', style: const TextStyle(color: Color(0xFF888686))),
+                              const Icon(Icons.star, color: Color(0xFF888686)),
+                              const SizedBox(width: 8.0),
+                              const Text('|', style: TextStyle(color: Color(0xFFA5A5A5))),
+                              const SizedBox(width: 8.0),
+                              Text('$reviewCount Reviews', style: const TextStyle(color: Color(0xFF888686))),
                             ],
                           ),
-                          SizedBox(height: 4.0),
+                          const SizedBox(height: 4.0),
                           Row(
                             children: [
-                              Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D)),
+                              const Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D)),
                               Text(
                                 location,
-                                style: TextStyle(
-                                  color: Color(0xFFA5A5A5), // Text color
+                                style: const TextStyle(
+                                  color: Color(0xFFA5A5A5),
                                   fontFamily: 'Inter',
                                   fontSize: 16.0,
                                   fontWeight: FontWeight.w400,
-                                  decoration: TextDecoration.underline, // Adds underline
-                                  decorationColor: Color(0xFFA5A5A5), // Underline color
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Color(0xFFA5A5A5),
                                 ),
                               ),
                             ],
@@ -122,91 +125,63 @@ class ServiceCard extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 16.0),
-            // Conditionally render Write Review button
-            if (showWriteReviewButton)
-              AnimatedOpacity(
-                opacity: 1.0,
-                duration: Duration(milliseconds: 300),
-                child: Container(
-                  width: 343.0,
-                  height: 54.0,
-                  padding: EdgeInsets.symmetric(vertical: 17.0, horizontal: 19.0),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                    border: Border.all(color: Colors.black, width: 1),
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                    ),
-                    onPressed: onWriteReview,
-                    child: Center(
-                      child: Text(
-                        writeReviewText,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Inter', // Set the font family to 'Inter'
-                          fontSize: 16,        // Set the font size to 16px
-                          fontWeight: FontWeight.w500, // Set font weight to 500
-                          height: 1.25, // Set line height (1.25 equals 20px for 16px font size)
-                          decoration: TextDecoration.none, // Remove text underline
+            const SizedBox(height: 16.0),
+            // Buttons Section
+            if (showWriteReviewButton || showTryServiceButton)
+              Column(
+                children: [
+                  if (showWriteReviewButton)
+                    Container(
+                      width: double.infinity,
+                      height: 54.0,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                        ),
+                        onPressed: onWriteReview,
+                        child: Text(
+                          writeReviewText,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-
-            // Conditionally render Try Service button
-            if (showTryServiceButton)
-              SizedBox(height: 10.0),
-            if (showTryServiceButton)
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 1.0), // Padding for left and right
-                child: Container(
-                  width: double.infinity, // Make it responsive
-                  height: 54.0,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(16.0)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
-                        blurRadius: 5.0,
-                        offset: Offset(0, 0), // Even shadow on all sides
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.white,
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                  const SizedBox(height: 10.0),
+                  if (showTryServiceButton)
+                    Container(
+                      width: double.infinity,
+                      height: 54.0,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          shadowColor: Colors.black.withOpacity(0.5),
+                          // elevation: 5,
+                        ),
+                        onPressed: onTryService,
+                        child: Text(
+                          tryServiceText,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
                       ),
                     ),
-                    onPressed: onTryService,
-                    child: Text(
-                      tryServiceText,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'Inter',
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w400,
-                        height: 1.25,
-                      ),
-                    ),
-                  ),
-                ),
+                ],
               ),
-
           ],
         ),
       ),

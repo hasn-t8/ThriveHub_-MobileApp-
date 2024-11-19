@@ -177,8 +177,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
             // Form container
       Container(
-        width: 375,
-        height: 601,
+        width: MediaQuery.of(context).size.width, // Full screen width
+        height: MediaQuery.of(context).size.height, // Full screen height
         decoration: BoxDecoration(
           color: Colors.white, // Background color of the form
           borderRadius: BorderRadius.only(

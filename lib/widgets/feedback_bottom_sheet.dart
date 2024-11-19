@@ -78,7 +78,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
                     letterSpacing: -0.5,
-                    decoration: TextDecoration.underline,
+
                   ),
                 ),
                 Spacer(),
@@ -93,7 +93,11 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               ],
             ),
             SizedBox(height: 8),
-            Divider(),
+            Divider(
+              color: Colors.grey, // Set the divider color to gray
+              thickness: 1.0,     // Optional: Adjust the thickness
+              height: 4.0,       // Optional: Adjust the space around the divider
+            ),
 
             // Instruction text
             SizedBox(height: 16),
@@ -118,7 +122,6 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   fontSize: 24,
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.592,
-                  decoration: TextDecoration.underline,
                 ),
               ),
             SizedBox(height: 16),
@@ -199,13 +202,18 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
             // Attach photo and button
             GestureDetector(
               onTap: _pickImage,
-              child: Row(
+              child:Row(
                 children: [
-                  Icon(Icons.photo_camera, size: 24, color: Colors.black),
+                  Image.asset(
+                    'assets/upload_image.png', // Replace with your image path
+                    width: 24, // Adjust the width
+                    height: 24, // Adjust the height
+                  ),
                   SizedBox(width: 8),
                   Text(
                     'Attach photo',
                     style: TextStyle(
+                      color: Color(0xFFA5A5A5),
                       fontFamily: 'Inter',
                       fontSize: 16,
                       fontWeight: FontWeight.w400,
