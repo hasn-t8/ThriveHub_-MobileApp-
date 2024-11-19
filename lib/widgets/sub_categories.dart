@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thrive_hub/screens/user/search_screens/services_screen.dart';
 
 class SubcategoriesWidget extends StatefulWidget {
   final String categoryTitle; // Title of the category
@@ -28,7 +29,7 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
     return Container(
       width: 394,
       height: 193,
-      padding: const EdgeInsets.only(top: 22),
+      padding: const EdgeInsets.only(top: 16),
       decoration: BoxDecoration(
         color: widget.containerColor,
         boxShadow: [
@@ -52,8 +53,11 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                   child: Text(
                     widget.categoryTitle,
                     style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      fontFamily: 'Inter', // Set the font family
+                      fontWeight: FontWeight.w700, // Medium weight
+                      height: 20/20,
+                      letterSpacing: 0.1,
                     ),
                     maxLines: 2, // Allows the title to break onto a second line if needed
                     overflow: TextOverflow.ellipsis, // Adds ellipsis if text is too long
@@ -68,13 +72,17 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                         style: const TextStyle(
                           color: Colors.black,
                           fontSize: 14,
+                          fontFamily: 'SF Pro Display', // Set the font family
+                          fontWeight: FontWeight.w500, // Medium weight
+                          height: 20/14,
+                          letterSpacing: 0.1,
                         ),
                       ),
                       const SizedBox(width: 4),
                       Icon(
                         Icons.arrow_forward,
                         color: Colors.black,
-                        size: 20,
+                        size: 18,
                       ),
                     ],
                   ),
@@ -99,6 +107,12 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                       setState(() {
                         selectedIndex = index; // Set the selected box
                       });
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ServicesScreen(),
+                        ),
+                      );
                       print('Clicked on $item');
                     },
                     child: Container(
@@ -119,9 +133,12 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
+                            fontFamily: 'Inter',
+                            height: 22/14,
+                            letterSpacing: -0.24,
                             color: selectedIndex == index
                                 ? Colors.white // Selected text color
-                                : Colors.black, // Default text color
+                                : Color(0xFF414141), // Default text color
                           ),
                         ),
                       ),

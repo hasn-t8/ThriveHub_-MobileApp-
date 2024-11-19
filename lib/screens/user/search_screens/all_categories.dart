@@ -36,12 +36,12 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(145),
+        preferredSize: const Size.fromHeight(125),
         child: Column(
           children: [
             AppBar(
               automaticallyImplyLeading: false,
-              toolbarHeight: 75,
+              // toolbarHeight: 75,
               backgroundColor: Colors.white,
               elevation: 0,
               title: CustomSearchBar(

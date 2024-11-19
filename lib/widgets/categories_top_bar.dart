@@ -65,8 +65,10 @@ class _CategoriesTopBarState extends State<CategoriesTopBar> {
                             textAlign: TextAlign.center, // Center-align text
                             style: TextStyle(
                               color: isSelected ? Colors.white : const Color(0xFF79747E),
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'SF Pro Display',
+                              height: 18/15,
                             ),
                           ),
                         ),

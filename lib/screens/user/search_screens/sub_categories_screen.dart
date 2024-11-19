@@ -37,12 +37,12 @@ class SubcategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(145), // Adjust height to include both widgets
+        preferredSize: const Size.fromHeight(120), // Adjust height to include both widgets
         child: Column(
           children: [
             AppBar(
               automaticallyImplyLeading: false, // Disable default back button
-              toolbarHeight: 75, // Height for the search bar
+              // toolbarHeight: 75, // Height for the search bar
               backgroundColor: Colors.white, // AppBar background color
               elevation: 0, // Remove shadow
               title: CustomSearchBar(
@@ -92,7 +92,7 @@ class SubcategoriesScreen extends StatelessWidget {
                   containerColor: index == 0 ? const Color(0xFFF0F0F0) : Colors.white,
                   dropBoxColor: index == 0 ? const Color(0xFFFFFFFF) : const Color(0xFFE9E8E8),
                 ),
-                const SizedBox(height: 4), // Spacing between rows
+                const SizedBox(height: 4), //// Spacing between rows
               ],
             );
           },

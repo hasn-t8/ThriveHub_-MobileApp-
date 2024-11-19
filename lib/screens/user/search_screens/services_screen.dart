@@ -83,15 +83,21 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
               const SizedBox(height: 16),
 
-              // Service Tabs
-              ServiceTabs(
-                firstTabText: 'Reviews (23)',
-                secondTabText: 'About',
-                onTabSelected: (isFirstTab) {
-                  setState(() {
-                    isFirstTabSelected = isFirstTab;
-                  });
-                },
+
+              // Centered Service Tabs
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ServiceTabs(
+                    firstTabText: 'Reviews (23)',
+                    secondTabText: 'About',
+                    onTabSelected: (isFirstTab) {
+                      setState(() {
+                        isFirstTabSelected = isFirstTab;
+                      });
+                    },
+                  ),
+                ],
               ),
 
               const SizedBox(height: 16),

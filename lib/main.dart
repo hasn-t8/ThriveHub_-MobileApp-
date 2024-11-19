@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
+import 'package:thrive_hub/screens/user/search_screens/services_screen.dart';
 import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
 import 'screens/welcome_screens/main_screen.dart';
 import 'screens/welcome_screens/first_screen.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
         '/help-center': (context) => HelpCenterScreen(),
         '/home': (context) => MainScreen(),
         '/subcategory': (context) => SubcategoriesScreen(categoryTitle: '',),
+        '/service': (context) => ServicesScreen(),
 
 
         //business screens
