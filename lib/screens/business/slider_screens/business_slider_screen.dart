@@ -6,12 +6,12 @@ import 'package:thrive_hub/screens/business/slider_screens/business_about_screen
 import 'package:thrive_hub/screens/business/slider_screens/business_verify_screen.dart';
 import 'package:thrive_hub/screens/business/slider_screens/business_code_verify_screen.dart';
 
-class SliderScreen extends StatefulWidget {
+class BusinessSliderScreen extends StatefulWidget {
   @override
-  _SliderScreenState createState() => _SliderScreenState();
+  _BusinessSliderScreenState createState() => _BusinessSliderScreenState();
 }
 
-class _SliderScreenState extends State<SliderScreen> {
+class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
   PageController _pageController = PageController();
   int _currentPage = 0;
   String _selectedCategory = '';

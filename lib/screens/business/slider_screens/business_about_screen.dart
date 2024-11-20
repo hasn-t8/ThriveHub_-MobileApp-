@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/text_styles.dart';
 
 class BusinessAboutScreen extends StatefulWidget {
   final VoidCallback onSkip; // Callback to handle skip action
@@ -39,10 +40,7 @@ class _BusinessAboutScreenState extends State<BusinessAboutScreen> {
             SizedBox(height: 16),
             Text(
               'About Your Business',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style:bHeadingTextStyle,
             ),
             SizedBox(height: 16),
             Stack(
@@ -54,7 +52,7 @@ class _BusinessAboutScreenState extends State<BusinessAboutScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: Color(0xFFEFEFF0),
-                    border: Border.all(color: Colors.grey),
+                    // border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Padding(
@@ -65,6 +63,11 @@ class _BusinessAboutScreenState extends State<BusinessAboutScreen> {
                       keyboardType: TextInputType.multiline,
                       decoration: InputDecoration(
                         hintText: 'Write about the company...',
+                        hintStyle: TextStyle(
+                          fontWeight:FontWeight.w400,
+                          height: 19/14,
+                          letterSpacing: -0.51,
+                        ),
                         border: InputBorder.none,
                       ),
                     ),
@@ -94,10 +97,7 @@ class _BusinessAboutScreenState extends State<BusinessAboutScreen> {
                 ),
                 child: Text(
                   'Continue',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
+                  style: kButtonTextStyle,
                 ),
               ),
             ),
@@ -110,6 +110,10 @@ class _BusinessAboutScreenState extends State<BusinessAboutScreen> {
                   style: TextStyle(
                     color: Color(0xFF4D4D4D),
                     fontSize: 16,
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.w600,
+                    height: 22/17,
+                    letterSpacing: -0.41,
                     decoration: TextDecoration.underline, // Adds underline
                   ),
                 ),

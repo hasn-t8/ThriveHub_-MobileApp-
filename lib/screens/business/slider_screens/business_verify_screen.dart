@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:thrive_hub/core/utils/email_validator.dart';
+import '../../../core/constants/text_styles.dart';
 
 class BusinessVerifyScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final VoidCallback onNext; // Callback to move to the next slide
 
   BusinessVerifyScreen({required this.onNext}); // Accept the onNext callback
+
+  void _validateEmail(BuildContext context) {
+    final email = _emailController.text.trim();
+    final validationError = emailValidator(email);
+    if (validationError != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(validationError),
+          backgroundColor: Colors.black,
+        ),
+      );
+      return;
+    }
+    // Proceed to the next step
+    print('Verification email sent to: $email');
+    onNext(); // Trigger the callback
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,26 +35,20 @@ class BusinessVerifyScreen extends StatelessWidget {
           children: [
             // Title
             Text(
-              'You Almost done !',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+              'You Almost Done!',
+              style: bSubheading2TextStyle,
             ),
             SizedBox(height: 16),
 
             // Description
             Text(
               'Please enter your Gmail address below to receive a verification link.',
-              style: TextStyle(fontSize: 14),
+              style: bDescriptionTextStyle,
             ),
             SizedBox(height: 12),
             Text(
               'Verify your email',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: bHeadingTextStyle,
             ),
             SizedBox(height: 25),
 
@@ -56,10 +69,8 @@ class BusinessVerifyScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-                  String email = _emailController.text;
-                  if (email.isNotEmpty) {
-                    print('Verification email sent to: $email');
-                    onNext(); // Call onNext to go to the next slide
+                  if (_emailController.text.isNotEmpty) {
+                    _validateEmail(context); // Pass the context to validate email
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('Please enter a valid email.')),
@@ -75,10 +86,7 @@ class BusinessVerifyScreen extends StatelessWidget {
                 ),
                 child: Text(
                   'Send Code',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
+                  style: kButtonTextStyle,
                 ),
               ),
             ),
