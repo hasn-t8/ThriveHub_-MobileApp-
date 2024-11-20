@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:thrive_hub/screens/business/slider_screens/business_slider_screen.dart';
 import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
 import 'package:thrive_hub/screens/user/search_screens/services_screen.dart';
 import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
@@ -60,7 +61,6 @@ class MyApp extends StatelessWidget {
         '/my-companies': (context) => MyCompaniesScreen(),
         '/account-settings': (context) => AccountSettingsScreen(),
         '/help-center': (context) => HelpCenterScreen(),
-        '/home': (context) => MainScreen(),
         '/subcategory': (context) => SubcategoriesScreen(categoryTitle: '',),
         '/service': (context) => ServicesScreen(),
 
@@ -71,6 +71,8 @@ class MyApp extends StatelessWidget {
         '/business-notification':(context)=> BusinessNotificationScreen(),
         '/business-help-center':(context) => BusinessHelpCenterScreen(),
         '/business-account-settings' : (context) => BusinessAccountScreen(),
+        '/business-profile-setup' : (context) => BusinessSliderScreen(),
+        '/business-home': (context) => MainScreen(),
       },
     );
   }

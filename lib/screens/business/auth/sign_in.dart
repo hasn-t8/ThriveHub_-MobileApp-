@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thrive_hub/widgets/google_facbook_button.dart';
 import '../../../core/constants/text_styles.dart';
 import 'sign_up.dart';
 import '../slider_screens/business_slider_screen.dart';
@@ -44,7 +45,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
     if (_isButtonEnabled) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => SliderScreen()),
+        MaterialPageRoute(builder: (context) => BusinessSliderScreen()),
       );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Login successful')),
@@ -81,6 +82,11 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: LoginForm(
                 onSubmit: () {
+                  Navigator.pushNamed(context, '/business-home'); // Navigate to signup
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => SliderScreen()),
+                  // );
                   // Handle login success here
                   print('Login Successful');
                 },
@@ -109,16 +115,24 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     ],
                   ),
                   const SizedBox(height: 40),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: SocialLoginButtons(
-                      onGoogleLogin: () {
-                        print('Google Login Clicked');
-                      },
-                      onFacebookLogin: () {
-                        print('Facebook Login Clicked');
-                      },
-                    ),
+                  Column(
+                    children: [
+                      SocialMediaButton(
+                        onPressed: () {
+                          // Add your onPressed code here!
+                        },
+                        image: AssetImage('assets/google.png'),
+                        label: 'Continue with Google',
+                      ),
+                      SizedBox(height: 10),
+                      SocialMediaButton(
+                        onPressed: () {
+                          // Add your onPressed code here!
+                        },
+                        image: AssetImage('assets/facebook.png'),
+                        label: 'Continue with Facebook',
+                      ),
+                    ],
                   ),
                   // const SizedBox(height: 20),
                   // Sign Up Prompt
