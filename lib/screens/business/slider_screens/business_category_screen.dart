@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/constants/text_styles.dart';
 
 class BusinessCategoryScreen extends StatefulWidget {
   final Function(String) onCategorySelected;
@@ -44,15 +45,19 @@ class _BusinessCategoryScreenState extends State<BusinessCategoryScreen> {
                 imagePath,
                 width: 30,
                 height: 30,
+                color: Colors.grey,
               ),
             ),
             SizedBox(height: 8),
             Text(
               category,
               style: TextStyle(
-                color: _selectedCategory == category ? Colors.white : Colors.black,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+                color: _selectedCategory == category ? Colors.white : Color(0xFF1C1B1F),
+                fontSize: 15,
+                fontFamily: 'Inter',
+                fontWeight: FontWeight.w600,
+                height: 20/15,
+                letterSpacing: -0.24,
               ),
             ),
           ],
@@ -72,33 +77,25 @@ class _BusinessCategoryScreenState extends State<BusinessCategoryScreen> {
             SizedBox(height: 15),
             Text(
               'Nice to see you here, Company Name',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: bSubheadingTextStyle,
             ),
             SizedBox(height: 8),
             Text(
               'Lorem ipsum dolor sit amet consectetur. Quisque aenean eu nunc tempor iaculis. Ut lorem est vitae amet urna enim turpis varius tellus.',
-              style: TextStyle(
-                fontSize: 14,
-              ),
+              style: bDescriptionTextStyle,
             ),
             SizedBox(height: 24),
             Text(
               'Choose your Category',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: bHeadingTextStyle,
             ),
             SizedBox(height: 16),
             GridView.count(
               crossAxisCount: 2,
               shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
               childAspectRatio: MediaQuery.of(context).size.width / 2 / 117,
               children: [
                 _buildCategoryBox('Tech', 'assets/category.png'),
@@ -129,10 +126,7 @@ class _BusinessCategoryScreenState extends State<BusinessCategoryScreen> {
             ),
             child: Text(
               'Continue',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
+              style: kButtonTextStyle,
             ),
           ),
         ),

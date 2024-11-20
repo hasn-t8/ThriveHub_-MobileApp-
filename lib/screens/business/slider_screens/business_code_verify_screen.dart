@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import '../../../core/constants/text_styles.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
 
@@ -66,27 +67,21 @@ class _BusinessCodeVerifyScreenState extends State<BusinessCodeVerifyScreen> {
               // Heading
               Text(
                 'Thank You!',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: bSubheading2TextStyle,
               ),
               SizedBox(height: 8),
 
               // Description
               Text(
                 'Lorem ipsum dolor sit amet consectetur. Quisque aenean eu nunc tempor iaculis. Please enter the 6-digit code sent to your email.',
-                style: TextStyle(fontSize: 14),
+                style:bDescriptionTextStyle,
               ),
               SizedBox(height: 25),
 
               // Subtitle above code boxes
               Text(
                 'We just sent you a code',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: bHeadingTextStyle,
               ),
               SizedBox(height: 16),
 
@@ -102,20 +97,20 @@ class _BusinessCodeVerifyScreenState extends State<BusinessCodeVerifyScreen> {
                       controller: _controllers[index],
                       keyboardType: TextInputType.number,
                       maxLength: 1,
-                      textAlign: TextAlign.center,
+                      textAlign: TextAlign.center, // Ensures text is horizontally centered
+                      style: TextStyle(fontSize: 20), // Increases font size for better appearance
                       decoration: InputDecoration(
                         counterText: '', // Removes the character count
                         border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.zero, // Ensures no padding around text
                       ),
                       onChanged: (value) {
                         if (value.length == 1 && index < 5) {
                           FocusScope.of(context).nextFocus();
-                        }
-                        else if (value.isEmpty && index > 0) {
+                        } else if (value.isEmpty && index > 0) {
                           // Move focus to the previous field on backspace
                           FocusScope.of(context).previousFocus();
                         }
-
                       },
                     ),
                   ),
@@ -151,10 +146,7 @@ class _BusinessCodeVerifyScreenState extends State<BusinessCodeVerifyScreen> {
                   ),
                   child: Text(
                     'Done',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                    style: kButtonTextStyle,
                   ),
                 ),
               ),
@@ -178,7 +170,11 @@ class _BusinessCodeVerifyScreenState extends State<BusinessCodeVerifyScreen> {
                           Text(
                             'Didn’t receive code? ',
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 15,
+                              fontFamily: 'Inter',
+                              // fontWeight: FontWeight.w600,
+                              height: 20/15,
+                              letterSpacing: -0.24,
                               color: Colors.black,
                             ),
                           ),
@@ -188,12 +184,7 @@ class _BusinessCodeVerifyScreenState extends State<BusinessCodeVerifyScreen> {
                             },
                             child: Text(
                               'Resend Code',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                                decoration: TextDecoration.underline,
-                              ),
+                              style: kUnderlineTextStyle,
                             ),
                           ),
                         ],
