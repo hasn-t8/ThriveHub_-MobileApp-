@@ -12,6 +12,9 @@ class HelpCenterScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Container(
+        // Get screen width and height using MediaQuery
+        width: MediaQuery.of(context).size.width, // Full screen width
+        height: MediaQuery.of(context).size.height, // Full screen height
         color: Colors.white, // Screen color set to FFFFFF
         child: SingleChildScrollView(
           // Allows the content to scroll if it overflows the screen

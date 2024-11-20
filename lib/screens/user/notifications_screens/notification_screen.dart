@@ -9,6 +9,7 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   @override
+
   void initState() {
     super.initState();
   }
