@@ -6,7 +6,8 @@ class ProfileSection extends StatelessWidget {
   final String email;
   final String profileImagePath;
   final VoidCallback onEditProfile;
-  final List<Map<String, String>> infoBoxes; // Info box data
+  final VoidCallback onEditImage; // Callback for image or icon click
+  final List<Map<String, String>> infoBoxes;
 
   const ProfileSection({
     Key? key,
@@ -15,6 +16,7 @@ class ProfileSection extends StatelessWidget {
     required this.email,
     required this.profileImagePath,
     required this.onEditProfile,
+    required this.onEditImage, // New callback
     required this.infoBoxes,
   }) : super(key: key);
 
@@ -27,44 +29,39 @@ class ProfileSection extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Stack(
-              children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFD9D9D9),
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: AssetImage(profileImagePath),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.all(4),
+            GestureDetector(
+              onTap: onEditImage, // Handle image click
+              child: Stack(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 80,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: const Color(0xFFD9D9D9),
                       shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 2,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.edit,
-                      color: Colors.black,
-                      size: 16,
+                      image: DecorationImage(
+                        image: AssetImage(profileImagePath),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: Color(0xFFD9D9D9),
+                        child: Image.asset(
+                          'assets/edit_profile.png', // Replace with your image icon
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(
