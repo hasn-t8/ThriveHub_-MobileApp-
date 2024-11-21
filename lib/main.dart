@@ -7,8 +7,10 @@ import 'package:thrive_hub/screens/business/slider_screens/business_slider_scree
 import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
 import 'package:thrive_hub/screens/user/search_screens/services_screen.dart';
 import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
+import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 import 'screens/welcome_screens/main_screen.dart';
 import 'screens/welcome_screens/first_screen.dart';
+import 'screens/welcome_screens/splash_screen.dart';
 import 'screens/welcome_screens/welcome_one.dart';
 import 'screens/welcome_screens/welcome_two.dart';
 import 'screens/user/auth/sign_up.dart';
@@ -52,7 +54,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         // user screen routes
-        '/': (context) => SliderScreen(),  // Set SliderScreen as the initial route
+        '/': (context) => SplashScreen(),  // Set SliderScreen as the initial route
+        // '/': (context) => SliderScreen(),  // Set SliderScreen as the initial route
+        '/dashboard': (context) => MainScreen(),
         '/launcher': (context) => LauncherScreen(),
         '/welcome1': (context) => Welcome1Screen(),
         '/welcome2': (context) => Welcome2Screen(),
@@ -72,7 +76,7 @@ class MyApp extends StatelessWidget {
         '/business-help-center':(context) => BusinessHelpCenterScreen(),
         '/business-account-settings' : (context) => BusinessAccountScreen(),
         '/business-profile-setup' : (context) => BusinessSliderScreen(),
-        '/business-home': (context) => MainScreen(),
+        '/business-home': (context) => BusinessMainScreen(),
       },
     );
   }

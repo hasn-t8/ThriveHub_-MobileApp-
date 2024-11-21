@@ -128,7 +128,7 @@ class _BusinessCodeVerifyScreenState extends State<BusinessCodeVerifyScreen> {
                       widget.onDone();
                       Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => MainScreen()),
+                        MaterialPageRoute(builder: (context) => BusinessMainScreen()),
                             (Route<dynamic> route) => false, // Remove all previous routes
                       );// Trigger the done action
                     } else {
