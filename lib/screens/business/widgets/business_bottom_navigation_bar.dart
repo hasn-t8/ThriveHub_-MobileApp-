@@ -4,6 +4,7 @@ import 'package:thrive_hub/screens/business/profile_screens/business_profile_scr
 import 'package:thrive_hub/screens/business/reviews_screens/business_review_screen.dart';
 import 'package:thrive_hub/screens/business/notification_screens/business_notification_screen.dart';
 import 'package:thrive_hub/screens/business/search_screens/business_search_screen.dart';
+import 'package:thrive_hub/screens/business/search_screens/business_sub_categories.dart';
 
 class BusinessMainScreen extends StatefulWidget {
   @override
@@ -12,8 +13,10 @@ class BusinessMainScreen extends StatefulWidget {
 
 class _BusinessMainScreenState extends State<BusinessMainScreen> {
   int _selectedIndex = 0;
+
+  // Define each tab as a separate navigator or screen
   final List<Widget> _screens = [
-    BusinessSearchScreen(),
+    BusinessSearchNavigator(),
     BusinessReviewScreen(),
     BusinessNotificationScreen(),
     BusinessProfileScreen(),
@@ -25,16 +28,18 @@ class _BusinessMainScreenState extends State<BusinessMainScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // Ensures all items are displayed
+        type: BottomNavigationBarType.fixed, // Ensure all items are displayed
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        iconSize: 24, // Set the icon size to 24
+        iconSize: 24, // Set icon size
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.search),
@@ -54,6 +59,28 @@ class _BusinessMainScreenState extends State<BusinessMainScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+// Custom navigator for Search tab
+class BusinessSearchNavigator extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Navigator(
+      onGenerateRoute: (settings) {
+        switch (settings.name) {
+          case '/subcategories':
+            return MaterialPageRoute(
+              builder: (_) => BusinessSubcategoriesScreen(categoryTitle: ''),
+            );
+          default:
+            return MaterialPageRoute(
+              builder: (_) => BusinessSearchScreen(),
+            );
+        }
+      },
     );
   }
 }

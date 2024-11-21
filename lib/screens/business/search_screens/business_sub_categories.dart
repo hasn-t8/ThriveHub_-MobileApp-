@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:thrive_hub/screens/business/search_screens/business_all_categories.dart';
+import 'package:thrive_hub/screens/business/search_screens/business_services_screen.dart';
 import 'package:thrive_hub/screens/user/search_screens/all_categories.dart';
-import 'package:thrive_hub/screens/user/search_screens/services_screen.dart';
 import 'package:thrive_hub/widgets/sub_categories.dart';
 import 'package:thrive_hub/widgets/search_bar.dart'; // Adjust the import path for your reusable search bar
 import 'package:thrive_hub/widgets/categories_top_bar.dart'; // Import CategoriesTopBar
 
-class SubcategoriesScreen extends StatelessWidget {
+class BusinessSubcategoriesScreen extends StatelessWidget {
   final String categoryTitle;
 
-  SubcategoriesScreen({Key? key, required this.categoryTitle}) : super(key: key);
+  BusinessSubcategoriesScreen({Key? key, required this.categoryTitle}) : super(key: key);
 
   // Mock data to simulate API response
   final List<Map<String, dynamic>> mockCategoriesData = [
@@ -82,7 +83,7 @@ class SubcategoriesScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ServicesScreen(),
+                        builder: (context) => BusinessServicesScreen(),
                       ),
                     );
                     print('Tapped item at index: $index');
@@ -92,7 +93,7 @@ class SubcategoriesScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => AllCategoriesScreen(
+                        builder: (context) => BusinessAllCategoriesScreen(
                           categoryTitle: title,
                           items: items,
                         ),
