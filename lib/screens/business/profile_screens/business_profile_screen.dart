@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:thrive_hub/core/utils/no_page_found.dart';
 import 'package:thrive_hub/screens/business/widgets/profile_section.dart';
+import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/profile_listitem.dart';
 import 'package:thrive_hub/core/utils/image_picker.dart';
 
@@ -216,8 +217,9 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text('Profile'),
+      appBar: CustomAppBar(
+        title: 'Reviews',
+        showBackButton: false,
         centerTitle: true,
       ),
       body: Column(

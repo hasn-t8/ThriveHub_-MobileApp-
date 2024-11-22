@@ -6,7 +6,6 @@ class AccountForm extends StatelessWidget {
   final TextEditingController phoneCodeController;
   final TextEditingController phoneController;
   final TextEditingController emailController;
-  final VoidCallback onAddDescription;
 
   AccountForm({
     Key? key,
@@ -15,7 +14,6 @@ class AccountForm extends StatelessWidget {
     required this.phoneCodeController,
     required this.phoneController,
     required this.emailController,
-    required this.onAddDescription,
   }) : super(key: key);
 
   InputDecoration _inputDecoration(String hintText) {
@@ -57,22 +55,10 @@ class AccountForm extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Contact',
-            style: TextStyle(
-              color: Color(0xFF5A5A5A),
-              fontFamily: 'Inter',
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.35,
-              height: 28 / 20,
-            ),
-          ),
-          SizedBox(height: 16),
           Container(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16,16, 16, 0),
             decoration: BoxDecoration(
-              color: Color(0xFFF9F9F9),
+              color: Colors.white, // Set background color to white
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -85,30 +71,10 @@ class AccountForm extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 16),
-          Center(
-            child: ElevatedButton(
-              onPressed: onAddDescription,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: Color(0xFFD8DADC)),
-                ),
-                minimumSize: Size(double.infinity, 50),
-              ),
-              child: Text(
-                "Add Description",
-                style: TextStyle(color: Colors.black),
-              ),
-            ),
-          ),
         ],
       ),
     );
-
   }
-
 
   Widget _buildTextField(String label, String hintText, TextEditingController controller) {
     return Column(

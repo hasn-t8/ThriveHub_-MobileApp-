@@ -6,6 +6,7 @@ const kPrimaryColor = Color(0xFF828282);
 const kSecondaryColor = Color(0xFFC3C1C1);
 const kDividerColor = Color(0xFFD9D9D9);
 const kTextColor = Colors.black;
+const kbuttonTextColor = Colors.white;
 
 
 
@@ -24,7 +25,7 @@ const kSubheadingTextStyle = TextStyle(
 );
 
 const kButtonTextStyle = TextStyle(
-  color: Colors.white,
+  color:kbuttonTextColor,
   fontSize: 17,
   fontFamily: 'Inter',
   fontWeight: FontWeight.w600,
@@ -74,6 +75,14 @@ const bDescriptionTextStyle = TextStyle(
   fontWeight: FontWeight.w400,
   height: 18/14,
   letterSpacing: -0.08,
+);
+ TextStyle bReviewTextStyle = TextStyle(
+  fontSize: 16,
+  fontFamily: 'inter',
+  fontWeight: FontWeight.w400,
+  color: Color(0xFF414141).withOpacity(0.4),
+  letterSpacing: -0.41,
+  height: 22/16,
 );
 
 // Sizes
