@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/screens/user/search_screens/services_screen.dart';
 
 class SubcategoriesWidget extends StatefulWidget {
-  final String categoryTitle; // Title of the category
-  final List<String> items; // List of items to display in boxes
-  final VoidCallback? onSeeAllTap; // Optional callback for the "See All" button
-  final Color containerColor; // Background color of the main container
-  final Color dropBoxColor; // Background color of the drop boxes
+  final String categoryTitle;
+  final List<String> items;
+  final VoidCallback? onSeeAllTap;
+  final Color containerColor;
+  final Color dropBoxColor;
+  final ValueChanged<int>? onItemTap; // Callback for item selection with index
 
   const SubcategoriesWidget({
     Key? key,
     required this.categoryTitle,
     required this.items,
     this.onSeeAllTap,
-    this.containerColor = Colors.white, // Default color for the main container
-    this.dropBoxColor = const Color(0xFFE9E8E8), // Default color for drop boxes
+    this.containerColor = Colors.white,
+    this.dropBoxColor = const Color(0xFFE9E8E8),
+    this.onItemTap, // Optional callback
   }) : super(key: key);
 
   @override
@@ -22,7 +23,7 @@ class SubcategoriesWidget extends StatefulWidget {
 }
 
 class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
-  int? selectedIndex; // Tracks the selected index, ensures only one selection
+  int? selectedIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -34,52 +35,51 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
         color: widget.containerColor,
         boxShadow: [
           BoxShadow(
-            color: const Color(0x0D000000), // Lighter shadow color with lower opacity
+            color: const Color(0x0D000000),
             offset: const Offset(0, 1),
-            blurRadius: 8, // Slightly reduced blur radius for a softer shadow
+            blurRadius: 8,
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row for the title and "See All" button
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start, // Align items to the top
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Text(
                     widget.categoryTitle,
                     style: const TextStyle(
                       fontSize: 20,
-                      fontFamily: 'Inter', // Set the font family
-                      fontWeight: FontWeight.w700, // Medium weight
-                      height: 20/20,
+                      fontFamily: 'Inter',
+                      fontWeight: FontWeight.w700,
+                      height: 20 / 20,
                       letterSpacing: 0.1,
                     ),
-                    maxLines: 2, // Allows the title to break onto a second line if needed
-                    overflow: TextOverflow.ellipsis, // Adds ellipsis if text is too long
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 GestureDetector(
                   onTap: widget.onSeeAllTap,
                   child: Row(
                     children: [
-                      Text(
+                      const Text(
                         'See All',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.black,
                           fontSize: 14,
-                          fontFamily: 'SF Pro Display', // Set the font family
-                          fontWeight: FontWeight.w500, // Medium weight
-                          height: 20/14,
+                          fontFamily: 'SF Pro Display',
+                          fontWeight: FontWeight.w500,
+                          height: 20 / 14,
                           letterSpacing: 0.1,
                         ),
                       ),
                       const SizedBox(width: 4),
-                      Icon(
+                      const Icon(
                         Icons.arrow_forward,
                         color: Colors.black,
                         size: 18,
@@ -91,7 +91,6 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
             ),
           ),
           const SizedBox(height: 10),
-          // Horizontal scrollable row of boxes, aligned to start
           Expanded(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -105,15 +104,11 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                   return GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedIndex = index; // Set the selected box
+                        selectedIndex = index;
                       });
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ServicesScreen(),
-                        ),
-                      );
-                      print('Clicked on $item');
+                      if (widget.onItemTap != null) {
+                        widget.onItemTap!(index); // Invoke the callback with the index
+                      }
                     },
                     child: Container(
                       width: 131,
@@ -122,8 +117,8 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
                         color: selectedIndex == index
-                            ? const Color(0xFFBFBFBF) // Selected background color
-                            : widget.dropBoxColor, // Default background color
+                            ? const Color(0xFFBFBFBF)
+                            : widget.dropBoxColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Align(
@@ -134,11 +129,11 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                             fontFamily: 'Inter',
-                            height: 22/14,
+                            height: 22 / 14,
                             letterSpacing: -0.24,
                             color: selectedIndex == index
-                                ? Colors.white // Selected text color
-                                : Color(0xFF414141), // Default text color
+                                ? Colors.white
+                                : const Color(0xFF414141),
                           ),
                         ),
                       ),
