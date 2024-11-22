@@ -73,11 +73,12 @@ class Welcome2Screen extends StatelessWidget {
                   width: 335,
                   child: ElevatedButton(
                     onPressed: () {
+                      Navigator.pushNamed(context, '/business-sign-up');
                       // Add your onPressed code here!
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignUpScreen()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => SignUpScreen()),
+                      // );
                     },
                     style: ElevatedButton.styleFrom(
 
@@ -103,11 +104,12 @@ class Welcome2Screen extends StatelessWidget {
                   width: 335,
                   child: OutlinedButton(
                     onPressed: () {
+                      Navigator.pushNamed(context, '/business-sign-in');
                       // Add your onPressed code here!
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignInScreen()),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => SignInScreen()),
+                      // );
                     },
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(color: Color(0xFFD8DADC), width: 2), // Border color and width

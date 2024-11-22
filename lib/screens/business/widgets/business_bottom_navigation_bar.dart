@@ -5,12 +5,12 @@ import 'package:thrive_hub/screens/business/reviews_screens/business_review_scre
 import 'package:thrive_hub/screens/business/notification_screens/business_notification_screen.dart';
 import 'package:thrive_hub/screens/business/search_screens/business_search_screen.dart';
 
-class MainScreen extends StatefulWidget {
+class BusinessMainScreen extends StatefulWidget {
   @override
-  _MainScreenState createState() => _MainScreenState();
+  _BusinessMainScreenState createState() => _BusinessMainScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _BusinessMainScreenState extends State<BusinessMainScreen> {
   int _selectedIndex = 0;
   final List<Widget> _screens = [
     BusinessSearchScreen(),

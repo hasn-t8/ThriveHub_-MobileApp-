@@ -67,7 +67,7 @@ class Welcome1Screen extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         // Add your onPressed code here!
-
+                        Navigator.pushNamed(context, '/dashboard');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF313131), // Background color
@@ -100,10 +100,11 @@ class Welcome1Screen extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: () {
                         // Add your onPressed code here!
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => BusinessSignInScreen()),
-                        );
+                        Navigator.pushNamed(context, '/welcome2');
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => BusinessSignInScreen()),
+                        // );
                       },
                       style: OutlinedButton.styleFrom(
                         side: BorderSide(color: Color(0xFFD8DADC), width: 2), // Border color and width

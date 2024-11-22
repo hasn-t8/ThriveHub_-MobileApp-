@@ -12,6 +12,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  String name = ''; // Replace with the actual name variable or dynamic input
 
   int selectedBoxIndex = -1;
 
@@ -51,13 +52,14 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String heading = name.isNotEmpty ? 'Hi, $name!' : 'Hi!';
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(121),
         child: SafeArea(
           child: HeaderWidget(
-            heading: 'Hi, Olivia!',
+            heading: heading,
             showHeading: true,
             showSearchBar: true,
             showLine: true,
