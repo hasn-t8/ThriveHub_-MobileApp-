@@ -6,8 +6,10 @@ class NotificationCard extends StatelessWidget {
   final String time;
   final String message;
   final VoidCallback onViewTap;
-  final bool hasRedDot; // New property to check if there's a red dot
+  final bool hasRedDot;
   final Color backgroundColor;
+  final bool isBusinessProfile; // Flag for business profile
+  final VoidCallback? onReplyTap; // Callback for the reply button
 
   const NotificationCard({
     Key? key,
@@ -16,8 +18,10 @@ class NotificationCard extends StatelessWidget {
     required this.time,
     required this.message,
     required this.onViewTap,
-    this.hasRedDot = false, // Default: No red dot
-    this.backgroundColor = const Color(0xFFFFFFFF), // Default background color
+    this.hasRedDot = false,
+    this.backgroundColor = const Color(0xFFFFFFFF),
+    this.isBusinessProfile = false,
+    this.onReplyTap,
   }) : super(key: key);
 
   @override
@@ -106,6 +110,37 @@ class NotificationCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                    if (isBusinessProfile)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: SizedBox(
+                          width: 345,
+                          height: 44,
+                          child: ElevatedButton(
+                            onPressed: onReplyTap,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                              hasRedDot ? Colors.white: Color(0xFFF4F5F6),
+                              side: BorderSide(
+                                color: hasRedDot
+                                    ? Color(0xFFB3B3B3)
+                                    : const Color(0xFFB3B3B3),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            child: Text(
+                              hasRedDot ? 'Reply' : 'Replied',
+                              style: TextStyle(
+                                color: hasRedDot
+                                    ? Colors.black
+                                    : const Color(0xFFB3B3B3),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

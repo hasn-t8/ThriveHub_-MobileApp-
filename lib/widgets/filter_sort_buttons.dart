@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
 
 class FilterSortButtons extends StatefulWidget {
-  final VoidCallback onFilter;
+  final Future<List<String>> Function(BuildContext context) onFilter;
+  final Future<String?> Function(BuildContext context) onSort;
 
   const FilterSortButtons({
     required this.onFilter,
+    required this.onSort,
     Key? key,
   }) : super(key: key);
 
@@ -16,25 +15,8 @@ class FilterSortButtons extends StatefulWidget {
 }
 
 class _FilterSortButtonsState extends State<FilterSortButtons> {
-  List<String> selectedFilters = []; // To store selected filter options
-
-  void fetchSortedData(String sortOption) {
-    // Implement sorting logic here
-  }
-
-  // Navigate to FilterScreen
-  void navigateToFilterScreen() async {
-    final selectedOptions = await Navigator.push<List<String>>(
-      context,
-      MaterialPageRoute(builder: (context) => FilterScreen()),
-    );
-
-    if (selectedOptions != null) {
-      setState(() {
-        selectedFilters = selectedOptions; // Update selected filters
-      });
-    }
-  }
+  List<String> selectedFilters = [];
+  String? selectedSortOption;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +51,14 @@ class _FilterSortButtonsState extends State<FilterSortButtons> {
                       ),
                     ),
                   ),
-                  onPressed: navigateToFilterScreen,
+                  onPressed: () async {
+                    final filters = await widget.onFilter(context);
+                    if (filters.isNotEmpty) {
+                      setState(() {
+                        selectedFilters = filters;
+                      });
+                    }
+                  },
                 ),
               ),
               // Divider
@@ -93,18 +82,11 @@ class _FilterSortButtonsState extends State<FilterSortButtons> {
                     ),
                   ),
                   onPressed: () async {
-                    final selectedOption = await showModalBottomSheet<String>(
-                      context: context,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(16),
-                        ),
-                      ),
-                      builder: (context) => const SortBottomSheet(),
-                    );
-
-                    if (selectedOption != null) {
-                      fetchSortedData(selectedOption);
+                    final sortOption = await widget.onSort(context);
+                    if (sortOption != null) {
+                      setState(() {
+                        selectedSortOption = sortOption;
+                      });
                     }
                   },
                 ),
@@ -114,253 +96,86 @@ class _FilterSortButtonsState extends State<FilterSortButtons> {
         ),
 
         // Display selected filters in a horizontal scrollable list
-        if (selectedFilters.isNotEmpty)
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: selectedFilters.map((filter) {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0), // Horizontal padding added for space between boxes
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white, // Background color
-                      borderRadius: BorderRadius.circular(8), // Rounded corners
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1), // Shadow effect
-                          blurRadius: 2,
-                          spreadRadius: 1,
-                        ),
-                      ],
+        if (selectedFilters.isNotEmpty || selectedSortOption != null)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  // Display Filters
+                  ...selectedFilters.map((filter) {
+                    return _buildChip(
+                      label: filter,
+                      onRemove: () {
+                        setState(() {
+                          selectedFilters.remove(filter);
+                        });
+                      },
+                    );
+                  }),
+                  // Display Selected Sort Option
+                  if (selectedSortOption != null)
+                    _buildChip(
+                      label: "Sort: $selectedSortOption",
+                      onRemove: () {
+                        setState(() {
+                          selectedSortOption = null;
+                        });
+                      },
                     ),
-                    child: Row(
-                      children: [
-                        // Text with custom styling
-                        Text(
-                          filter,
-                          style: TextStyle(
-                            fontFamily: 'Inter', // Font family
-                            fontSize: 13, // Font size
-                            fontWeight: FontWeight.w500, // Font weight
-                            height: 25 / 13, // Line height
-                            letterSpacing: 0.38, // Letter spacing
-                            color: Colors.black, // Text color
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        // Star icon with color #4D4D4D
-                        Icon(
-                          Icons.star,
-                          color: Color(0xFF4D4D4D), // Star color
-                          size: 16, // Size of the star
-                        ),
-                        const SizedBox(width: 5),
-                        // Custom delete icon (close button)
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedFilters.remove(filter);
-                            });
-                          },
-                          child: Container(
-                            width: 13.5, // Width of the circle
-                            height: 13.5, // Height of the circle
-                            padding: const EdgeInsets.all(3), // Padding to ensure icon fits well
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color(0xFF8E8E93), // Circle color
-                            ),
-                            child: Center( // Centering the cross icon
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.white, // Cross icon color
-                                size: 7, // Adjusted size for the cross icon to fit within the circle
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
+                ],
+              ),
             ),
           ),
-
-
       ],
     );
   }
-}
 
-
-
-
-Future<void> fetchSortedData(String sortOption) async {
-    final response = await http.get(
-      Uri.parse('https://api.example.com/data?sort=$sortOption'),
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print('Sorted Data: $data');
-    } else {
-      print('Failed to fetch sorted data');
-    }
-  }
-
-
-
-class SortBottomSheet extends StatefulWidget {
-  const SortBottomSheet({Key? key}) : super(key: key);
-
-  @override
-  _SortBottomSheetState createState() => _SortBottomSheetState();
-}
-
-class _SortBottomSheetState extends State<SortBottomSheet> {
-  String selectedOption = '';
-
-  final TextStyle title3Regular = const TextStyle(
-    fontFamily: 'SF Pro Display',
-    fontSize: 20,
-    fontWeight: FontWeight.w400,
-    height: 25 / 20, // Line height ratio
-    letterSpacing: 0.38,
-    color: Color(0xFF201C41), // Updated text color
-    decoration: TextDecoration.none,
-  );
-
-  final TextStyle sortTitleStyle = const TextStyle(
-    fontFamily: 'SF Pro Display',
-    fontSize: 17,
-    fontWeight: FontWeight.w500,
-    height: 20 / 17, // Line height ratio
-    letterSpacing: -0.5,
-    color: Colors.black, // Sort title color
-    textBaseline: TextBaseline.alphabetic,
-    decoration: TextDecoration.none,
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    return Theme(
-      data: Theme.of(context).copyWith(
-        unselectedWidgetColor: const Color(0xFFD9D9D9),
-      ),
-      child: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Sort',
-                      style: sortTitleStyle, // Updated style
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(right: 14.0), // Adjust the right margin as needed
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF8E8E93), // Background color
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.close,
-                        size: 15, // Adjust the size of the icon to fit within 17x17
-                        color: Colors.white, // Icon color
-                      ),
-                      padding: EdgeInsets.zero, // Remove extra padding
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                ],
+  Widget _buildChip({required String label, required VoidCallback onRemove}) {
+    return Padding(
+      // padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      // padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(8, 1,8,1),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 2,
+              spreadRadius: 1,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
               ),
-              const Divider(color: Color(0xFFD9D9D9), thickness: 1),
-
-              // Price Low to High Section
-              buildOptionRow('Price Low to High'),
-              const Divider(color: Color(0xFFD9D9D9), thickness: 1),
-
-              // Price High to Low Section
-              buildOptionRow('Price High to Low'),
-              const Divider(color: Color(0xFFD9D9D9), thickness: 1),
-
-              // Rating Section
-              buildOptionRow('Rating'),
-              const Divider(color: Color(0xFFD9D9D9), thickness: 1),
-
-              // Newest Section
-              buildOptionRow('Newest'),
-              const Divider(color: Color(0xFFD9D9D9), thickness: 1),
-
-              const SizedBox(height: 6),
-
-              // Apply Button
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(343, 54),
-                  backgroundColor: Colors.black,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
+            ),
+            const SizedBox(width: 5),
+            GestureDetector(
+              onTap: onRemove,
+              child: Container(
+                width: 13.5,
+                height: 13.5,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Color(0xFF8E8E93),
                 ),
-                onPressed: () {
-                  Navigator.pop(context, selectedOption);
-                },
-                child: const Text(
-                  'Show',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
+                child: const Icon(Icons.close, color: Colors.white, size: 7),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
-
-  Widget buildOptionRow(String text) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          selectedOption = text;
-        });
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(text, style: title3Regular),
-          Radio<String>(
-            value: text,
-            groupValue: selectedOption,
-            activeColor: Colors.black,
-            fillColor: MaterialStateProperty.resolveWith<Color>(
-                  (states) {
-                if (states.contains(MaterialState.selected)) {
-                  return Colors.black; // Selected color
-                }
-                return const Color(0xFFD9D9D9); // Unselected color
-              },
-            ),
-            onChanged: (value) {
-              setState(() {
-                selectedOption = value!;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
 }
-

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thrive_hub/screens/user/reviews_screens/create_review_screen.dart';
 import 'package:thrive_hub/screens/business/reviews_screens/business_review_screen.dart';
+import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
+import 'package:thrive_hub/widgets/sort.dart';
 import 'package:thrive_hub/widgets/tab_buttons.dart';
 import 'package:thrive_hub/widgets/filter_sort_buttons.dart'; // Import the new FilterSortButtons widget
 
@@ -65,13 +67,29 @@ class _BusinessReviewScreenState extends State<BusinessReviewScreen> {
           ),
           SizedBox(height: 10.0), // Space between buttons and filter/sort buttons
           FilterSortButtons(
-            onFilter: () {
-              // Handle filter action
+            onFilter: (context) async {
+              // Your filter logic here
+              return await Navigator.push<List<String>>(
+                context,
+                MaterialPageRoute(builder: (context) => FilterScreen()),
+              ) ?? [];
             },
-            // onSort: () {
-            //   // Handle sort action
-            // },
+            onSort: (context) async {
+              // Your sort logic here
+              return await showModalBottomSheet<String>(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                builder: (context) => const SortBottomSheet(
+                  title: 'Sort By', // Pass custom title
+                  sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'], // Pass custom options
+
+                ),
+              );
+            },
           ),
+
           SizedBox(height: 8.0), // Space between filter/sort buttons and review cards
           Expanded(
             child: reviews.isEmpty
