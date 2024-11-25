@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class ReviewCard extends StatelessWidget {
   final String imageUrl;
   final String title;
@@ -9,12 +10,20 @@ class ReviewCard extends StatelessWidget {
   final String reviewerName;
   final String reviewText;
   final int likes;
-  final bool isLiked; // New parameter to indicate like status
+  final bool isLiked;
   final VoidCallback onLike;
   final VoidCallback onShare;
-  final VoidCallback? onTap; // Add this for overall card tap
+  final VoidCallback? onTap;
   final bool showShareButton;
   final bool showDivider;
+
+  // New Parameters
+  final bool showReplyButton;
+  final VoidCallback? onReply;
+  final bool isReplied;
+  final String? replyTitle;
+  final String? replyTimeAgo;
+  final String? replyMessage;
 
   ReviewCard({
     required this.imageUrl,
@@ -25,18 +34,24 @@ class ReviewCard extends StatelessWidget {
     required this.reviewerName,
     required this.reviewText,
     required this.likes,
-    required this.isLiked, // Initialize the new parameter
+    required this.isLiked,
     required this.onLike,
     required this.onShare,
-    this.onTap, // Initialize as optional
+    this.onTap,
     this.showShareButton = true,
     this.showDivider = true,
+    this.showReplyButton = false,
+    this.onReply,
+    this.isReplied = false,
+    this.replyTitle,
+    this.replyTimeAgo,
+    this.replyMessage,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, // Handle the onTap callback
+      onTap: onTap,
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
@@ -180,7 +195,7 @@ class ReviewCard extends StatelessWidget {
                     child: Row(
                       children: [
                         Icon(
-                          isLiked ? Icons.favorite : Icons.favorite_border, // Conditional Icon
+                          isLiked ? Icons.favorite : Icons.favorite_border,
                           color: const Color(0xFF434242),
                         ),
                         SizedBox(width: 4.0),
@@ -210,6 +225,78 @@ class ReviewCard extends StatelessWidget {
                     ),
                 ],
               ),
+              if (showReplyButton)
+                Container(
+                  margin: const EdgeInsets.only(top: 16.0),
+                  width: 303.0,
+                  height: 48.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: TextButton(
+                    onPressed: onReply,
+                    child: Text(
+                      'Reply',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              if (isReplied)
+                Container(
+                  margin: const EdgeInsets.only(top: 16.0),
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFEAEAEA),
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border(
+                      left: BorderSide(
+                        color: Color(0xFF888888), // Left border color
+                        width: 6.0, // Border width
+                      ),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.reply_all_outlined, size: 18.0, color: Colors.grey),
+                          SizedBox(width: 8.0),
+                          Expanded(
+                            child: Text(
+                              replyTitle ?? "",
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            replyTimeAgo ?? "",
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.0),
+                      Text(
+                        replyMessage ?? "",
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         ),

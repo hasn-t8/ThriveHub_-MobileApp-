@@ -19,7 +19,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   String _lastName = '';
   String _email = '';
   String _profileImageUrl = 'assets/avtar.jpg'; // Default image path
-  String _role = 'admin'; // Default role for demonstration
+  String _role = 'ceo'; // Default role for demonstration
   bool _isLoading = false;
   File? _image;
 
@@ -33,10 +33,12 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     {'title': '$projectsCount', 'subtitle': 'Projects'},
   ];
 
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
+
   }
 
   Future<void> _loadUserData() async {
@@ -232,7 +234,20 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
               lastName: _lastName,
               email: _email,
               profileImagePath: _profileImageUrl,
-              onEditProfile: () {
+              onEditProfile: () async {
+                setState(() {
+                  // Define a map of roles to corresponding emails
+                  const roleEmailMap = {
+                    'ceo': 'ceo@gmail.com',
+                    'marketing': 'marketing@gmail.com',
+                    'admin': 'admin@gmail.com',
+                  };
+                  const roles = ['ceo', 'marketing', 'admin'];
+                  int currentIndex = roles.indexOf(_role);
+                  _role = roles[(currentIndex + 1) % roles.length];
+                  _email = roleEmailMap[_role]!;
+                  _firstName=roles[(currentIndex + 1) % roles.length];
+                });
                 print('Edit profile clicked');
               },
               onEditImage: _onImageIconPressed,

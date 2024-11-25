@@ -1,13 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thrive_hub/core/utils/thank_you.dart';
+import 'package:thrive_hub/screens/business/widgets/description_bottom_sheet.dart';
 import 'package:thrive_hub/screens/user/reviews_screens/create_review_screen.dart';
-import 'package:thrive_hub/screens/business/reviews_screens/business_review_screen.dart';
 import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/sort.dart';
-import 'package:thrive_hub/widgets/tab_buttons.dart';
-import 'package:thrive_hub/widgets/filter_sort_buttons.dart'; // Import the new FilterSortButtons widget
+import 'package:thrive_hub/widgets/filter_sort_buttons.dart';
 
 class BusinessReviewScreen extends StatefulWidget {
   @override
@@ -15,64 +17,101 @@ class BusinessReviewScreen extends StatefulWidget {
 }
 
 class _BusinessReviewScreenState extends State<BusinessReviewScreen> {
-  bool isSavedSelected = true; // Initially, Saved button is selected
 
-  // Sample data for reviews
-  final List<Map<String, dynamic>> allReviews = List.generate(
-    10,
-        (index) => {
-      'imageUrl': 'https://via.placeholder.com/40',
-      'title': 'Company $index',
-      'rating': 4.8,
-      'location': 'USA',
-      'timeAgo': '1 day ago',
-      'reviewerName': 'Reviewer $index',
-      'reviewText': 'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'likes': 43,
-      'isLiked': false,
+  final TextEditingController _descriptionController = TextEditingController();
 
+  String? _description;
+  File? _selectedImage;
+
+
+  void _saveDescription(String description, File? selectedImage) {
+    setState(() {
+      _description = description;
+      _selectedImage = selectedImage;
+    });
+    ThankYou.show(context);
+  }
+
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return ReusableBottomSheet(
+          descriptionController: _descriptionController,
+          onSave: _saveDescription,
+          initialSelectedImage: _selectedImage,
+          onClose: () => Navigator.pop(context),
+        );
+      },
+    );
+  }
+  // Sample data for reviews with a mix of replied and unreplied reviews
+  final List<Map<String, dynamic>> reviews = [
+    {
+      "id": 1,
+      "imageUrl": "https://via.placeholder.com/40",
+      "title": "Company ABC",
+      "rating": 4.5,
+      "location": "New York, USA",
+      "timeAgo": "2 days ago",
+      "reviewerName": "John Doe",
+      "reviewText": "Great service and friendly staff!",
+      "likes": 23,
+      "isLiked": false,
+      "reply": {
+        "replyTitle": "Business Response",
+        "replyTimeAgo": "1 day ago",
+        "replyMessage": "Thank you for your kind words! We’re glad you had a great experience."
+      }
     },
-  );
-
-  final List<Map<String, dynamic>> myReviews = []; // Empty list for my reviews
+    {
+      "id": 2,
+      "imageUrl": "https://via.placeholder.com/40",
+      "title": "Company XYZ",
+      "rating": 3.8,
+      "location": "San Francisco, USA",
+      "timeAgo": "5 days ago",
+      "reviewerName": "Jane Smith",
+      "reviewText": "Good service, but can improve on delivery time.",
+      "likes": 12,
+      "isLiked": false,
+      "reply": null // No reply exists
+    }
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final reviews = isSavedSelected ? allReviews : myReviews;
-
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Reviews',
         showBackButton: false,
         centerTitle: true,
       ),
-      backgroundColor: Color(0xFFF1F3F4), // Set background color of the screen
-      body: Column(
+      backgroundColor: Colors.white, // Set background color of the screen to white
+      body: reviews.isEmpty
+          ? Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/no_review.png', // Replace with your actual image path
+              width: 254,
+              height: 256,
+            ),
+          ],
+        ),
+      )
+          : Column(
         children: [
-          SizedBox(height: 10.0), // Space between AppBar and buttons
-          TabButtons(
-            isAllSelected: isSavedSelected,
-            onSelectAll: () {
-              setState(() {
-                isSavedSelected = true;
-              });
-            },
-            onSelectMyReviews: () {
-              setState(() {
-                isSavedSelected = false;
-              });
-            },
-            allText: 'All', // Customizable text for the "All" button
-            myReviewsText: 'My reviews', // Customizable text for the "My reviews" button
-          ),
-          SizedBox(height: 10.0), // Space between buttons and filter/sort buttons
+          SizedBox(height: 10.0), // Space between app bar and filter/sort buttons
           FilterSortButtons(
             onFilter: (context) async {
               // Your filter logic here
               return await Navigator.push<List<String>>(
                 context,
                 MaterialPageRoute(builder: (context) => FilterScreen()),
-              ) ?? [];
+              ) ??
+                  [];
             },
             onSort: (context) async {
               // Your sort logic here
@@ -82,66 +121,20 @@ class _BusinessReviewScreenState extends State<BusinessReviewScreen> {
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
                 builder: (context) => const SortBottomSheet(
-                  title: 'Sort By', // Pass custom title
-                  sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'], // Pass custom options
-
+                  title: 'Sort', // Pass custom title
+                  sortOptions: ['By Service', 'No answer', 'with answer', 'Newest'], // Pass custom options
                 ),
               );
             },
           ),
-
           SizedBox(height: 8.0), // Space between filter/sort buttons and review cards
           Expanded(
-            child: reviews.isEmpty
-                ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    'assets/no_review.png', // Replace with your actual image path
-                    width: 254,
-                    height: 256,
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'You have not written any review yet',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 32,
-                    height: 54,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        // Handle button action
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CreateReviewScreen()),
-                        );
-                      },
-                      child: Text(
-                        'Write a Review',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                          side: BorderSide(color: Color(0xFFA5A5A5)),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            )
-                : ListView.builder(
+            child: ListView.builder(
               itemCount: reviews.length,
               itemBuilder: (context, index) {
                 final review = reviews[index];
+                final hasReply = review['reply'] != null;
+
                 return ReviewCard(
                   imageUrl: review['imageUrl'],
                   title: review['title'],
@@ -151,7 +144,16 @@ class _BusinessReviewScreenState extends State<BusinessReviewScreen> {
                   reviewerName: review['reviewerName'],
                   reviewText: review['reviewText'],
                   likes: review['likes'],
-                  isLiked:review['isLiked'],
+                  isLiked: review['isLiked'],
+                  showReplyButton: !hasReply, // Show reply button only if no reply exists
+                  onReply: () {
+                    // Navigate to reply creation screen or handle reply action
+                    _showBottomSheet(context);
+                  },
+                  isReplied: hasReply, // Mark as replied if a reply exists
+                  replyTitle: hasReply ? review['reply']['replyTitle'] : null,
+                  replyTimeAgo: hasReply ? review['reply']['replyTimeAgo'] : null,
+                  replyMessage: hasReply ? review['reply']['replyMessage'] : null,
                   onTap: () {
                     print('ReviewCard tapped: ${review['title']}');
                   },
