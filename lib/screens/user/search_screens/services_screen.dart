@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
 import 'package:thrive_hub/widgets/feedback_bottom_sheet.dart';
 import 'package:thrive_hub/widgets/rating_card.dart';
 import 'package:thrive_hub/widgets/service_card.dart';
@@ -8,6 +9,7 @@ import 'package:thrive_hub/widgets/service_tabs.dart';
 import 'package:thrive_hub/widgets/service_about_tab.dart';
 import 'package:thrive_hub/widgets/filter_sort_buttons.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
+import 'package:thrive_hub/widgets/sort.dart';
 
 class ServicesScreen extends StatefulWidget {
   @override
@@ -123,10 +125,28 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
                   // Filter and Sort Buttons
                   FilterSortButtons(
-                    onFilter: () {
-                      print('Filter action triggered');
+                    onFilter: (context) async {
+                      // Your filter logic here
+                      return await Navigator.push<List<String>>(
+                        context,
+                        MaterialPageRoute(builder: (context) => FilterScreen()),
+                      ) ?? [];
+                    },
+                    onSort: (context) async {
+                      // Your sort logic here
+                      return await showModalBottomSheet<String>(
+                        context: context,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                        ),
+                        builder: (context) => const SortBottomSheet(
+                          title: 'Sort By', // Pass custom title
+                          sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'], // Pass custom options
+                        ),
+                      );
                     },
                   ),
+
 
                   const SizedBox(height: 16),
 
