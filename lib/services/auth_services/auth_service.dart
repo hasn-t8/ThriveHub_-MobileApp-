@@ -15,18 +15,18 @@ class AuthService {
     required String email,
     required String password,
     required List<String> userTypes, // Make sure userTypes is a List<String>
+
   }) async {
     try {
+      String fullName = '${firstName ?? ''} ${lastName ?? ''}'.trim();
       final response = await http.post(
         Uri.parse('$_baseUrl/auth/register'), // Constructing the register endpoint URL
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
         body: jsonEncode(<String, dynamic>{
-          'full_name': firstName,
-          // 'firstName': firstName,
-          // 'lastName': lastName,
-          // 'companyName': companyName,
+          'full_name': fullName,
+          'org_name': companyName,
           'email': email,
           'password': password,
           'types': userTypes,  // Pass the userTypes as a List<String>
@@ -41,7 +41,7 @@ class AuthService {
         if (response.statusCode == 201) {
           print('User registered successfully');
           return responseData;  // Return the response data
-        } else if (response.statusCode == 409) {
+        }else if (response.statusCode == 409) {
           print('Email already exists');
           throw Exception('Email already exists');
         } else {
@@ -71,7 +71,6 @@ class AuthService {
 
 
 
-  //login
   Future<Map<String, dynamic>> loginUser({
     required String email,
     required String password,
@@ -91,12 +90,72 @@ class AuthService {
     if (response.statusCode == 200) {
       print('Login successful: $responseData');
       return responseData;
+    } else if (response.statusCode == 403) {
+      print('Please verify your account');
+      throw Exception('403: Please verify your account');
     } else {
       print('Failed to login. Status code: ${response.statusCode}');
       print('Response body: $responseData');
       throw Exception('Failed to login: ${responseData['message']}');
     }
   }
+
+//Activate account
+  Future<bool> ActivateCodeApi(String email, String code) async {
+    try {
+      print("$email,$code");
+      // Sending email and code to the API
+      final response = await http.post(
+        Uri.parse('$_baseUrl/auth/activate-account/verify'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'email': email,
+          'code': code,
+        }),
+      );
+
+      // Check if the response is successful (status code 200)
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        // Handle other status codes or errors
+        throw Exception('Failed to verify code');
+      }
+    } catch (e) {
+      // Handle errors (e.g., network issues)
+      print('Error during API call: $e');
+      return false;
+    }
+  }
+
+  //Resend code
+  Future<bool> ResendCodeApi(String email) async {
+    try {
+      print("Resending code to: $email");
+
+      // Sending email to the API to resend the verification code
+      final response = await http.post(
+        Uri.parse('$_baseUrl/auth/activate-account/get-code'),  // Adjust the endpoint URL accordingly
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'email': email,
+        }),
+      );
+
+      // Check if the response is successful (status code 200)
+      if (response.statusCode == 200) {
+        return true;  // Successfully resent the code
+      } else {
+        // Handle other status codes or errors
+        throw Exception('Failed to resend code');
+      }
+    } catch (e) {
+      // Handle errors (e.g., network issues)
+      print('Error during API call: $e');
+      return false;
+    }
+  }
+
 
   //logout
   Future<Map<String, dynamic>> logout() async {

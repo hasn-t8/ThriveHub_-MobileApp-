@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:thrive_hub/core/utils/no_page_found.dart';
 import 'package:thrive_hub/screens/business/widgets/profile_section.dart';
+import 'package:thrive_hub/services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/profile_listitem.dart';
 import 'package:thrive_hub/core/utils/image_picker.dart';
@@ -15,8 +16,7 @@ class BusinessProfileScreen extends StatefulWidget {
 }
 
 class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
-  String _firstName = '';
-  String _lastName = '';
+  String _full_name = '';
   String _email = '';
   String _profileImageUrl = 'assets/avtar.jpg'; // Default image path
   String _role = 'ceo'; // Default role for demonstration
@@ -41,19 +41,51 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
 
   }
 
+  Future<void> _logout(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    AuthService logoutService = AuthService();
+    final result = await logoutService.logout();
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(result['message']),
+    ));
+
+    if (result['success']) {
+      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+    }
+  }
   Future<void> _loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? userJson = prefs.getString('user');
-    if (userJson != null) {
-      Map<String, dynamic> userMap = jsonDecode(userJson);
-      setState(() {
-        _firstName = userMap['first_name'] ?? '';
-        _lastName = userMap['last_name'] ?? '';
-        _email = userMap['email'] ?? '';
-        _profileImageUrl = userMap['profile_image_url'] ?? 'assets/avtar.jpg';
-        _role = userMap['role'] ?? 'marketing'; // Default to marketing
-      });
-    }
+
+    // Retrieve the access token
+    final accessToken = prefs.getString('access_token');
+    print('Access Token in profile: $accessToken');
+
+    // Use default values if the retrieved values are null
+    final fullName = prefs.getString('full_name') ?? 'Name'; // Default value for full name
+    final profileImage = prefs.getString('profile_image');
+    final email = prefs.getString('email');
+    final location = prefs.getString('city') ?? 'Location'; // Default if null
+    final reviews = prefs.getInt('reviews') ?? 28; // Default value for reviews
+    final companyCount = prefs.getInt('company_count') ?? 38; // Default value for company count
+    final role = prefs.getString('role') ?? 'Marketing';
+
+
+    // Update the UI fields with the retrieved data
+    setState(() {
+      _full_name = fullName;
+      _role = role;
+      if (profileImage != null) {
+        _image = File(profileImage); // Set the profile image from SharedPreferences
+      }
+    });
   }
 
   Future<void> _onImageIconPressed() async {
@@ -114,7 +146,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
         'text': _isLoading ? 'Logging out...' : 'Logout',
         'trailingIcon': Icons.arrow_forward_ios,
         'onTap': () {
-          Navigator.pushNamed(context, '/business-sign-in');
+          _logout(context);
         },
       },
     ];
@@ -231,8 +263,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
             child: ProfileSection(
-              firstName: _firstName,
-              lastName: _lastName,
+              fullName: _full_name,
               email: _email,
               profileImagePath: _profileImageUrl,
               onEditProfile: () async {
@@ -247,7 +278,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
                   int currentIndex = roles.indexOf(_role);
                   _role = roles[(currentIndex + 1) % roles.length];
                   _email = roleEmailMap[_role]!;
-                  _firstName=roles[(currentIndex + 1) % roles.length];
+                  _full_name=roles[(currentIndex + 1) % roles.length];
                 });
                 print('Edit profile clicked');
               },

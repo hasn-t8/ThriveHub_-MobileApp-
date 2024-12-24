@@ -1,64 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/screens/user/auth/sign_in.dart';
 import 'package:thrive_hub/screens/user/search_screens/search_screen.dart';
 import 'package:thrive_hub/screens/user/reviews_screens/review_screen.dart';
 import 'package:thrive_hub/screens/user/notifications_screens/notification_screen.dart';
 import 'package:thrive_hub/screens/user/profile_screens/profile_screen.dart';
 import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
-
-//
-// class MainScreen extends StatefulWidget {
-//   @override
-//   _MainScreenState createState() => _MainScreenState();
-// }
-//
-// class _MainScreenState extends State<MainScreen> {
-//   int _selectedIndex = 0;
-//   final List<Widget> _screens = [
-//     SearchScreen(),
-//     ReviewScreen(),
-//     NotificationScreen(),
-//     ProfileScreen(),
-//   ];
-//
-//   void _onItemTapped(int index) {
-//     setState(() {
-//       _selectedIndex = index;
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: _screens[_selectedIndex],
-//       bottomNavigationBar: BottomNavigationBar(
-//         type: BottomNavigationBarType.fixed, // Ensures all items are displayed
-//         currentIndex: _selectedIndex,
-//         onTap: _onItemTapped,
-//         iconSize: 24, // Set the icon size to 24
-//         items: [
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.search),
-//             label: 'Search',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.reviews_outlined),
-//             label: 'Reviews',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.notifications_outlined),
-//             label: 'Notifications',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.person),
-//             label: 'Profile',
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -75,10 +22,30 @@ class _MainScreenState extends State<MainScreen> {
     ProfileScreen(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  void _onItemTapped(int index) async {
+    if (index == 0) {
+      // Allow access to the Search tab (index 0) without login
+      setState(() {
+        _selectedIndex = index;
+      });
+    } else {
+      // Check login status
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      List<String>? storedUserTypes = prefs.getStringList('user_types');
+      if (accessToken == null || accessToken.isEmpty || (storedUserTypes == null || !storedUserTypes.contains('registered-user'))) {
+        await prefs.clear();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => SignInScreen()),
+        );
+      }else {
+        // If logged in, allow access to the selected tab
+        setState(() {
+          _selectedIndex = index;
+        });
+      }
+    }
   }
 
   @override
@@ -137,7 +104,3 @@ class SearchNavigator extends StatelessWidget {
     );
   }
 }
-
-//
-// // Inside SearchScreen
-// Navigator.of(context).pushNamed('/subcategories');

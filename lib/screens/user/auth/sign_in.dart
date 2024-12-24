@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/business/slider_screens/business_slider_screen.dart';
+import 'package:thrive_hub/screens/user/auth/activate_account.dart';
 import 'package:thrive_hub/services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/google_facbook_button.dart';
 import 'sign_up.dart';
@@ -119,7 +120,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   (Route<dynamic> route) => false,
             );
           } else {
-            // Handle case where user type is unknown
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Unknown user type'),
@@ -137,12 +137,21 @@ class _SignInScreenState extends State<SignInScreen> {
           throw Exception('Unexpected response format');
         }
       } catch (e) {
-        print('Exception during login: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${e.toString().replaceAll('Exception: ', '')}'),
-          ),
-        );
+        if (e.toString().contains('403')) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ActivateAccountScreen(email: email),
+            ),
+          );
+        } else {
+          print('Exception during login: $e');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${e.toString().replaceAll('Exception: ', '')}'),
+            ),
+          );
+        }
       } finally {
         setState(() {
           _isLoading = false;
@@ -150,6 +159,7 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
+import 'package:thrive_hub/screens/business/auth/sign_up.dart';
+import 'package:thrive_hub/screens/user/auth/activate_account.dart';
 import 'package:thrive_hub/screens/user/auth/forget_password.dart';
 import 'package:thrive_hub/screens/user/auth/sign_up.dart';
 import 'package:thrive_hub/services/auth_services/auth_service.dart';
@@ -76,7 +78,6 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
     print('Access Token: $accessToken');
   }
 
-
   Future<void> _login() async {
     final email = _emailController.text.trim();
     final validationError = emailValidator(email);
@@ -119,7 +120,6 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                   (Route<dynamic> route) => false,
             );
           } else {
-            // Handle case where user type is unknown
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Unknown user type'),
@@ -137,12 +137,21 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
           throw Exception('Unexpected response format');
         }
       } catch (e) {
-        print('Exception during login: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${e.toString().replaceAll('Exception: ', '')}'),
-          ),
-        );
+        if (e.toString().contains('403')) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ActivateAccountScreen(email: email),
+            ),
+          );
+        } else {
+          print('Exception during login: $e');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${e.toString().replaceAll('Exception: ', '')}'),
+            ),
+          );
+        }
       } finally {
         setState(() {
           _isLoading = false;
@@ -150,6 +159,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
       }
     }
   }
+
 
 
   @override
@@ -375,7 +385,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                               // Add your onTap code here!
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SignUpScreen()),
+                                MaterialPageRoute(builder: (context) => BusinessSignUpScreen()),
                               );
                             },
                             child: Text(

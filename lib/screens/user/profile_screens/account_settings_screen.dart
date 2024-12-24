@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/services/profile_service/profile_service.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import '../../../widgets/input_fields.dart';
@@ -11,8 +12,7 @@ class AccountSettingsScreen extends StatefulWidget {
 }
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _fullNameController = TextEditingController();
   final _dateController = TextEditingController();
   final _locationController = TextEditingController();
   final _emailController = TextEditingController();
@@ -24,8 +24,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   void initState() {
     super.initState();
     // Add listeners to detect changes
-    _firstNameController.addListener(_onFieldChange);
-    _lastNameController.addListener(_onFieldChange);
+    _fullNameController.addListener(_onFieldChange);
     _dateController.addListener(_onFieldChange);
     _locationController.addListener(_onFieldChange);
     _emailController.addListener(_onFieldChange);
@@ -33,24 +32,44 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   }
 
   void _loadProfileData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String fullName = prefs.getString('full_name') ?? '';
+    String email = prefs.getString('email') ?? '';
+    String city = prefs.getString('city') ?? '';
+    setState(() {
+      _fullNameController.text = fullName;
+      _emailController.text = email;
+    });
+    // Attempt to load the profile data (if it's coming from an API or another source)
     final profileService = ProfileService();
     final profileData = await profileService.getProfile();
 
-    if (profileData != null) {
+    // If the profile data is available and not empty, load it
+    if (profileData != null && profileData.isNotEmpty) {
       setState(() {
-        // If full_name is null, use an empty string or some default value
-        _firstNameController.text = profileData['full_name']?.split(' ').first ?? '';
-        _lastNameController.text = profileData['full_name']?.split(' ').last ?? '';
-
-        // Load other profile data with null checks
+        _fullNameController.text = profileData['full_name'] ?? '';
+        _emailController.text = profileData['email'] ?? '';
+        _locationController.text = profileData['address_city'] ?? '';
         _dateController.text = profileData['date_of_birth'] != null
             ? DateFormat('yyyy-MM-dd').format(DateTime.parse(profileData['date_of_birth']))
             : '';
-        _locationController.text = profileData['address_line_1'] ?? '';
-        _emailController.text = profileData['email'] ?? '';
+      });
+
+      // After loading data from API, update SharedPreferences with the latest data
+      await prefs.setString('full_name', profileData['full_name'] ?? '');
+      await prefs.setString('email', profileData['email'] ?? '');
+      await prefs.setString('city', profileData['city'] ?? '');
+    } else {
+
+      // Use the SharedPreferences data if no profile data is available
+      setState(() {
+        _fullNameController.text = fullName;
+        _emailController.text = email;
+        _locationController.text = city;
       });
     }
   }
+
 
 
 
@@ -64,8 +83,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
+    _fullNameController.dispose();
     _dateController.dispose();
     _locationController.dispose();
     _emailController.dispose();
@@ -111,7 +129,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       "profileData": {
         "occupation": "Software", // Add other required fields as necessary
         "date_of_birth": _dateController.text,
-        "address_line_1": _locationController.text,
+        "address_city": _locationController.text,
       }
     };
 
@@ -151,22 +169,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                 children: [
                   CustomInputField(
                     labelText: 'First Name',
-                    controller: _firstNameController,
-                    labelColor: Color(0xFF5A5A5A),
-                    labelFontSize: 14,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0x1F000000),
-                        offset: Offset(0, 1),
-                        blurRadius: 11,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 16),
-                  CustomInputField(
-                    labelText: 'Last Name',
-                    controller: _lastNameController,
+                    controller: _fullNameController,
                     labelColor: Color(0xFF5A5A5A),
                     labelFontSize: 14,
                     boxShadow: [
@@ -219,6 +222,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                     labelText: 'Email',
                     hintText: 'mail.example@gmail.com',
                     controller: _emailController,
+                    readOnly: true, // Add this to make the field non-editable
                     labelFontSize: 14,
                     labelColor: Color(0xFF5A5A5A),
                     boxShadow: [

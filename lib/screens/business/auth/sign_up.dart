@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
+import 'package:thrive_hub/screens/user/auth/activate_account.dart';
 import '../../../core/constants/text_styles.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
@@ -117,11 +118,12 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
         ),
       );
 
-      // Navigator.pushNamedAndRemoveUntil(
-      //   context,
-      //   '/business-profile-setup',
-      //       (Route<dynamic> route) => false,  // This removes all previous routes
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ActivateAccountScreen(email: email),
+        ),
+      );
 
     } catch (e) {
       print(e);

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
+import 'package:thrive_hub/screens/user/auth/activate_account.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
 import '../../../widgets/google_facbook_button.dart';
@@ -124,11 +125,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       );
 
-      // Navigator.pushAndRemoveUntil(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => MainScreen()),
-      //       (Route<dynamic> route) => false, // Remove all previous routes
-      // );
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ActivateAccountScreen(email: email),
+        ),
+      );
     } catch (e) {
       print(e);
       String errorMessage = e.toString().replaceAll('Exception:', '').trim();
@@ -425,7 +427,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 20),
+                        SizedBox(height: 220),
                       ],
                     ),
                   ),

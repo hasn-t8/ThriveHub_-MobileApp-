@@ -25,7 +25,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Future<void> _loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final accessToken = prefs.getString('access_token');
-    final fullName = prefs.getString('access_token') ?? 'Alex';
+    final fullName = prefs.getString('full_name') ?? 'Alex';
     final firstName = fullName.split(' ').first;
     setState(() {
       name = firstName;
