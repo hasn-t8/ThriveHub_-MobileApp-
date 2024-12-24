@@ -3,8 +3,8 @@ import 'dart:io'; // For File
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
-import 'package:thrive_hub/services/auth_services/logout_service.dart';
 import 'package:thrive_hub/widgets/profile_listitem.dart'; // Import the reusable widget
 
 class ProfileScreen extends StatefulWidget {
@@ -14,11 +14,10 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false;
-  String _firstName = '';
-  String _lastName = '';
-  String _location = 'Location'; // Default value for location
+  String _full_name = '';
+  String _location = '';
   int _reviews = 0; // Default value for reviews
-  int _companyCount =0; // Default value for company count
+  int _companyCount = 0; // Default value for company count
   File? _imageFile;
 
   @override
@@ -26,7 +25,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
     _loadUserData();
   }
-
 
   Future<void> _pickImage() async {
     showDialog(
@@ -72,26 +70,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-
   Future<void> _loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
+    // Retrieve the access token
     final accessToken = prefs.getString('access_token');
-    final expiresIn = prefs.getString('expires_in');
+    print('Access Token in profile: $accessToken');
 
-    print('Access Token: $accessToken');
-    print('Expires In: $expiresIn');
-    String? userJson = prefs.getString('user');
-    if (userJson != null) {
-      Map<String, dynamic> userMap = jsonDecode(userJson);
-      setState(() {
-        _firstName = userMap['first_name'] ?? '';
-        _lastName = userMap['last_name'] ?? '';
-        _location = userMap['location'] ?? 'location';
-        _reviews = userMap['reviews'] ?? 35;
-        _companyCount = userMap['company_count'] ?? 47;
-      });
-    }
+    // Use default values if the retrieved values are null
+    final fullName = prefs.getString('full_name') ?? 'Name'; // Default value for full name
+    final profileImage = prefs.getString('profile_image');
+    final location = prefs.getString('city') ?? 'Location'; // Default if null
+    final reviews = prefs.getInt('reviews') ?? 28; // Default value for reviews
+    final companyCount = prefs.getInt('company_count') ?? 38; // Default value for company count
+
+    // Optionally, print the retrieved data to verify
+    print('Full Name : $fullName');
+    print('Profile Image: $profileImage');
+    print('Location: $location');
+    print('Reviews: $reviews');
+    print('Company Count: $companyCount');
+
+    // Update the UI fields with the retrieved data
+    setState(() {
+      // Set fields with the retrieved values, default to empty strings or null if not found
+      _full_name = fullName;
+      _location = location;
+      _reviews = reviews; // Set default reviews count
+      _companyCount = companyCount; // Set default company count
+
+      // If there's a profile image in SharedPreferences, set it
+      if (profileImage != null) {
+        _imageFile = File(profileImage); // Set the profile image from SharedPreferences
+      }
+    });
   }
 
   Future<void> _logout(BuildContext context) async {
@@ -99,22 +111,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _isLoading = true;
     });
 
-    LogoutService logoutService = LogoutService();
-    bool success = await logoutService.logout();
+    AuthService logoutService = AuthService();
+    final result = await logoutService.logout();
 
     setState(() {
       _isLoading = false;
     });
 
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Logout successful!'),
-      ));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(result['message']),
+    ));
+
+    if (result['success']) {
       Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Logout failed! Please try again.'),
-      ));
     }
   }
 
@@ -126,6 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         showBackButton: false,
         centerTitle: true,
       ),
+      backgroundColor: Color(0xFFFCFCFC),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -135,7 +145,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Stack(
               alignment: Alignment.center,
               children: [
-                // Profile Image
                 // Profile Image
                 GestureDetector(
                   onTap: _pickImage,
@@ -176,11 +185,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-
             SizedBox(height: 16),
             // Name and Location
             Text(
-              '$_firstName $_lastName',
+              '$_full_name',
               style: TextStyle(
                 fontSize: 20,
                 fontFamily: 'Inter',
@@ -188,7 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             Text(
-              _location, // Use the location from the state variable
+              '$_location', // Use the location from the state variable
               style: TextStyle(
                 fontSize: 16,
                 color: Color(0xFFA5A5A5),
@@ -205,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Color(0xFFE9E8E8),
                 borderRadius: BorderRadius.circular(31),
               ),
-              padding: const EdgeInsets.only(top:20.0,left: 20.0,right: 20.0,bottom: 20.0),
+              padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0, bottom: 20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -272,7 +280,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ],
         ),
         padding: const EdgeInsets.all(4.0),
-
         margin: const EdgeInsets.symmetric(horizontal: 19.0),
         child: Center(
           child: Text(
