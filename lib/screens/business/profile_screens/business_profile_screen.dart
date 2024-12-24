@@ -160,8 +160,8 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
             'text': 'Team',
             'trailingIcon': Icons.arrow_forward_ios,
             'onTap': () {
-              NoPageFound.show(context); // Call the function to show the alert
-              // Navigator.pushNamed(context, '/team');
+              // NoPageFound.show(context); // Call the function to show the alert
+              Navigator.pushNamed(context, '/business-team');
             },
           },
           {
@@ -192,8 +192,9 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
             'text': 'Team',
             'trailingIcon': Icons.arrow_forward_ios,
             'onTap': () {
-              NoPageFound.show(context); // Call the function to show the alert
-              // Navigator.pushNamed(context, '/team');
+              // NoPageFound.show(context); // Call the function to show the alert
+              Navigator.pushNamed(context, '/business-team');
+              
             },
           },
           {
