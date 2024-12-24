@@ -31,11 +31,6 @@ class _SearchScreenState extends State<SearchScreen> {
       name = firstName;
     });
   }
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-     _loadUserData();
-  }
 
   // Sample data for reviews
   final List<Map<String, dynamic>> allReviews = List.generate(
@@ -72,6 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _loadUserData();
     String heading = name.isNotEmpty ? 'Hi, $name!' : 'Hi!';
     return Scaffold(
       backgroundColor: Colors.white,

@@ -37,13 +37,12 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     String email = prefs.getString('email') ?? '';
     String city = prefs.getString('city') ?? '';
     setState(() {
-      _fullNameController.text = fullName;
       _emailController.text = email;
+      _fullNameController.text = fullName;
     });
     // Attempt to load the profile data (if it's coming from an API or another source)
     final profileService = ProfileService();
     final profileData = await profileService.getProfile();
-
     // If the profile data is available and not empty, load it
     if (profileData != null && profileData.isNotEmpty) {
       setState(() {
@@ -53,19 +52,6 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         _dateController.text = profileData['date_of_birth'] != null
             ? DateFormat('yyyy-MM-dd').format(DateTime.parse(profileData['date_of_birth']))
             : '';
-      });
-
-      // After loading data from API, update SharedPreferences with the latest data
-      await prefs.setString('full_name', profileData['full_name'] ?? '');
-      await prefs.setString('email', profileData['email'] ?? '');
-      await prefs.setString('city', profileData['city'] ?? '');
-    } else {
-
-      // Use the SharedPreferences data if no profile data is available
-      setState(() {
-        _fullNameController.text = fullName;
-        _emailController.text = email;
-        _locationController.text = city;
       });
     }
   }
@@ -127,16 +113,16 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     final profileData = {
       "profileType": "personal",
       "profileData": {
-        "occupation": "Software", // Add other required fields as necessary
         "date_of_birth": _dateController.text,
         "address_city": _locationController.text,
-      }
+      },
+      "fullName": _fullNameController.text,
     };
-
+    final prefs = await SharedPreferences.getInstance();
     // Call the ProfileService to create the profile
     final profileService = ProfileService();
     await profileService.createAndUpdateProfile(profileData);
-
+    await prefs.setString('full_name', profileData['fullName']?.toString() ?? '');
     setState(() {
       _isLoading = false; // Stop loading
     });

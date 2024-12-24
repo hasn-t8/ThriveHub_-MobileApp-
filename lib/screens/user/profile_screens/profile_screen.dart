@@ -237,7 +237,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               text: 'Account Settings',
               trailingIcon: Icons.arrow_forward_ios,
               onTap: () {
-                Navigator.pushNamed(context, '/account-settings');
+                Navigator.pushNamed(context, '/account-settings').then((_) {
+                  setState(() {
+                    _loadUserData();
+                  });
+                });
               },
             ),
             ProfileListItem(
