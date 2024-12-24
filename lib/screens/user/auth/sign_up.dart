@@ -6,7 +6,7 @@ import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
 import '../../../widgets/google_facbook_button.dart';
-import '../../../services/auth_services/signup_service.dart';
+import '../../../services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -53,12 +53,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
-  Future<void> _saveUserData(Map<String, dynamic> userData) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user', jsonEncode(userData['user']));
-    await prefs.setString('access_token', userData['access_token']);
-    await prefs.setString('expires_in', userData['expires_in']);
-  }
+
 
   void _validateEmail() {
     final email = _emailController.text.trim();
@@ -81,10 +76,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final password = _passwordController.text.trim();
     final confirmPassword = _confirmPasswordController.text.trim();
 
-    if (fullName.isEmpty ||
-        email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
+    if (fullName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('All fields must be filled correctly')),
       );
@@ -114,15 +106,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
 
     try {
-      final responseData = await SignUpService().registerUser(
+      final responseData = await AuthService().registerUser(
         firstName: firstName,
         lastName: lastName,
         email: email,
         password: password,
+        userTypes: ['registered-user'],
       );
-
-      // Save the user data to SharedPreferences
-      await _saveUserData(responseData);
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -134,11 +124,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       );
 
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
-        (Route<dynamic> route) => false, // Remove all previous routes
-      );
+      // Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => MainScreen()),
+      //       (Route<dynamic> route) => false, // Remove all previous routes
+      // );
     } catch (e) {
       print(e);
       String errorMessage = e.toString().replaceAll('Exception:', '').trim();
@@ -167,6 +157,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
