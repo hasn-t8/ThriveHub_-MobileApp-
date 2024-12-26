@@ -55,10 +55,10 @@ class _BusinessSearchScreenState extends State<BusinessSearchScreen> {
   );
 
   final List<Map<String, String>> categories = [
-    {'title': 'Tech', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
-    {'title': 'Wellness', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
-    {'title': 'Finance', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
-    {'title': 'Home Electronics', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
+    {'title': 'Tech', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/tech.png'},
+    {'title': 'Wellness', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/wellness.png'},
+    {'title': 'Finance', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/finance.png'},
+    {'title': 'Home Electronics', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/electronics.png'},
   ];
 
   void _navigateToSubcategories(String categoryTitle) {

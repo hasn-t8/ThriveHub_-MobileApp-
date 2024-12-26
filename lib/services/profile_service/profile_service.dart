@@ -86,4 +86,30 @@ class ProfileService {
       return null;
     }
   }
+   Future<http.StreamedResponse> uploadImage(String filePath) async {
+     final accessToken = await _getAccessToken();
+    try {
+      // Create a multipart request
+      var request = http.MultipartRequest('POST',
+        Uri.parse('$_baseUrl/upload-profile-image'),);
+
+      // Add headers (if required)
+      request.headers.addAll({
+        'Authorization': 'Bearer $accessToken', // Attach the token here
+        'Content-Type': 'multipart/form-data',
+      });
+
+      // Attach the file
+      request.files.add(await http.MultipartFile.fromPath(
+        'profileImage', // The field name expected by your API
+        filePath,
+      ));
+
+      // Send the request
+      return await request.send();
+    } catch (e) {
+      throw Exception('Failed to upload image: $e');
+    }
+  }
+
 }
