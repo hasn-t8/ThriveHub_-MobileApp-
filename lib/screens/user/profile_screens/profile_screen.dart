@@ -225,19 +225,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 6),
-            GestureDetector(
-              onTap: _removeLogo, // Define the action for removing the logo
-              child: Text(
-                'Remove logo',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFFA5A5A5),
-                  fontFamily: 'Inter',
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
+            // SizedBox(height: 6),
+            // GestureDetector(
+            //   onTap: _removeLogo, // Define the action for removing the logo
+            //   child: Text(
+            //     'Remove logo',
+            //     style: TextStyle(
+            //       fontSize: 14,
+            //       color: Color(0xFFA5A5A5),
+            //       fontFamily: 'Inter',
+            //       fontWeight: FontWeight.w700,
+            //     ),
+            //   ),
+            // ),
 
             SizedBox(height: 12),
             // Name and Location
