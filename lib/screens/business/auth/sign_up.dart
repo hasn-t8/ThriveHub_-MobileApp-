@@ -1,12 +1,16 @@
 //imports
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
+import 'package:thrive_hub/screens/user/auth/activate_account.dart';
 import '../../../core/constants/text_styles.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
 import '../../../widgets/google_facbook_button.dart';
 import '../../../widgets/forms/social_login.dart';
 import '../../../widgets/headers/custom_header_1.dart';
+import '../../../services/auth_services/auth_service.dart';
 
 class BusinessSignUpScreen extends StatefulWidget {
   @override
@@ -22,6 +26,7 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
   bool _obscureText1 = true;
   bool _obscureText2 = true;
   bool _isButtonEnabled = false;
+  bool _isLoading = false;
 
   void _updateButtonState() {
     setState(() {
@@ -61,8 +66,94 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
       );
       return;
     }
-    Navigator.pushNamed(context, '/business-profile-setup');
+    _registerUser();
   }
+
+  Future<void> _registerUser() async {
+    final companyName = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (companyName.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('All fields must be filled correctly')),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password must be at least 6 characters long')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true; // Start the loader
+    });
+
+    try {
+      final responseData = await AuthService().registerUser(
+        companyName: companyName,
+        email: email,
+        password: password,
+        userTypes: ['business-owner'], // Passing the list here
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Account created successfully',
+            style: TextStyle(color: Colors.black), // Text color black
+          ),
+          backgroundColor: Color(0xFFDADADA), // Gray background color
+        ),
+      );
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ActivateAccountScreen(email: email),
+        ),
+      );
+
+    } catch (e) {
+      print(e);
+      String errorMessage = e.toString().replaceAll('Exception:', '').trim();
+
+      // Extract and handle errors if available
+      try {
+        final responseData = jsonDecode(e.toString()) as Map<String, dynamic>;
+        if (responseData.containsKey('errors')) {
+          final errors = responseData['errors'] as Map<String, dynamic>;
+          final firstErrorKey = errors.keys.first;
+          final firstErrorMessage = errors[firstErrorKey].values.first;
+          errorMessage = firstErrorMessage;
+        } else {
+          errorMessage = responseData['message'] ?? errorMessage;
+        }
+      } catch (_) {
+        // Ignore JSON decode errors and use the original error message
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage)),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false; // Stop the loader
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final passwordsMatch =
@@ -174,24 +265,30 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                   SizedBox(height: 24),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isButtonEnabled
-                          ? _validateEmail:null,
-                        // Add your onPressed code here!
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF828282), // Change the color to #828282
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                    child: Stack(
+                      children: [
+                        ElevatedButton(
+                          onPressed: _isButtonEnabled && !_isLoading ? _validateEmail : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF828282), // Change the color to #828282
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            minimumSize: Size(double.infinity, 50),
+                          ),
+                          child: const Text(
+                            'Create Account',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
                         ),
-                        minimumSize: Size(double.infinity, 50),
-                      ),
-                      child: const Text(
-                        'Create Account',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
-                      ),
+                        if (_isLoading)
+                          Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 16),

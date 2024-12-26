@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/screens/business/search_screens/business_sub_categories.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/categories.dart';
@@ -11,11 +12,31 @@ class BusinessSearchScreen extends StatefulWidget {
 }
 
 class _BusinessSearchScreenState extends State<BusinessSearchScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+
   String name = ''; // Replace with the actual name variable or dynamic input
 
   int selectedBoxIndex = -1;
 
-
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token');
+    final fullName = prefs.getString('full_names') ?? 'Alex';
+    final firstName = fullName.split(' ').first;
+    setState(() {
+      name = firstName;
+    });
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadUserData();
+  }
   // Sample data for reviews
   final List<Map<String, dynamic>> allReviews = List.generate(
     5,

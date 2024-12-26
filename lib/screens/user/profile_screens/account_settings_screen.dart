@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/services/profile_service/profile_service.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import '../../../widgets/input_fields.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart'; // Import the file where emailValidator is defined.
@@ -10,24 +12,54 @@ class AccountSettingsScreen extends StatefulWidget {
 }
 
 class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
+  final _fullNameController = TextEditingController();
   final _dateController = TextEditingController();
   final _locationController = TextEditingController();
   final _emailController = TextEditingController();
 
   bool _isFormModified = false;
+  bool _isLoading = false; // Loading flag
 
   @override
   void initState() {
     super.initState();
     // Add listeners to detect changes
-    _firstNameController.addListener(_onFieldChange);
-    _lastNameController.addListener(_onFieldChange);
+    _fullNameController.addListener(_onFieldChange);
     _dateController.addListener(_onFieldChange);
     _locationController.addListener(_onFieldChange);
     _emailController.addListener(_onFieldChange);
+    _loadProfileData();
   }
+
+  void _loadProfileData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String fullName = prefs.getString('full_name') ?? '';
+    String email = prefs.getString('email') ?? '';
+    String city = prefs.getString('city') ?? '';
+    setState(() {
+      _emailController.text = email;
+      _fullNameController.text = fullName;
+    });
+    // Attempt to load the profile data (if it's coming from an API or another source)
+    final profileService = ProfileService();
+    final profileData = await profileService.getProfile();
+    // If the profile data is available and not empty, load it
+    if (profileData != null && profileData.isNotEmpty) {
+      setState(() {
+        _fullNameController.text = profileData['full_name'] ?? '';
+        _emailController.text = profileData['email'] ?? '';
+        _locationController.text = profileData['address_city'] ?? '';
+        _dateController.text = profileData['date_of_birth'] != null
+            ? DateFormat('yyyy-MM-dd').format(DateTime.parse(profileData['date_of_birth']))
+            : '';
+      });
+    }
+  }
+
+
+
+
+
 
   void _onFieldChange() {
     setState(() {
@@ -37,8 +69,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
 
   @override
   void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
+    _fullNameController.dispose();
     _dateController.dispose();
     _locationController.dispose();
     _emailController.dispose();
@@ -60,7 +91,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     }
   }
 
-  void _validateAndSubmit() {
+  Future<void> _validateAndSubmit() async {
     final email = _emailController.text.trim();
     final validationError = emailValidator(email);
 
@@ -74,10 +105,32 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       return;
     }
 
-    // Handle the successful submission of the form here
+    setState(() {
+      _isLoading = true; // Start loading
+    });
+
+    // Collect form data
+    final profileData = {
+      "profileType": "personal",
+      "profileData": {
+        "date_of_birth": _dateController.text,
+        "address_city": _locationController.text,
+      },
+      "fullName": _fullNameController.text,
+    };
+    final prefs = await SharedPreferences.getInstance();
+    // Call the ProfileService to create the profile
+    final profileService = ProfileService();
+    await profileService.createAndUpdateProfile(profileData);
+    await prefs.setString('full_name', profileData['fullName']?.toString() ?? '');
+    setState(() {
+      _isLoading = false; // Stop loading
+    });
+
+    // Handle successful submission
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text("Form submitted successfully!"),
+        content: Text("Profile updated successfully!"),
         backgroundColor: Colors.green,
       ),
     );
@@ -102,30 +155,15 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                 children: [
                   CustomInputField(
                     labelText: 'First Name',
-                    controller: _firstNameController,
-                      labelColor: Color(0xFF5A5A5A),// Custom label color
-                      labelFontSize: 14, // Custom label font size
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x1F000000), // #0000001F as RGBA (Flutter equivalent)
-                          offset: Offset(0, 1), // Horizontal offset: 0, Vertical offset: 1
-                          blurRadius: 11, // Blur radius
-                          spreadRadius: 1, // Spread radius
-                        ),
-                      ],
-                  ),
-                  SizedBox(height: 16),
-                  CustomInputField(
-                    labelText: 'Last Name',
-                    controller: _lastNameController,
-                    labelColor: Color(0xFF5A5A5A), // Custom label color
-                    labelFontSize: 14, // Custom label font size
+                    controller: _fullNameController,
+                    labelColor: Color(0xFF5A5A5A),
+                    labelFontSize: 14,
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0x1F000000), // #0000001F as RGBA (Flutter equivalent)
-                        offset: Offset(0, 1), // Horizontal offset: 0, Vertical offset: 1
-                        blurRadius: 11, // Blur radius
-                        spreadRadius: 1, // Spread radius
+                        color: Color(0x1F000000),
+                        offset: Offset(0, 1),
+                        blurRadius: 11,
+                        spreadRadius: 1,
                       ),
                     ],
                   ),
@@ -135,16 +173,16 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                     child: AbsorbPointer(
                       child: CustomInputField(
                         labelText: 'Date of Birth',
-                        hintText: '01/01/2000', // Pass custom hint text here
+                        hintText: '01/01/2000',
                         controller: _dateController,
-                        labelFontSize: 14, // Custom label font size
-                        labelColor: Color(0xFF5A5A5A), // Custom label color
+                        labelFontSize: 14,
+                        labelColor: Color(0xFF5A5A5A),
                         boxShadow: [
                           BoxShadow(
-                            color: Color(0x1F000000), // #0000001F as RGBA (Flutter equivalent)
-                            offset: Offset(0, 1), // Horizontal offset: 0, Vertical offset: 1
-                            blurRadius: 11, // Blur radius
-                            spreadRadius: 1, // Spread radius
+                            color: Color(0x1F000000),
+                            offset: Offset(0, 1),
+                            blurRadius: 11,
+                            spreadRadius: 1,
                           ),
                         ],
                       ),
@@ -153,31 +191,32 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
                   SizedBox(height: 16),
                   CustomInputField(
                     labelText: 'Location',
-                    labelFontSize: 14, // Custom label font size
                     controller: _locationController,
-                    labelColor: Color(0xFF5A5A5A), // Custom label color
+                    labelFontSize: 14,
+                    labelColor: Color(0xFF5A5A5A),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0x1F000000), // #0000001F as RGBA (Flutter equivalent)
-                        offset: Offset(0, 1), // Horizontal offset: 0, Vertical offset: 1
-                        blurRadius: 11, // Blur radius
-                        spreadRadius: 1, // Spread radius
+                        color: Color(0x1F000000),
+                        offset: Offset(0, 1),
+                        blurRadius: 11,
+                        spreadRadius: 1,
                       ),
                     ],
                   ),
                   SizedBox(height: 16),
                   CustomInputField(
                     labelText: 'Email',
-                    hintText: 'mail.example@gmail.com', // Pass custom hint text here
+                    hintText: 'mail.example@gmail.com',
                     controller: _emailController,
-                    labelFontSize: 14, // Custom label font size
-                    labelColor: Color(0xFF5A5A5A), // Custom label color
+                    readOnly: true, // Add this to make the field non-editable
+                    labelFontSize: 14,
+                    labelColor: Color(0xFF5A5A5A),
                     boxShadow: [
                       BoxShadow(
-                        color: Color(0x1F000000), // #0000001F as RGBA (Flutter equivalent)
-                        offset: Offset(0, 1), // Horizontal offset: 0, Vertical offset: 1
-                        blurRadius: 11, // Blur radius
-                        spreadRadius: 1, // Spread radius
+                        color: Color(0x1F000000),
+                        offset: Offset(0, 1),
+                        blurRadius: 11,
+                        spreadRadius: 1,
                       ),
                     ],
                   ),
@@ -190,15 +229,19 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
             child: SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isFormModified ? _validateAndSubmit : null,
+                onPressed: _isFormModified && !_isLoading ? _validateAndSubmit : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: _isFormModified ? Colors.black : Color(0xFFA5A5A5),
+                  backgroundColor: _isFormModified && !_isLoading ? Colors.black : Color(0xFFA5A5A5),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
                   minimumSize: Size(double.infinity, 50),
                 ),
-                child: Text(
+                child: _isLoading
+                    ? CircularProgressIndicator(
+                  color: Colors.white,
+                )
+                    : Text(
                   'Continue',
                   style: TextStyle(
                     color: _isFormModified ? Colors.white : Color(0xFF000000),

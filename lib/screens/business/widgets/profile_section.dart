@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ProfileSection extends StatelessWidget {
-  final String firstName;
-  final String lastName;
+  final String fullName;
   final String email;
   final String profileImagePath;
   final VoidCallback onEditProfile;
@@ -11,8 +10,7 @@ class ProfileSection extends StatelessWidget {
 
   const ProfileSection({
     Key? key,
-    required this.firstName,
-    required this.lastName,
+    required this.fullName,
     required this.email,
     required this.profileImagePath,
     required this.onEditProfile,
@@ -69,8 +67,8 @@ class ProfileSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    firstName.isNotEmpty || lastName.isNotEmpty
-                        ? '$firstName $lastName'
+                    fullName.isNotEmpty
+                        ? '$fullName'
                         : 'Your Name',
                     style: const TextStyle(
                       fontSize: 16,

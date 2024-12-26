@@ -4,6 +4,7 @@ class CustomInputField extends StatelessWidget {
   final String labelText;
   final TextEditingController controller;
   final bool obscureText;
+  final bool? readOnly;
   final Widget? suffixIcon;
   final String? hintText;
   final Color borderColor; // Border color for the input field
@@ -15,6 +16,7 @@ class CustomInputField extends StatelessWidget {
     required this.labelText,
     required this.controller,
     this.obscureText = false,
+    this.readOnly,
     this.suffixIcon,
     this.hintText,
     this.borderColor = const Color(0xFFEDF1F3), // Default border color
@@ -57,6 +59,7 @@ class CustomInputField extends StatelessWidget {
           child: TextField(
             controller: controller,
             obscureText: obscureText,
+            readOnly: readOnly ?? false,
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding:

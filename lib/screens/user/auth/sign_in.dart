@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
+import 'package:thrive_hub/screens/business/slider_screens/business_slider_screen.dart';
+import 'package:thrive_hub/screens/user/auth/activate_account.dart';
+import 'package:thrive_hub/services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/google_facbook_button.dart';
 import 'sign_up.dart';
 import 'dart:convert';
@@ -8,7 +11,6 @@ import 'create_new_password.dart';
 import 'forget_password.dart';
 import 'verify_account.dart';
 import '../../../widgets/input_fields.dart';
-import '../../../services/auth_services/signin_service.dart'; // Import SignInService
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -35,7 +37,6 @@ class _SignInScreenState extends State<SignInScreen> {
     super.initState();
     _emailController.addListener(_updateButtonState);
     _passwordController.addListener(_updateButtonState);
-    _printUserData(); // Call the method to print shared preferences data
   }
 
   @override
@@ -45,24 +46,37 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
-  Future<void> _saveUserData(Map<String, dynamic> userData) async {
-    final prefs = await SharedPreferences.getInstance();
-    // await prefs.setString('user', userData['user'].toString());
-    await prefs.setString('user', jsonEncode(userData['user']));
-    await prefs.setString('access_token', userData['access_token']);
-    await prefs.setString('expires_in', userData['expires_in']);
-  }
 
-  Future<void> _printUserData() async {
+  Future<void> _saveUserData(Map<String, dynamic> responseData) async {
     final prefs = await SharedPreferences.getInstance();
-    final user = prefs.getString('user') ?? 'No user data';
+
+// Capitalize the first letter of full name if it's not empty
+    String fullName = (responseData['user']['full_name'] ?? '').isNotEmpty
+        ? responseData['user']['full_name'][0].toUpperCase() + responseData['user']['full_name'].substring(1).toLowerCase()
+        : '';
+    // Save the access token
+    await prefs.setString('access_token', responseData['token']);
+
+    // Save other user data
+    await prefs.setString('full_name', fullName);
+    await prefs.setString('email', responseData['user']['email'] ?? '');
+    await prefs.setStringList('user_types', List<String>.from(responseData['user']['userTypes']));
+    await prefs.setString('profile_image', responseData['user']['profileImage'] ?? '');
+    await prefs.setString('city', responseData['user']['city'] ?? 'city');
+
+    // Optionally, print the saved data to verify
+    print('User Data saved:');
+    print('Full Name: ${responseData['user']['full_name']}');
+    print('Email: ${responseData['user']['email']}');
+    print('User Types: ${responseData['user']['userTypes']}');
+    print('Profile Image: ${responseData['user']['profileImage']}');
+    print('City: ${responseData['user']['city']}');
+
+    // Retrieve and print the access token to confirm it's saved correctly
     final accessToken = prefs.getString('access_token') ?? 'No access token';
-    final expiresIn = prefs.getString('expires_in') ?? 'No expiry data';
-
-    print('User data is : $user');
-    print('Access Token data is : $accessToken');
-    print('Expires In data is : $expiresIn');
+    print('Access Token: $accessToken');
   }
+
 
   Future<void> _login() async {
     final email = _emailController.text.trim();
@@ -81,49 +95,71 @@ class _SignInScreenState extends State<SignInScreen> {
         _isLoading = true; // Set loading state to true
       });
 
-      final signInService = SignInService();
+      final signInService = AuthService();
       try {
         final response = await signInService.loginUser(
           email: _emailController.text,
           password: _passwordController.text,
         );
-        print('Login successful, response: $response');
 
-        // Save user data to shared preferences
-        await _saveUserData(response);
+        if (response != null && response.containsKey('token')) {
+          await _saveUserData(response);
 
-        // Show a SnackBar with a gray background color
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Login successful',
-              style: TextStyle(color: Colors.black), // Text color black
+          // Check the user type and navigate accordingly
+          List<String> userTypes = List<String>.from(response['user']['userTypes']);
+          if (userTypes.contains('business-owner')) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => BusinessSliderScreen()),
+                  (Route<dynamic> route) => false,
+            );
+          } else if (userTypes.contains('registered-user')) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MainScreen()),
+                  (Route<dynamic> route) => false,
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Unknown user type'),
+              ),
+            );
+          }
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Login successful'),
+              backgroundColor: Colors.green,
             ),
-            backgroundColor: Color(0xFFDADADA), // Gray background color
-          ),
-        );
-
-        // Navigate to the main screen and remove all previous user_screens
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => MainScreen()),
-              (Route<dynamic> route) => false, // Remove all previous routes
-        );
+          );
+        } else {
+          throw Exception('Unexpected response format');
+        }
       } catch (e) {
-        print('Exception during login: $e');
-        // Show an error message to the user
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${e.toString().replaceAll('Exception: ', '')}'),
-          ),
-        );
+        if (e.toString().contains('403')) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ActivateAccountScreen(email: email),
+            ),
+          );
+        } else {
+          print('Exception during login: $e');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('${e.toString().replaceAll('Exception: ', '')}'),
+            ),
+          );
+        }
       } finally {
         setState(() {
-          _isLoading = false; // Set loading state to false
+          _isLoading = false;
         });
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

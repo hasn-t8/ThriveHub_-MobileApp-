@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/categories.dart';
 import 'package:thrive_hub/widgets/top_bar.dart'; // Import your new HeaderWidget file
@@ -12,10 +13,24 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  String name = ''; // Replace with the actual name variable or dynamic input
+  @override
+  void initState() {
+    super.initState();
+     _loadUserData();
+  }
 
+  String name = ''; // Replace with the actual name variable or dynamic input
   int selectedBoxIndex = -1;
 
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token');
+    final fullName = prefs.getString('full_name') ?? 'Alex';
+    final firstName = fullName.split(' ').first;
+    setState(() {
+      name = firstName;
+    });
+  }
 
   // Sample data for reviews
   final List<Map<String, dynamic>> allReviews = List.generate(
@@ -52,6 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _loadUserData();
     String heading = name.isNotEmpty ? 'Hi, $name!' : 'Hi!';
     return Scaffold(
       backgroundColor: Colors.white,
