@@ -5,8 +5,12 @@ import 'dart:io';
 
 class BusinessCompanyLogoScreen extends StatefulWidget {
   final VoidCallback onNext;
+  final Function(String) onLogoSelected; // Changed to accept a String (file path)
 
-  BusinessCompanyLogoScreen({required this.onNext});
+  BusinessCompanyLogoScreen({
+    required this.onNext,
+    required this.onLogoSelected,
+  });
 
   @override
   _BusinessCompanyLogoScreenState createState() => _BusinessCompanyLogoScreenState();
@@ -20,6 +24,7 @@ class _BusinessCompanyLogoScreenState extends State<BusinessCompanyLogoScreen> {
     if (selectedImage != null) {
       setState(() {
         _image = selectedImage;
+        widget.onLogoSelected(selectedImage.path); // Send the file path as a String
       });
     }
   }
@@ -48,7 +53,7 @@ class _BusinessCompanyLogoScreenState extends State<BusinessCompanyLogoScreen> {
             // Description Text
             Text(
               'Please upload your company logo with the required size: 266x200.',
-              style:bDescriptionTextStyle,
+              style: bDescriptionTextStyle,
             ),
             SizedBox(height: 32),
 
@@ -61,18 +66,17 @@ class _BusinessCompanyLogoScreenState extends State<BusinessCompanyLogoScreen> {
                   height: 200,
                   decoration: BoxDecoration(
                     color: Color(0xFFEFEFF0),
-                    // border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: _image == null
-                      ?  Center(
+                      ? Center(
                     child: SizedBox(
                       width: 81,
                       height: 81,
                       child: Image.asset(
                         'assets/category.png', // Replace with your image path
                         fit: BoxFit.cover,
-                        filterQuality: FilterQuality.high, // Improves image qualit
+                        filterQuality: FilterQuality.high,
                         color: Colors.grey,
                       ),
                     ),
@@ -104,13 +108,13 @@ class _BusinessCompanyLogoScreenState extends State<BusinessCompanyLogoScreen> {
                 ),
               ),
             ),
-            Spacer(), // Push the button to the bottom
+            Spacer(),
 
             // Next Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _image != null ? widget.onNext : null, // Enable only if an image is selected
+                onPressed: _image != null ? widget.onNext : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF828282),
                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -120,7 +124,7 @@ class _BusinessCompanyLogoScreenState extends State<BusinessCompanyLogoScreen> {
                 ),
                 child: Text(
                   'Next',
-                  style:kButtonTextStyle,
+                  style: kButtonTextStyle,
                 ),
               ),
             ),

@@ -44,34 +44,55 @@ class CategoriesWidget extends StatelessWidget {
                     spreadRadius: 0,
                   ),
                 ],
+                color: isSelected ? Color(0xFFBFBFBF) : Colors.white, // Dynamic color
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12), // Rounded corners for the image
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      category['title'] ?? '',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Inter',
-                        fontSize: 15,
-                        height: 20/15,
-                        letterSpacing: -0.24,
-                        color: isSelected ? Colors.white : Color(0xFF1C1B1F),
+                    Spacer(),
+                    Spacer(),
+                    Spacer(),
+                    // Image at the top center
+                    SizedBox(
+                      width: 40, // Set the width of the image
+                      height: 40, // Set the height of the image
+                      child: Image.asset(
+                        category['image'] ?? '',
+                        fit: BoxFit.contain,
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      category['description'] ?? '',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 12.5/10,
-                        letterSpacing: -0.24,
-                        color: isSelected ? Colors.white : Colors.grey,
+                    Spacer(),
+                    // Text Content at the bottom
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            category['title'] ?? '',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Inter',
+                              fontSize: 13,
+                              height: 20 / 15,
+                              letterSpacing: -0.24,
+                              color: isSelected ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            category['description'] ?? '',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 12.5 / 10,
+                              letterSpacing: -0.24,
+                              color: isSelected ? Colors.white : Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

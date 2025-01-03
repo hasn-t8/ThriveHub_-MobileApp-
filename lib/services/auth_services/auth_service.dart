@@ -70,7 +70,7 @@ class AuthService {
   }
 
 
-
+//Login
   Future<Map<String, dynamic>> loginUser({
     required String email,
     required String password,
@@ -156,6 +156,32 @@ class AuthService {
     }
   }
 
+  //Forget password
+  Future<Map<String, dynamic>> sendResetPasswordEmail(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/auth/forget-password'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'email': email}),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'message': 'Email sent successfully'};
+      } else if (response.statusCode == 404) {
+        return {'success': false, 'message': 'User not found. Please check the email address.'};
+      } else {
+        final responseData = jsonDecode(response.body);
+        return {'success': false, 'message': responseData['error'] ?? 'Failed to send email'};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
+    }
+  }
+
+
+
 
   //logout
   Future<Map<String, dynamic>> logout() async {
@@ -182,14 +208,15 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        await prefs.clear(); // Clear shared preferences on successful logout
+        await prefs.clear();
         return {'success': true, 'message': responseData['message'] ?? 'Logout successful'};
+      } else if (response.statusCode == 401) {
+        await prefs.clear(); // Clear the token on 401
+        return {'success': false, 'message': 'Unauthorized. Please log in again.'};
       } else {
-        print("Failed to logout: ${response.statusCode} ${response.body}");
         return {'success': false, 'message': 'Logout failed'};
       }
     } catch (e) {
-      print("Error during logout: $e");
       return {'success': false, 'message': 'An error occurred while logging out'};
     }
   }

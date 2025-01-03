@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:thrive_hub/screens/business/slider_screens/business_slider_screen.dart';
 import 'package:thrive_hub/screens/user/auth/sign_in.dart';
 import 'package:thrive_hub/services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
@@ -87,10 +88,15 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Code verified successfully!'), backgroundColor: Colors.green),
       );
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (context) => SignInScreen()),
+        MaterialPageRoute(builder: (context) => BusinessSliderScreen()),
+            (Route<dynamic> route) => false,
       );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => SignInScreen()),
+      // );
     } else {
       // Change borders to red if the code does not match
       setState(() {
