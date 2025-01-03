@@ -34,7 +34,7 @@ class CategoriesWidget extends StatelessWidget {
             onTap: () => onBoxSelected(index),
             child: Container(
               decoration: BoxDecoration(
-                color: isSelected ? Color(0xFFBFBFBF) : Colors.white,
+                color: isSelected ? Color(0xFFBFBFBF) : Colors.white, // Dynamic color
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -44,7 +44,6 @@ class CategoriesWidget extends StatelessWidget {
                     spreadRadius: 0,
                   ),
                 ],
-                color: isSelected ? Color(0xFFBFBFBF) : Colors.white, // Dynamic color
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12), // Rounded corners for the image
