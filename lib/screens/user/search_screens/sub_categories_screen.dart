@@ -13,23 +13,19 @@ class SubcategoriesScreen extends StatelessWidget {
   // Mock data to simulate API response
   final List<Map<String, dynamic>> mockCategoriesData = [
     {
-      "title": "Category 1",
+      "title": "Tech",
       "items": ["Dropbox", "Google Drive", "OneDrive", "iCloud"]
     },
     {
-      "title": "Category 2",
+      "title": "Will Ness",
       "items": ["Box", "Mega", "CloudApp", "Amazon S3"]
     },
     {
-      "title": "Category 3",
+      "title": "Finance",
       "items": ["SharePoint", "iDrive", "pCloud", "Backblaze"]
     },
     {
-      "title": "Category 4",
-      "items": ["SharePoint", "iDrive", "pCloud", "Backblaze"]
-    },
-    {
-      "title": "Category 5",
+      "title": "Electronics",
       "items": ["SharePoint", "iDrive", "pCloud", "Backblaze"]
     },
   ];
@@ -38,12 +34,12 @@ class SubcategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120), // Adjust height to include both widgets
+        preferredSize: const Size.fromHeight(75), // Adjust height to include both widgets
         child: Column(
           children: [
             AppBar(
               automaticallyImplyLeading: false, // Disable default back button
-              // toolbarHeight: 75, // Height for the search bar
+              toolbarHeight: 75, // Height for the search bar
               backgroundColor: Colors.white, // AppBar background color
               elevation: 0, // Remove shadow
               title: CustomSearchBar(
@@ -55,10 +51,6 @@ class SubcategoriesScreen extends StatelessWidget {
                   // Implement search functionality here
                 },
               ),
-            ),
-            // Add CategoriesTopBar below the Search Bar
-            CategoriesTopBar(
-              categories: ['Tech', 'Design', 'Science', 'Art', 'Music', 'Finance'],
             ),
           ],
         ),

@@ -15,7 +15,7 @@ class CategoriesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 370,
+      height: 460,
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -33,45 +33,65 @@ class CategoriesWidget extends StatelessWidget {
           return GestureDetector(
             onTap: () => onBoxSelected(index),
             child: Container(
+              padding: EdgeInsets.all(8), // Padding around the entire box
               decoration: BoxDecoration(
-                color: isSelected ? Color(0xFFBFBFBF) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0x1F000000), // Equivalent to #0000001F
+                    color: Color(0x1F000000),
                     offset: Offset(0, 1),
                     blurRadius: 10,
                     spreadRadius: 0,
                   ),
                 ],
+                color: Colors.white, // Background color for padding
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12), // Rounded corners for the image
+                child: Stack(
                   children: [
-                    Text(
-                      category['title'] ?? '',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontFamily: 'Inter',
-                        fontSize: 15,
-                        height: 20/15,
-                        letterSpacing: -0.24,
-                        color: isSelected ? Colors.white : Color(0xFF1C1B1F),
+                    // Centered smaller image
+                    Center(
+                      child: SizedBox(
+                        width: 50, // Set the width of the image
+                        height: 50, // Set the height of the image
+                        child: Image.asset(
+                          category['image'] ?? '',
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      category['description'] ?? '',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        height: 12.5/10,
-                        letterSpacing: -0.24,
-                        color: isSelected ? Colors.white : Colors.grey,
+                    // Text Content at the bottom
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            category['title'] ?? '',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Inter',
+                              fontSize: 15,
+                              height: 20 / 15,
+                              letterSpacing: -0.24,
+                              color: isSelected ? Colors.white : Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            category['description'] ?? '',
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w400,
+                              height: 12.5 / 10,
+                              letterSpacing: -0.24,
+                              color: isSelected ? Colors.white : Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
