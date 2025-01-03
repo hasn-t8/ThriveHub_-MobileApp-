@@ -15,7 +15,7 @@ class CategoriesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 370,
+      height: 460,
       padding: EdgeInsets.symmetric(horizontal: 16),
       child: GridView.builder(
         physics: NeverScrollableScrollPhysics(),
@@ -33,17 +33,19 @@ class CategoriesWidget extends StatelessWidget {
           return GestureDetector(
             onTap: () => onBoxSelected(index),
             child: Container(
+              padding: EdgeInsets.all(8), // Padding around the entire box
               decoration: BoxDecoration(
                 color: isSelected ? Color(0xFFBFBFBF) : Colors.white, // Dynamic color
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Color(0x1F000000), // Equivalent to #0000001F
+                    color: Color(0x1F000000),
                     offset: Offset(0, 1),
                     blurRadius: 10,
                     spreadRadius: 0,
                   ),
                 ],
+                color: Colors.white, // Background color for padding
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12), // Rounded corners for the image

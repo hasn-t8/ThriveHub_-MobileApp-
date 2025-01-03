@@ -16,21 +16,21 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
-     _loadUserData();
+     // _loadUserData();
   }
 
   String name = ''; // Replace with the actual name variable or dynamic input
   int selectedBoxIndex = -1;
 
-  Future<void> _loadUserData() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final accessToken = prefs.getString('access_token');
-    final fullName = prefs.getString('full_name') ?? 'Alex';
-    final firstName = fullName.split(' ').first;
-    setState(() {
-      name = firstName;
-    });
-  }
+  // Future<void> _loadUserData() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   final accessToken = prefs.getString('access_token');
+  //   final fullName = prefs.getString('full_name') ?? 'Alex';
+  //   final firstName = fullName.split(' ').first;
+  //   setState(() {
+  //     name = firstName;
+  //   });
+  // }
 
   // Sample data for reviews
   final List<Map<String, dynamic>> allReviews = List.generate(
@@ -50,10 +50,10 @@ class _SearchScreenState extends State<SearchScreen> {
   );
 
   final List<Map<String, String>> categories = [
-    {'title': 'Tech', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
-    {'title': 'Wellness', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
-    {'title': 'Finance', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
-    {'title': 'Home Electronics', 'description': 'Our goal is to help you achieve a balanced lifestyle '},
+    {'title': 'Tech', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/tech.png'},
+    {'title': 'Wellness', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/wellness.png'},
+    {'title': 'Finance', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/finance.png'},
+    {'title': 'Home Electronics', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/electronics.png'},
   ];
 
   void _navigateToSubcategories(String categoryTitle) {
@@ -67,7 +67,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _loadUserData();
+    // _loadUserData();
     String heading = name.isNotEmpty ? 'Hi, $name!' : 'Hi!';
     return Scaffold(
       backgroundColor: Colors.white,

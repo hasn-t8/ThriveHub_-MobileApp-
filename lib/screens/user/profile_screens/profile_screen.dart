@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/services/auth_services/auth_service.dart';
+import 'package:thrive_hub/services/profile_service/profile_service.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/profile_listitem.dart'; // Import the reusable widget
 
@@ -26,6 +27,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadUserData();
   }
 
+  Future<void> uploadProfileImage() async {
+    if (_imageFile == null) {
+      print("No image selected.");
+      return;
+    }
+
+    try {
+      final profileService = ProfileService(); // Create an instance
+      final response = await profileService.uploadImage(_imageFile!.path);
+
+      if (response.statusCode == 200) {
+        print('Image uploaded successfully');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Profile image uploaded successfully!'), backgroundColor: Colors.green),
+        );
+      } else {
+        print('Failed to upload image: ${response.reasonPhrase}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to upload profile image.')),
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error uploading profile image: $e')),
+      );
+    }
+  }
+
+
+
+  void _removeLogo() {
+    setState(() {
+      _imageFile = null; // Clear the selected image
+    });
+  }
+
   Future<void> _pickImage() async {
     showDialog(
       context: context,
@@ -46,6 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     setState(() {
                       _imageFile = File(pickedFile.path);
                     });
+                    await uploadProfileImage(); // Upload the new image
                   }
                 },
               ),
@@ -60,6 +99,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     setState(() {
                       _imageFile = File(pickedFile.path);
                     });
+                    await uploadProfileImage(); // Upload the new image
                   }
                 },
               ),
@@ -195,7 +235,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 16),
+            // SizedBox(height: 6),
+            // GestureDetector(
+            //   onTap: _removeLogo, // Define the action for removing the logo
+            //   child: Text(
+            //     'Remove logo',
+            //     style: TextStyle(
+            //       fontSize: 14,
+            //       color: Color(0xFFA5A5A5),
+            //       fontFamily: 'Inter',
+            //       fontWeight: FontWeight.w700,
+            //     ),
+            //   ),
+            // ),
+
+            SizedBox(height: 12),
             // Name and Location
             Text(
               '$_full_name',

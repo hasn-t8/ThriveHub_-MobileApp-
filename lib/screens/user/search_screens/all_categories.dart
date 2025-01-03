@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
 import 'package:thrive_hub/screens/user/search_screens/services_screen.dart';
-import 'package:thrive_hub/widgets/search_bar.dart'; // Adjust the import path for your reusable search bar
-import 'package:thrive_hub/widgets/categories_top_bar.dart'; // Import CategoriesTopBar
-import 'package:thrive_hub/widgets/filter_sort_buttons.dart'; // Import the FilterSortButtons widget
+import 'package:thrive_hub/services/company_services/company_services.dart';
+import 'package:thrive_hub/widgets/search_bar.dart';
+import 'package:thrive_hub/widgets/categories_top_bar.dart';
+import 'package:thrive_hub/widgets/filter_sort_buttons.dart';
 import 'package:thrive_hub/widgets/company_card.dart';
-import 'package:thrive_hub/widgets/sort.dart'; // Import the CompanyCard widget
+import 'package:thrive_hub/widgets/sort.dart';
 
 class AllCategoriesScreen extends StatefulWidget {
   final String categoryTitle;
@@ -19,19 +20,32 @@ class AllCategoriesScreen extends StatefulWidget {
 }
 
 class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
-  // Mock companies data
-  final List<Map<String, dynamic>> companies = List.generate(10, (index) {
-    return {
-      'imageUrl': 'https://via.placeholder.com/93',
-      'title': 'Saved Company $index',
-      'rating': 4.8,
-      'reviews': 4123,
-      'service': 'Web Hosting Services',
-      'description':
-      'Our goal is to help you achieve a balanced lifestyle, improve your overall health, and enhance your quality of life. $index',
-      'isBookmarked': false,
-    };
-  });
+  List<dynamic> companies = []; // List to hold company data
+  bool isLoading = true; // Track loading state
+  String errorMessage = ''; // For error handling
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCompanyList();
+  }
+
+  // Fetch the company list from the API
+  void _fetchCompanyList() async {
+    try {
+      CompanyService companyService = CompanyService();
+      List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
+      setState(() {
+        companies = fetchedCompanies;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = e.toString();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +56,6 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
           children: [
             AppBar(
               automaticallyImplyLeading: false,
-              // toolbarHeight: 75,
               backgroundColor: Colors.white,
               elevation: 0,
               title: CustomSearchBar(
@@ -64,61 +77,58 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
         children: [
           FilterSortButtons(
             onFilter: (context) async {
-              // Your filter logic here
               return await Navigator.push<List<String>>(
                 context,
                 MaterialPageRoute(builder: (context) => FilterScreen()),
               ) ?? [];
             },
             onSort: (context) async {
-              // Your sort logic here
               return await showModalBottomSheet<String>(
                 context: context,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
                 builder: (context) => const SortBottomSheet(
-                  title: 'Sort By', // Pass custom title
-                  sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'], // Pass custom options
-
+                  title: 'Sort By',
+                  sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'],
                 ),
               );
             },
           ),
-
           const SizedBox(height: 8.0),
           Expanded(
-            child: ListView.builder(
+            child: isLoading
+                ? Center(child: CircularProgressIndicator())
+                : errorMessage.isNotEmpty
+                ? Center(child: Text('Error: $errorMessage'))
+                : ListView.builder(
               itemCount: companies.length,
               itemBuilder: (context, index) {
                 final company = companies[index];
                 return CompanyCard(
-                  imageUrl: company['imageUrl'],
-                  title: company['title'],
-                  rating: company['rating'],
-                  reviews: company['reviews'],
-                  service: company['service'],
-                  description: company['description'],
-                  isBookmarked: company['isBookmarked'],
+                  imageUrl: company['logo_url'] ?? '', // Default empty string
+                  title: company['org_name'] ?? 'Unknown Organization',
+                  rating: company['rating'] ?? 0.0, // Default to 0.0 for ratings
+                  reviews: company['reviews'] ?? 0, // Default to 0 for reviews
+                  service: company['category'] ?? 'No Service',
+                  description: company['about_business'] ?? 'No description available.',
+                  isBookmarked: company['isBookmarked'] ?? false,
                   onBookmarkToggle: () {
                     setState(() {
-                      company['isBookmarked'] = !company['isBookmarked'];
+                      company['isBookmarked'] = !(company['isBookmarked'] ?? false);
                     });
                   },
                   onTap: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                        builder: (context) => ServicesScreen(),
-                    ),
-                         );
-                    print('CompanyCard tapped: ${company['title']}');
-                    // Navigate to another screen or perform an action
+                      context,
+                      MaterialPageRoute(builder: (context) => ServicesScreen()),
+                    );
+                    print('CompanyCard tapped: ${company['org_name']}');
                   },
                 );
               },
             ),
-          ),
+          )
         ],
       ),
     );

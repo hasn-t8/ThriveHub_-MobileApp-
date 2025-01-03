@@ -45,8 +45,9 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     final profileData = await profileService.getProfile();
     // If the profile data is available and not empty, load it
     if (profileData != null && profileData.isNotEmpty) {
+      await prefs.setString('profile_image', profileData['img_profile_url']?.toString() ?? '');
       setState(() {
-        _fullNameController.text = profileData['full_name'] ?? '';
+       _fullNameController.text = profileData['full_name'] ?? '';
         _emailController.text = profileData['email'] ?? '';
         _locationController.text = profileData['address_city'] ?? '';
         _dateController.text = profileData['date_of_birth'] != null
