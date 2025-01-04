@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
 import '../../../core/constants/text_styles.dart';
 
 class BusinessAboutScreen extends StatefulWidget {
-  final VoidCallback onSkip; // Callback to handle skip action
   final VoidCallback onNext; // Callback to handle next action
+  final Function(String) onDescriptionUpdated; // Callback for description
 
-  BusinessAboutScreen({required this.onSkip, required this.onNext});
+  BusinessAboutScreen({ required this.onNext,required this.onDescriptionUpdated});
 
   @override
   _BusinessAboutScreenState createState() => _BusinessAboutScreenState();
@@ -23,6 +24,7 @@ class _BusinessAboutScreenState extends State<BusinessAboutScreen> {
   void _autoSave(String value) {
     setState(() {
       _description = value;
+      widget.onDescriptionUpdated(value); // Pass updated description
     });
     print("Auto-saved: $_description");
     // Add save to local storage, database, or server logic here
@@ -87,7 +89,9 @@ class _BusinessAboutScreenState extends State<BusinessAboutScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: widget.onNext, // Trigger the next action
+                onPressed: () {
+                    widget.onNext();
+                  },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF828282),
                   padding: EdgeInsets.symmetric(vertical: 16),
@@ -98,24 +102,6 @@ class _BusinessAboutScreenState extends State<BusinessAboutScreen> {
                 child: Text(
                   'Continue',
                   style: kButtonTextStyle,
-                ),
-              ),
-            ),
-            SizedBox(height: 20), // Space before Skip button
-            Center(
-              child: TextButton(
-                onPressed: widget.onSkip, // Trigger the skip action
-                child: Text(
-                  'Skip',
-                  style: TextStyle(
-                    color: Color(0xFF4D4D4D),
-                    fontSize: 16,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w600,
-                    height: 22/17,
-                    letterSpacing: -0.41,
-                    decoration: TextDecoration.underline, // Adds underline
-                  ),
                 ),
               ),
             ),

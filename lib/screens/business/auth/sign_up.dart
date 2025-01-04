@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/user/auth/activate_account.dart';
 import '../../../core/constants/text_styles.dart';
@@ -68,6 +69,52 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
     }
     _registerUser();
   }
+  Future<void> _saveUserData(Map<String, dynamic> responseData) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Capitalize the first letter of full name safely
+    String fullName = (responseData['user']?['full_name'] ?? '').toString().trim();
+    fullName = fullName.isNotEmpty
+        ? '${fullName[0].toUpperCase()}${fullName.substring(1).toLowerCase()}'
+        : '';
+
+    // Save the access token safely
+    await prefs.setString('access_token', responseData['token']?.toString() ?? '');
+
+    // Save other user data with null checks
+    await prefs.setString('full_name', fullName);
+    await prefs.setString('email', responseData['user']?['email']?.toString() ?? '');
+    await prefs.setStringList('user_types', List<String>.from(responseData['user']?['userTypes'] ?? []));
+    await prefs.setString('profile_image', responseData['user']?['profileImage']?.toString() ?? '');
+    await prefs.setString('city', responseData['user']?['city']?.toString() ?? 'Unknown');
+
+    // Save business profile information
+    if (responseData.containsKey('businessProfile')) {
+      final businessProfile = responseData['businessProfile'];
+      if (businessProfile is Map<String, dynamic>) {
+        await prefs.setInt('profile_id', businessProfile['profileId'] ?? 0);
+        await prefs.setInt('business_profile_id', businessProfile['businessProfileId'] ?? 0);
+      }
+    }
+
+    // Debug logs for verification
+    print('--- User Data Saved in SharedPreferences ---');
+    print('Full Name: ${prefs.getString('full_name')}');
+    print('Email: ${prefs.getString('email')}');
+    print('User Types: ${prefs.getStringList('user_types')}');
+    print('Profile Image: ${prefs.getString('profile_image')}');
+    print('City: ${prefs.getString('city')}');
+    print('Access Token: ${prefs.getString('access_token')}');
+
+    if (prefs.containsKey('profile_id')) {
+      print('Profile ID: ${prefs.getInt('profile_id')}');
+    }
+    if (prefs.containsKey('business_profile_id')) {
+      print('Business Profile ID: ${prefs.getInt('business_profile_id')}');
+    }
+
+    print('--- End of Saved Data ---');
+  }
 
   Future<void> _registerUser() async {
     final companyName = _nameController.text.trim();
@@ -107,7 +154,7 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
         password: password,
         userTypes: ['business-owner'], // Passing the list here
       );
-
+      await _saveUserData(responseData);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(

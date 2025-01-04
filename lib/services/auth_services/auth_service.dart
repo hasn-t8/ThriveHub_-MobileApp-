@@ -14,63 +14,56 @@ class AuthService {
     String? companyName,
     required String email,
     required String password,
-    required List<String> userTypes, // Make sure userTypes is a List<String>
-
+    required List<String> userTypes,
   }) async {
     try {
-      String fullName = '${firstName ?? ''} ${lastName ?? ''}'.trim();
+      // Construct full name
+      String fullName = '${firstName?.trim() ?? ''} ${lastName?.trim() ?? ''}'.trim();
+
+      // Ensure required fields are valid
+      if (email.isEmpty || password.isEmpty || userTypes.isEmpty) {
+        throw Exception('Email, password, and user types are required.');
+      }
+
       final response = await http.post(
-        Uri.parse('$_baseUrl/auth/register'), // Constructing the register endpoint URL
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'full_name': fullName,
-          'org_name': companyName,
+        Uri.parse('$_baseUrl/auth/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'full_name': fullName.isNotEmpty ? fullName : null,
+          'org_name': companyName ?? ' ',
           'email': email,
           'password': password,
-          'types': userTypes,  // Pass the userTypes as a List<String>
+          'types': userTypes,
         }),
       );
 
-      // Decode the response body
       final responseData = jsonDecode(response.body);
 
-      // Ensure the response is a Map<String, dynamic>
       if (responseData is Map<String, dynamic>) {
         if (response.statusCode == 201) {
           print('User registered successfully');
-          return responseData;  // Return the response data
-        }else if (response.statusCode == 409) {
-          print('Email already exists');
+          return responseData;
+        } else if (response.statusCode == 409) {
           throw Exception('Email already exists');
+        }else if (response.statusCode == 404) {
+          throw Exception('name already exists');
         } else {
-          // If the response contains errors, handle them
-          if (responseData.containsKey('errors')) {
-            final errors = responseData['errors'] as Map<String, dynamic>;
-            final firstErrorKey = errors.keys.first;
-            final firstErrorMessage = errors[firstErrorKey].values.first;
-            print('Failed to register user: $firstErrorMessage');
-            throw Exception(firstErrorMessage);
-          } else {
-            final errorMessage = responseData['message'] ?? 'Failed to register user';
-            print('Failed to register user: $errorMessage');
-            throw Exception(errorMessage);
-          }
+          final errors = responseData['errors'] as Map<String, dynamic>?;
+          final firstErrorMessage = errors?.values.first?.toString() ?? 'Failed to register user';
+          throw Exception(firstErrorMessage);
         }
       } else {
-        // If the response is not a Map, handle it appropriately
-        print('Unexpected response format: $responseData');
         throw Exception('Unexpected response format');
       }
     } catch (e) {
       print('Error during registration: $e');
-      rethrow; // Rethrow the exception to propagate it up the call stack
+      rethrow;
     }
   }
 
 
 
+//Login
   Future<Map<String, dynamic>> loginUser({
     required String email,
     required String password,
@@ -156,6 +149,32 @@ class AuthService {
     }
   }
 
+  //Forget password
+  Future<Map<String, dynamic>> sendResetPasswordEmail(String email) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_baseUrl/auth/forget-password'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'email': email}),
+      );
+
+      if (response.statusCode == 200) {
+        return {'success': true, 'message': 'Email sent successfully'};
+      } else if (response.statusCode == 404) {
+        return {'success': false, 'message': 'User not found. Please check the email address.'};
+      } else {
+        final responseData = jsonDecode(response.body);
+        return {'success': false, 'message': responseData['error'] ?? 'Failed to send email'};
+      }
+    } catch (e) {
+      return {'success': false, 'message': 'An error occurred: $e'};
+    }
+  }
+
+
+
 
   //logout
   Future<Map<String, dynamic>> logout() async {
@@ -182,14 +201,15 @@ class AuthService {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        await prefs.clear(); // Clear shared preferences on successful logout
+        await prefs.clear();
         return {'success': true, 'message': responseData['message'] ?? 'Logout successful'};
+      } else if (response.statusCode == 401) {
+        await prefs.clear(); // Clear the token on 401
+        return {'success': false, 'message': 'Unauthorized. Please log in again.'};
       } else {
-        print("Failed to logout: ${response.statusCode} ${response.body}");
         return {'success': false, 'message': 'Logout failed'};
       }
     } catch (e) {
-      print("Error during logout: $e");
       return {'success': false, 'message': 'An error occurred while logging out'};
     }
   }

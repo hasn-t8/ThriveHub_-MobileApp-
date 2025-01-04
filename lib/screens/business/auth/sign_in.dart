@@ -108,11 +108,7 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
           // Check the user type and navigate accordingly
           List<String> userTypes = List<String>.from(response['user']['userTypes']);
           if (userTypes.contains('business-owner')) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => BusinessSliderScreen()),
-                  (Route<dynamic> route) => false,
-            );
+            Navigator.of(context).pushReplacementNamed('/business-home');
           } else if (userTypes.contains('registered-user')) {
             Navigator.pushAndRemoveUntil(
               context,

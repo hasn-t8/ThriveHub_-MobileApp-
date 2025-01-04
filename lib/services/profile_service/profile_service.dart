@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -86,6 +87,8 @@ class ProfileService {
       return null;
     }
   }
+
+  //upload user profile image
    Future<http.StreamedResponse> uploadImage(String filePath) async {
      final accessToken = await _getAccessToken();
     try {
@@ -111,5 +114,113 @@ class ProfileService {
       throw Exception('Failed to upload image: $e');
     }
   }
+
+
+  // Upload logo API for business
+  Future<bool> businessUploadLogo(File logoFile) async {
+    final prefs = await SharedPreferences.getInstance();
+    final businessProfileId = prefs.getInt('business_profile_id') ?? -1;
+    final accessToken = await _getAccessToken(); // Assuming this function retrieves the token
+    print("proffff  $businessProfileId");
+
+    if (businessProfileId == -1) {
+      print('Business profile ID not found!');
+      return false;
+    }
+
+    final uri = Uri.parse('$_baseUrl/upload-logo');
+    final request = http.MultipartRequest('POST', uri);
+
+    try {
+      // Add the file to the request
+      request.files.add(await http.MultipartFile.fromPath('logo', logoFile.path));
+
+      // Add businessProfileId as a field in the body
+      request.fields['businessProfileId'] = businessProfileId.toString();
+
+      // Add the Authorization header
+      request.headers['Authorization'] = 'Bearer $accessToken';
+
+      // Send the request
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        print('Logo uploaded successfully!');
+        return true;
+      } else {
+        final responseBody = await response.stream.bytesToString();
+        print('Failed to upload logo: ${response.statusCode}');
+        print('Response body: $responseBody');
+        return false;
+      }
+    } catch (error) {
+      print('Error uploading logo: $error');
+      return false;
+    }
+  }
+
+  // Profile setup API
+  Future<bool> businessProfileSetup(Map<String, dynamic> data) async {
+    final prefs = await SharedPreferences.getInstance();
+    // final profileId = prefs.getInt('profile_id') ?? -1;
+    final businessProfileId = prefs.getInt('business_profile_id') ?? -1;
+
+    if (businessProfileId == -1) {
+      print('Error: businessProfile ID not found in SharedPreferences!');
+      return false;
+    }
+
+    final accessToken = await _getAccessToken();
+    if (accessToken == null || accessToken.isEmpty) {
+      print('Error: Access token is null or empty!');
+      return false;
+    }
+
+    final uri = Uri.parse('$_baseUrl/businessprofiles/$businessProfileId');
+    print('Requesting PUT $uri');
+    print('Payload: ${jsonEncode(data)}');
+
+    try {
+      final response = await http.put(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: jsonEncode(data),
+      );
+
+      // Logging for debugging
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+
+      // Handling response codes
+      if (response.statusCode == 200) {
+        print('Success: Data updated successfully!');
+        return true;
+      } else if (response.statusCode == 400) {
+        print('Error: Bad Request. Please check the payload format.');
+      } else if (response.statusCode == 401) {
+        print('Error: Unauthorized. Please check the access token.');
+      } else if (response.statusCode == 404) {
+        print('Error: Profile not found. Ensure the profile ID is correct.');
+      } else {
+        print('Error: Unexpected response (${response.statusCode}) - ${response.body}');
+      }
+
+      return false;
+    } on FormatException catch (e) {
+      print('Error: Invalid JSON format - $e');
+      return false;
+    } on SocketException catch (e) {
+      print('Error: Network issue - $e');
+      return false;
+    } catch (e) {
+      print('Error: Unexpected error - $e');
+      return false;
+    }
+  }
+
+
 
 }

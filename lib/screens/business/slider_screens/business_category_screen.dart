@@ -13,6 +13,7 @@ class BusinessCategoryScreen extends StatefulWidget {
 
 class _BusinessCategoryScreenState extends State<BusinessCategoryScreen> {
   String _selectedCategory = '';
+
   Widget _buildCategoryBox(String category, String imagePath) {
     return GestureDetector(
       onTap: () {
@@ -30,33 +31,29 @@ class _BusinessCategoryScreenState extends State<BusinessCategoryScreen> {
             width: 2,
           ),
         ),
-        padding: EdgeInsets.all(8),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              width: 24,
-              height: 24,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
-              ),
+            // Center the Image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
               child: Image.asset(
                 imagePath,
-                width: 30,
-                height: 30,
-                color: Colors.grey,
+                width: 50, // Adjust width as per your requirement
+                height: 50, // Adjust height as per your requirement
+                fit: BoxFit.contain,
               ),
             ),
             SizedBox(height: 8),
+            // Text below the image
             Text(
               category,
               style: TextStyle(
-                color: _selectedCategory == category ? Colors.white : Color(0xFF1C1B1F),
+                color: Colors.black, // Adjust color if needed
                 fontSize: 15,
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w600,
-                height: 20/15,
+                height: 20 / 15,
                 letterSpacing: -0.24,
               ),
             ),
@@ -98,10 +95,10 @@ class _BusinessCategoryScreenState extends State<BusinessCategoryScreen> {
               crossAxisSpacing: 8,
               childAspectRatio: MediaQuery.of(context).size.width / 2 / 117,
               children: [
-                _buildCategoryBox('Tech', 'assets/category.png'),
-                _buildCategoryBox('Wellness', 'assets/category.png'),
-                _buildCategoryBox('Finance', 'assets/category.png'),
-                _buildCategoryBox('Home Electronic', 'assets/category.png'),
+                _buildCategoryBox('Tech', 'assets/tech.png'),
+                _buildCategoryBox('Wellness', 'assets/wellness.png'),
+                _buildCategoryBox('Finance', 'assets/finance.png'),
+                _buildCategoryBox('Home Electronic', 'assets/electronics.png'),
               ],
             ),
           ],

@@ -3,6 +3,7 @@ import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'verify_account.dart'; // Import the VerifyAccountScreen
 import '../../../widgets/input_fields.dart';
+import 'package:thrive_hub/services/auth_services/auth_service.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   @override
@@ -12,6 +13,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final _emailController = TextEditingController();
   final ValueNotifier<bool> _isEmailEmpty = ValueNotifier<bool>(true);
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -27,8 +29,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     _isEmailEmpty.dispose();
     super.dispose();
   }
-  void _validateEmail() {
+
+  void _handleContinue() async {
     final email = _emailController.text.trim();
+
+    // Validate email before proceeding
     final validationError = emailValidator(email);
     if (validationError != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -39,14 +44,41 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
       return;
     }
-  }
 
+    setState(() {
+      _isLoading = true; // Show loader
+    });
+
+    // Call the AuthService function
+    final response = await AuthService().sendResetPasswordEmail(email);
+
+    setState(() {
+      _isLoading = false; // Hide loader
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(response['message']),
+        backgroundColor: response['success'] ? Colors.green : Colors.red,
+      ),
+    );
+
+    // Navigate to the VerifyAccountScreen if successful
+    if (response['success']) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => VerifyAccountScreen(email: email),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(title: '', showBackButton: true),
-      backgroundColor: Color(0xFFFFFFFF), // Set the background color
+      backgroundColor: Color(0xFFFFFFFF),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -60,7 +92,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     'Forgot Password',
                     style: TextStyle(
                       fontSize: 22,
-                      fontFamily: 'Inter', // Set the font family to 'Inter'
+                      fontFamily: 'Inter',
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF333333),
                     ),
@@ -70,15 +102,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     'No worries! Enter your email address below and we will send you a code to reset your password.',
                     style: TextStyle(
                       fontSize: 14,
-                      fontFamily: 'Inter', // Set the font family to 'Inter'
+                      fontFamily: 'Inter',
                       fontWeight: FontWeight.w400,
                       color: Color(0xFF475569),
-                      height: 22 / 14, // Line height (line-height divided by font-size)
-                      letterSpacing: 0.01, // Letter spacing
+                      height: 22 / 14,
+                      letterSpacing: 0.01,
                     ),
                     textAlign: TextAlign.center,
                   ),
-
                 ],
               ),
             ),
@@ -86,8 +117,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             // Email field using CustomInputField
             CustomInputField(
               labelText: 'Email',
-              hintText:
-              'Enter your email', // Pass custom hint text here
+              hintText: 'Enter your email',
               controller: _emailController,
             ),
             Spacer(),
@@ -97,44 +127,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 return SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: isEmailEmpty
+                    onPressed: isEmailEmpty || _isLoading
                         ? null
-                        : () {
-                      String email = _emailController.text.trim();
-
-                      // Validate email before navigating
-                      final validationError = emailValidator(email);
-                      if (validationError != null) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(validationError),
-                            backgroundColor: Colors.black,
-                          ),
-                        );
-                        return; // Stop execution if validation fails
-                      }
-
-                      // Navigate to VerifyAccountScreen if email is valid
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => VerifyAccountScreen(email: email),
-                        ),
-                      );
-                    },
+                        : _handleContinue,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isEmailEmpty ? Color(0xFF6A6A6A) : Color(0xFF313131), // Button background color
+                      backgroundColor: isEmailEmpty
+                          ? Color(0xFF6A6A6A)
+                          : Color(0xFF313131),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10), // Reduced corner radius
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      minimumSize: Size(double.infinity, 50), // Fixed height
+                      minimumSize: Size(double.infinity, 50),
                     ),
-                    child: Text(
+                    child: _isLoading
+                        ? CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    )
+                        : Text(
                       'Continue',
                       style: TextStyle(
-                        color: Colors.white, // Text color
+                        color: Colors.white,
                         fontSize: 14,
-                        fontFamily: 'Inter', // Set the font family to 'Inter'
+                        fontFamily: 'Inter',
                         fontWeight: FontWeight.w500,
                       ),
                     ),

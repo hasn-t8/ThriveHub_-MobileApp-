@@ -163,7 +163,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ));
 
     if (result['success']) {
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      // Successful logout
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    } else if (result['message'] == 'Unauthorized. Please log in again.') {
+      // Handle 401 specifically
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+    } else {
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(result['message']),
+      ));
     }
   }
 

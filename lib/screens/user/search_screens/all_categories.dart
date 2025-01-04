@@ -108,8 +108,8 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
                 return CompanyCard(
                   imageUrl: company['logo_url'] ?? '', // Default empty string
                   title: company['org_name'] ?? 'Unknown Organization',
-                  rating: company['rating'] ?? 11.0, // Default to 0.0 for ratings
-                  reviews: company['reviews'] ?? 10, // Default to 0 for reviews
+                  rating: company['rating'] ?? 0.0, // Default to 0.0 for ratings
+                  reviews: company['reviews'] ?? 0, // Default to 0 for reviews
                   service: company['category'] ?? 'No Service',
                   description: company['about_business'] ?? 'No description available.',
                   isBookmarked: company['isBookmarked'] ?? false,

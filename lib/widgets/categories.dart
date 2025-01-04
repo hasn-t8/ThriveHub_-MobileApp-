@@ -33,8 +33,9 @@ class CategoriesWidget extends StatelessWidget {
           return GestureDetector(
             onTap: () => onBoxSelected(index),
             child: Container(
-              padding: EdgeInsets.all(8), // Padding around the entire box
+              padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
+                color: isSelected ? Color(0xFFBFBFBF) : Colors.white, // Dynamic color
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
@@ -44,28 +45,28 @@ class CategoriesWidget extends StatelessWidget {
                     spreadRadius: 0,
                   ),
                 ],
-                color: Colors.white, // Background color for padding
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12), // Rounded corners for the image
-                child: Stack(
+                child: Column(
                   children: [
-                    // Centered smaller image
-                    Center(
-                      child: SizedBox(
-                        width: 50, // Set the width of the image
-                        height: 50, // Set the height of the image
-                        child: Image.asset(
-                          category['image'] ?? '',
-                          fit: BoxFit.contain,
-                        ),
+                    Spacer(),
+                    Spacer(),
+                    Spacer(),
+                    // Image at the top center
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Image.asset(
+                        category['image'] ?? '',
+                        fit: BoxFit.contain,
                       ),
                     ),
-                    // Text Content at the bottom
+                    Spacer(),
+                    // Text content at the bottom
                     Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -73,7 +74,7 @@ class CategoriesWidget extends StatelessWidget {
                             style: TextStyle(
                               fontWeight: FontWeight.w600,
                               fontFamily: 'Inter',
-                              fontSize: 15,
+                              fontSize: 13,
                               height: 20 / 15,
                               letterSpacing: -0.24,
                               color: isSelected ? Colors.white : Colors.black,
