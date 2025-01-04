@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/screens/business/search_screens/business_services_screen.dart';
 import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
-import 'package:thrive_hub/widgets/search_bar.dart'; // Adjust the import path for your reusable search bar
-import 'package:thrive_hub/widgets/categories_top_bar.dart'; // Import CategoriesTopBar
-import 'package:thrive_hub/widgets/filter_sort_buttons.dart'; // Import the FilterSortButtons widget
+import 'package:thrive_hub/services/company_services/company_services.dart'; // Import CompanyService
+import 'package:thrive_hub/widgets/search_bar.dart';
+import 'package:thrive_hub/widgets/categories_top_bar.dart';
+import 'package:thrive_hub/widgets/filter_sort_buttons.dart';
 import 'package:thrive_hub/widgets/company_card.dart';
-import 'package:thrive_hub/widgets/sort.dart'; // Import the CompanyCard widget
+import 'package:thrive_hub/widgets/sort.dart';
 
 class BusinessAllCategoriesScreen extends StatefulWidget {
   final String categoryTitle;
@@ -19,19 +20,33 @@ class BusinessAllCategoriesScreen extends StatefulWidget {
 }
 
 class _BusinessAllCategoriesScreenState extends State<BusinessAllCategoriesScreen> {
-  // Mock companies data
-  final List<Map<String, dynamic>> companies = List.generate(10, (index) {
-    return {
-      'imageUrl': 'https://via.placeholder.com/93',
-      'title': 'Saved Company $index',
-      'rating': 4.8,
-      'reviews': 4123,
-      'service': 'Web Hosting Services',
-      'description':
-      'Our goal is to help you achieve a balanced lifestyle, improve your overall health, and enhance your quality of life. $index',
-      'isBookmarked': false,
-    };
-  });
+  List<dynamic> companies = []; // List to hold company data
+  bool isLoading = true; // Track loading state
+  String errorMessage = ''; // For error handling
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCompanyList();
+  }
+
+  // Fetch the company list from the API
+  void _fetchCompanyList() async {
+    try {
+      CompanyService companyService = CompanyService();
+      List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
+      setState(() {
+        companies = fetchedCompanies;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = e.toString();
+        print('$errorMessage');
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +57,6 @@ class _BusinessAllCategoriesScreenState extends State<BusinessAllCategoriesScree
           children: [
             AppBar(
               automaticallyImplyLeading: false,
-              // toolbarHeight: 75,
               backgroundColor: Colors.white,
               elevation: 0,
               title: CustomSearchBar(
@@ -55,7 +69,7 @@ class _BusinessAllCategoriesScreenState extends State<BusinessAllCategoriesScree
               ),
             ),
             CategoriesTopBar(
-              categories: ['Tech', 'Design', 'Science', 'Art', 'Music', 'Finance'],
+              categories: ['Tech', 'Will Ness', 'Finance', 'Electronics'],
             ),
           ],
         ),
@@ -64,56 +78,64 @@ class _BusinessAllCategoriesScreenState extends State<BusinessAllCategoriesScree
         children: [
           FilterSortButtons(
             onFilter: (context) async {
-              // Your filter logic here
               return await Navigator.push<List<String>>(
                 context,
                 MaterialPageRoute(builder: (context) => FilterScreen()),
               ) ?? [];
             },
             onSort: (context) async {
-              // Your sort logic here
               return await showModalBottomSheet<String>(
                 context: context,
                 shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                 ),
                 builder: (context) => const SortBottomSheet(
-                  title: 'Sort By', // Pass custom title
-                  sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'], // Pass custom options
-
+                  title: 'Sort By',
+                  sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'],
                 ),
               );
             },
           ),
-
           const SizedBox(height: 8.0),
           Expanded(
-            child: ListView.builder(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : errorMessage.isNotEmpty
+                ? Center(child: Text('Error: $errorMessage'))
+                : ListView.builder(
               itemCount: companies.length,
               itemBuilder: (context, index) {
                 final company = companies[index];
                 return CompanyCard(
-                  imageUrl: company['imageUrl'],
-                  title: company['title'],
-                  rating: company['rating'],
-                  reviews: company['reviews'],
-                  service: company['service'],
-                  description: company['description'],
-                  isBookmarked: company['isBookmarked'],
+                  imageUrl: company['logo_url'] ?? '',
+                  title: company['org_name'] ?? 'Unknown',
+                  rating: double.tryParse(company['avg_rating'] ?? '0.0') ?? 0.0,
+                  reviews: company['total_reviews'] ?? 0,
+                  service: company['category'] ?? 'No Service',
+                  description: company['about_business'] ?? 'No description available.',
+                  isBookmarked: company['isBookmarked'] ?? false,
                   onBookmarkToggle: () {
                     setState(() {
-                      company['isBookmarked'] = !company['isBookmarked'];
+                      company['isBookmarked'] = !(company['isBookmarked'] ?? false);
                     });
                   },
+
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BusinessServicesScreen(),
-                      ),
-                    );
-                    print('CompanyCard tapped: ${company['title']}');
-                    // Navigate to another screen or perform an action
+                    // final profileId = company['profile_id']; // Ensure 'profile_id' is available in your data
+                    final profileId = company['profile_id']?.toString();
+                     print("tab profile id is $profileId");
+                    if (profileId != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BusinessServicesScreen(profileId: profileId),
+                        ),
+                      );
+                      print('Navigating to BusinessServicesScreen with profileId: $profileId');
+                    }
+                    else {
+                      print('Error: Profile ID is null for the selected company.');
+                    }
                   },
                 );
               },

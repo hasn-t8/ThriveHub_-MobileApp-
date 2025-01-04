@@ -13,6 +13,11 @@ import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/sort.dart';
 
 class BusinessServicesScreen extends StatefulWidget {
+  final String profileId;
+
+  const BusinessServicesScreen({Key? key, required this.profileId}) : super(key: key);
+  // BusinessServicesScreen({required this.profileId});
+
   @override
   _BusinessServicesScreenState createState() => _BusinessServicesScreenState();
 }

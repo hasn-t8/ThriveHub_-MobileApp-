@@ -4,9 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanyService {
-
-//fetch all companies
-
   Future<List<dynamic>> fetchCompanyList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('access_token');
@@ -31,26 +28,40 @@ class CompanyService {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          // 'Authorization': 'Bearer $accessToken',
         },
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> companies = jsonDecode(response.body);
+        final dynamic parsedResponse = jsonDecode(response.body);
 
-        // Cache response using shared preferences
-        prefs.setString('companyList', response.body);
+        // Ensure the response has a 'data' key containing a list
+        if (parsedResponse is Map<String, dynamic> && parsedResponse['data'] is List) {
+          final List<dynamic> companies = parsedResponse['data'];
 
-        return companies;
+          // Cache response using shared preferences
+          prefs.setString('companyList', jsonEncode(companies));
+          print("Response Body: ${response.body}");
+          return companies;
+        } else {
+          throw Exception('Unexpected API response structure.');
+        }
       } else {
-        throw Exception("Failed to load company list: ${response.statusCode}");
+        throw Exception(
+          "Failed to load company list: ${response.statusCode} - ${response.reasonPhrase}",
+        );
       }
     } catch (e) {
+      // Log the error for debugging
+      print("Error fetching company list: $e");
+
       // Try to load cached data in case of error
       final cachedData = prefs.getString('companyList');
       if (cachedData != null) {
+        print("Loading cached company list data.");
         return jsonDecode(cachedData);
       }
+
       throw Exception("Failed to fetch company list: $e");
     }
   }
