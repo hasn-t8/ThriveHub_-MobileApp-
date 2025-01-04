@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/screens/business/slider_screens/business_slider_screen.dart';
 import 'package:thrive_hub/screens/user/auth/sign_in.dart';
 import 'package:thrive_hub/services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
+import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 import 'create_new_password.dart';
 
 class ActivateAccountScreen extends StatefulWidget {
@@ -69,34 +71,47 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
 
   void verifyCode() async {
     setState(() {
-      _isLoading = true;  // Show loading indicator
+      _isLoading = true; // Show loading indicator
     });
 
-    final authService = AuthService();  // Create an instance of AuthService
+    final authService = AuthService(); // Create an instance of AuthService
     String enteredCode = _codeController.map((controller) => controller.text).join();
 
     // Call the API to verify the code
-    bool isCodeValid = await authService.ActivateCodeApi(widget.email, enteredCode);  // Call the verifyCode method
+    bool isCodeValid = await authService.ActivateCodeApi(widget.email, enteredCode); // Call the verifyCode method
 
     setState(() {
-      _isLoading = false;  // Hide loading indicator
+      _isLoading = false; // Hide loading indicator
     });
 
     if (isCodeValid) {
       print("Code verified successfully");
-      // Show success Snackbar
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Code verified successfully!'), backgroundColor: Colors.green),
-      );
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => BusinessSliderScreen()),
-            (Route<dynamic> route) => false,
-      );
-      // Navigator.push(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => SignInScreen()),
-      // );
+
+      // Retrieve user type from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final userTypes = prefs.getStringList('user_types') ?? [];
+
+      // Check if the user is a business owner or registered user
+      if (userTypes.contains('business-owner')) {
+        // Navigate to Business Slider Screen
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => BusinessSliderScreen()),
+              (Route<dynamic> route) => false,
+        );
+      } else if (userTypes.contains('registered-user')) {
+        // Navigate to Main Screen
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+              (Route<dynamic> route) => false,
+        );
+      } else {
+        // Fallback for unexpected user type
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User type not recognized.'), backgroundColor: Colors.orange),
+        );
+      }
     } else {
       // Change borders to red if the code does not match
       setState(() {
@@ -110,6 +125,7 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
       );
     }
   }
+
 
 
   void resetBorders() {

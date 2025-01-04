@@ -68,19 +68,27 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
   }
 
   Future<void> _submitData() async {
-    print('submit hit  ');
+    print('submit hit');
     if (_companyLogoPath == null) {
       print('No logo selected');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please select a logo before submitting.'),
+          backgroundColor: Colors.red,
+        ),
+      );
       return;
     }
 
     final File logoFile = File(_companyLogoPath!);
     final payload = {
-      'category': _selectedCategory,
-      'about_business': _aboutDescription,
+      "profileData": {
+        'category': _selectedCategory,
+        'about_business': _aboutDescription,
+      }
     };
-    print('data is ');
-    print('data is $logoFile,$payload');
+
+    print('data is $logoFile, $payload');
     // Show loading indicator
     showDialog(
       context: context,
@@ -88,25 +96,55 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
       builder: (context) => Center(child: CircularProgressIndicator()),
     );
 
-    // Perform API calls
-    // final logoUploaded = await _profileService.businessUploadLogo(logoFile);
-    // if (!logoUploaded) {
-    //   Navigator.of(context).pop(); // Dismiss loading indicator
-    //   print('Logo upload failed');
-    //   return;
-    // }
+    try {
+      // Perform API calls
+      final logoUploaded = await _profileService.businessUploadLogo(logoFile);
+      if (!logoUploaded) {
+        Navigator.of(context).pop(); // Dismiss loading indicator
+        print('Logo upload failed');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to upload the logo. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
 
-    final dataSent = await _profileService.businessProfileSetup(payload);
-    Navigator.of(context).pop(); // Dismiss loading indicator
+      final dataSent = await _profileService.businessProfileSetup(payload);
+      Navigator.of(context).pop(); // Dismiss loading indicator
 
-    if (dataSent) {
-      print('All data sent successfully!');
-      // Navigate to the main screen
-      Navigator.of(context).pushReplacementNamed('/business-home');
-    } else {
-      print('Data submission failed');
+      if (dataSent) {
+        print('All data sent successfully!');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Profile setup complete!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        // Navigate to the main screen
+        Navigator.of(context).pushReplacementNamed('/business-home');
+      } else {
+        print('Data submission failed');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to update profile. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context).pop(); // Dismiss loading indicator
+      print('Unexpected error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An unexpected error occurred. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

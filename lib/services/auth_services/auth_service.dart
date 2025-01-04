@@ -14,60 +14,53 @@ class AuthService {
     String? companyName,
     required String email,
     required String password,
-    required List<String> userTypes, // Make sure userTypes is a List<String>
-
+    required List<String> userTypes,
   }) async {
     try {
-      String fullName = '${firstName ?? ''} ${lastName ?? ''}'.trim();
+      // Construct full name
+      String fullName = '${firstName?.trim() ?? ''} ${lastName?.trim() ?? ''}'.trim();
+
+      // Ensure required fields are valid
+      if (email.isEmpty || password.isEmpty || userTypes.isEmpty) {
+        throw Exception('Email, password, and user types are required.');
+      }
+
       final response = await http.post(
-        Uri.parse('$_baseUrl/auth/register'), // Constructing the register endpoint URL
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'full_name': fullName,
-          'org_name': companyName,
+        Uri.parse('$_baseUrl/auth/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'full_name': fullName.isNotEmpty ? fullName : null,
+          'org_name': companyName ?? ' ',
           'email': email,
           'password': password,
-          'types': userTypes,  // Pass the userTypes as a List<String>
+          'types': userTypes,
         }),
       );
 
-      // Decode the response body
       final responseData = jsonDecode(response.body);
 
-      // Ensure the response is a Map<String, dynamic>
       if (responseData is Map<String, dynamic>) {
         if (response.statusCode == 201) {
           print('User registered successfully');
-          return responseData;  // Return the response data
-        }else if (response.statusCode == 409) {
-          print('Email already exists');
+          return responseData;
+        } else if (response.statusCode == 409) {
           throw Exception('Email already exists');
+        }else if (response.statusCode == 404) {
+          throw Exception('name already exists');
         } else {
-          // If the response contains errors, handle them
-          if (responseData.containsKey('errors')) {
-            final errors = responseData['errors'] as Map<String, dynamic>;
-            final firstErrorKey = errors.keys.first;
-            final firstErrorMessage = errors[firstErrorKey].values.first;
-            print('Failed to register user: $firstErrorMessage');
-            throw Exception(firstErrorMessage);
-          } else {
-            final errorMessage = responseData['message'] ?? 'Failed to register user';
-            print('Failed to register user: $errorMessage');
-            throw Exception(errorMessage);
-          }
+          final errors = responseData['errors'] as Map<String, dynamic>?;
+          final firstErrorMessage = errors?.values.first?.toString() ?? 'Failed to register user';
+          throw Exception(firstErrorMessage);
         }
       } else {
-        // If the response is not a Map, handle it appropriately
-        print('Unexpected response format: $responseData');
         throw Exception('Unexpected response format');
       }
     } catch (e) {
       print('Error during registration: $e');
-      rethrow; // Rethrow the exception to propagate it up the call stack
+      rethrow;
     }
   }
+
 
 
 //Login
