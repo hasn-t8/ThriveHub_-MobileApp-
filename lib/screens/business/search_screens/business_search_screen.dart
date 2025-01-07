@@ -76,11 +76,11 @@ class _BusinessSearchScreenState extends State<BusinessSearchScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(121),
+        preferredSize: Size.fromHeight(90),
         child: SafeArea(
           child: HeaderWidget(
             heading: heading,
-            showHeading: true,
+            showHeading: false,
             showSearchBar: true,
             showLine: true,
           ),
