@@ -9,12 +9,14 @@ class CompanyService {
     String? accessToken = prefs.getString('access_token');
 
     // Check if access token exists
-    if (accessToken == null || accessToken.isEmpty) {
-      throw Exception('Access token is missing.');
-    }
+    // if (accessToken == null || accessToken.isEmpty) {
+    //   throw Exception('Access token is missing.');
+    // }
 
     // Get the base URL from the .env file
     final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+
+
 
     // Check if the base URL is missing
     if (_baseUrl.isEmpty) {
@@ -52,6 +54,7 @@ class CompanyService {
         );
       }
     } catch (e) {
+
       // Log the error for debugging
       print("Error fetching company list: $e");
 
@@ -63,6 +66,26 @@ class CompanyService {
       }
 
       throw Exception("Failed to fetch company list: $e");
+    }
+  }
+
+  // Function to fetch business profile by ID
+  Future<Map<String, dynamic>> getBusinessProfileById(String businessId) async {
+    final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+    final String url = '$_baseUrl/businessprofiles/$businessId'; // Adjust the endpoint as needed
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        // Successful response
+        return json.decode(response.body);
+      } else {
+        // Handle server errors
+        throw Exception('Failed to load business profile. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle client-side errors
+      throw Exception('Failed to fetch business profile: $e');
     }
   }
 }

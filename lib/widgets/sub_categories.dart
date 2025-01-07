@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class SubcategoriesWidget extends StatefulWidget {
   final String categoryTitle;
-  final List<String> items;
+  final List<Map<String, String>> items; // Each item contains 'name' and 'logoUrl'
   final VoidCallback? onSeeAllTap;
   final Color containerColor;
   final Color dropBoxColor;
@@ -99,7 +99,9 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: widget.items.asMap().entries.map((entry) {
                   final int index = entry.key;
-                  final String item = entry.value;
+                  final Map<String, String> item = entry.value;
+                  final String name = item['name'] ?? "Unknown";
+                  final String logoUrl = item['logoUrl'] ?? "";
 
                   return GestureDetector(
                     onTap: () {
@@ -114,28 +116,55 @@ class _SubcategoriesWidgetState extends State<SubcategoriesWidget> {
                       width: 131,
                       height: 117,
                       margin: const EdgeInsets.only(right: 8),
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: selectedIndex == index
                             ? const Color(0xFFBFBFBF)
                             : widget.dropBoxColor,
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          item,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: 'Inter',
-                            height: 22 / 14,
-                            letterSpacing: -0.24,
-                            color: selectedIndex == index
-                                ? Colors.white
-                                : const Color(0xFF414141),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Display logo
+                          Expanded(
+                            child: logoUrl.isNotEmpty
+                                ? ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: Image.network(
+                                logoUrl,
+                                width: double.infinity,
+                                height: double.infinity,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.broken_image,
+                                    size: 40, color: Colors.grey),
+                              ),
+                            )
+                                : const Icon(
+                              Icons.business,
+                              size: 40,
+                              color: Colors.grey,
+                            ),
                           ),
-                        ),
+                          const SizedBox(height: 8),
+                          // Display name
+                          Text(
+                            name,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Inter',
+                              height: 22 / 14,
+                              letterSpacing: -0.24,
+                              color: selectedIndex == index
+                                  ? Colors.white
+                                  : const Color(0xFF414141),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
                   );

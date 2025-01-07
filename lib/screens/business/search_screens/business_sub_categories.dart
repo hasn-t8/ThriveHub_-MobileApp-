@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/screens/business/search_screens/business_all_categories.dart';
+import 'package:thrive_hub/screens/business/search_screens/business_services_screen.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/sub_categories.dart';
 import 'package:thrive_hub/widgets/search_bar.dart';
@@ -30,25 +31,56 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
       final List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
 
       setState(() {
-        // Group companies into hardcoded categories and assign items dynamically
+        // Dynamically filter out categories with no items
         categoriesData = [
           {
             "title": "Tech",
-            "items": fetchedCompanies.map((e) => e['org_name'] ?? "Unknown").toList(),
+            "items": fetchedCompanies
+                .where((company) => company['category'] == 'Tech')
+                .map((e) => {
+              "name": (e['org_name'] ?? "Unknown").toString(),
+              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "profileId": (e['profile_id'] ?? "-1").toString(),
+            })
+                .toList(),
           },
           {
-            "title": "Will Ness",
-            "items": fetchedCompanies.map((e) => e['org_name'] ?? "Unknown").toList(),
+            "title": "Wellness",
+            "items": fetchedCompanies
+                .where((company) => company['category'] == 'Wellness')
+                .map((e) => {
+              "name": (e['org_name'] ?? "Unknown").toString(),
+              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "profileId": (e['profile_id'] ?? "-1").toString(),
+            })
+                .toList(),
           },
           {
             "title": "Finance",
-            "items": fetchedCompanies.map((e) => e['org_name'] ?? "Unknown").toList(),
+            "items": fetchedCompanies
+                .where((company) => company['category'] == 'Finance')
+                .map((e) => {
+              "name": (e['org_name'] ?? "Unknown").toString(),
+              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "profileId": (e['profile_id'] ?? "-1").toString(),
+            })
+                .toList(),
           },
           {
             "title": "Electronics",
-            "items": fetchedCompanies.map((e) => e['org_name'] ?? "Unknown").toList(),
+            "items": fetchedCompanies
+                .where((company) => company['category'] == 'Electronics')
+                .map((e) => {
+              "name": (e['org_name'] ?? "Unknown").toString(),
+              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "profileId": (e['profile_id'] ?? "-1").toString(),
+            })
+                .toList(),
           },
-        ];
+        ]
+            .where((category) => (category['items'] as List).isNotEmpty) // Filter out empty categories
+            .toList();
+
         isLoading = false;
       });
     } catch (e) {
@@ -89,8 +121,9 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
           itemCount: categoriesData.length,
           itemBuilder: (context, index) {
             final category = categoriesData[index];
-            final String title = category['title'];
-            final List<String> items = List<String>.from(category['items']);
+            final String title = category['title'] ?? "Unknown Category";
+            final List<Map<String, String>> items =
+            List<Map<String, String>>.from(category['items']);
 
             return Column(
               children: [
@@ -98,22 +131,39 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
                   categoryTitle: title,
                   items: items,
                   onItemTap: (itemIndex) {
-                    print('Tapped item: ${items[itemIndex]} in $title');
+                    final selectedItem = items[itemIndex];
+                    final profileId = (selectedItem['profileId']?? "-1").toString();
+
+                    if (profileId == "-1") {
+                      // Show a loader or handle no action
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Profile unavailable")),
+                      );
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BusinessServicesScreen(profileId: profileId),
+                      ),
+                    );
                   },
                   onSeeAllTap: () {
-                    print("See All tapped for $title");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => BusinessAllCategoriesScreen(
                           categoryTitle: title,
-                          items: items,
                         ),
                       ),
                     );
                   },
-                  containerColor: index == 0 ? const Color(0xFFF0F0F0) : Colors.white,
-                  dropBoxColor: index == 0 ? const Color(0xFFFFFFFF) : const Color(0xFFE9E8E8),
+                  containerColor: index == 0
+                      ? const Color(0xFFF0F0F0)
+                      : Colors.white,
+                  dropBoxColor: index == 0
+                      ? const Color(0xFFFFFFFF)
+                      : const Color(0xFFE9E8E8),
                 ),
                 const SizedBox(height: 4), // Spacing between rows
               ],

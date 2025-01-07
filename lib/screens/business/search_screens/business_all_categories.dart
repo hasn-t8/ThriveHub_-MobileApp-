@@ -10,9 +10,7 @@ import 'package:thrive_hub/widgets/sort.dart';
 
 class BusinessAllCategoriesScreen extends StatefulWidget {
   final String categoryTitle;
-  final List<String> items;
-
-  const BusinessAllCategoriesScreen({Key? key, required this.categoryTitle, required this.items})
+  const BusinessAllCategoriesScreen({Key? key, required this.categoryTitle})
       : super(key: key);
 
   @override
@@ -69,11 +67,12 @@ class _BusinessAllCategoriesScreenState extends State<BusinessAllCategoriesScree
               ),
             ),
             CategoriesTopBar(
-              categories: ['Tech', 'Will Ness', 'Finance', 'Electronics'],
+              categories: ['Tech', 'Wellness', 'Finance', 'Electronics'],
             ),
           ],
         ),
       ),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           FilterSortButtons(
@@ -123,7 +122,7 @@ class _BusinessAllCategoriesScreenState extends State<BusinessAllCategoriesScree
                   onTap: () {
                     // final profileId = company['profile_id']; // Ensure 'profile_id' is available in your data
                     final profileId = company['profile_id']?.toString();
-                     print("tab profile id is $profileId");
+                    print("tab profile id is $profileId");
                     if (profileId != null) {
                       Navigator.push(
                         context,
