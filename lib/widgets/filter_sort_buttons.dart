@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class FilterSortButtons extends StatefulWidget {
   final Future<List<String>> Function(BuildContext context) onFilter;
   final Future<String?> Function(BuildContext context) onSort;
+  final Function(List<String>) onFiltersUpdated; // Callback to notify parent about filters
 
   const FilterSortButtons({
     required this.onFilter,
     required this.onSort,
+    required this.onFiltersUpdated,
     Key? key,
   }) : super(key: key);
 
@@ -57,6 +59,7 @@ class _FilterSortButtonsState extends State<FilterSortButtons> {
                       setState(() {
                         selectedFilters = filters;
                       });
+                      _applyUpdatedFilters(); // Apply the updated filters
                     }
                   },
                 ),
@@ -109,8 +112,9 @@ class _FilterSortButtonsState extends State<FilterSortButtons> {
                       label: filter,
                       onRemove: () {
                         setState(() {
-                          selectedFilters.remove(filter);
+                          selectedFilters.remove(filter); // Remove the filter
                         });
+                        _applyUpdatedFilters(); // Reapply filters
                       },
                     );
                   }),
@@ -132,11 +136,10 @@ class _FilterSortButtonsState extends State<FilterSortButtons> {
     );
   }
 
+  // Build individual chip for filters or sort option
   Widget _buildChip({required String label, required VoidCallback onRemove}) {
     return Padding(
-      // padding: const EdgeInsets.symmetric(horizontal: 5.0),
-      // padding: const EdgeInsets.all(8.0),
-      padding: const EdgeInsets.fromLTRB(8, 1,8,1),
+      padding: const EdgeInsets.fromLTRB(8, 1, 8, 1),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
         decoration: BoxDecoration(
@@ -177,5 +180,11 @@ class _FilterSortButtonsState extends State<FilterSortButtons> {
         ),
       ),
     );
+  }
+
+  // Apply updated filters to the list
+  void _applyUpdatedFilters() {
+    // Notify the parent widget about the updated filters
+    widget.onFiltersUpdated(selectedFilters);
   }
 }
