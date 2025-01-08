@@ -57,8 +57,8 @@ class Welcome1Screen extends StatelessWidget {
                   ),
                   SizedBox(height: 40),  // Add space between container and image
                   Image.asset(
-                    'assets/splash_logo.png',  // Ensure the image is placed in the assets folder
-                    width: 143.61,
+                    'assets/logo.png',  // Ensure the image is placed in the assets folder
+                    width: 250,
                     height: 124.41,
                   ),
                   SizedBox(height: 40),  // Add space between image and button

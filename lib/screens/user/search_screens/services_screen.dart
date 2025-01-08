@@ -145,6 +145,11 @@ class _ServicesScreenState extends State<ServicesScreen> {
                         ),
                       );
                     },
+                    onFiltersUpdated: (updatedFilters) {
+                      // Handle the updated filters in the parent widget
+                      print("Filters updated: $updatedFilters");
+                      // Optionally update additional UI or state here
+                    },
                   ),
 
 
@@ -214,9 +219,8 @@ class _ServicesScreenState extends State<ServicesScreen> {
                 description:
                 "Bluehost is the best web hosting provider that offers reliable and affordable website hosting plans with easy-to-use tools. With 24/7 customer support, domain name registration, and dedicated WordPress and WooCommerce hosting, Bluehost is a great choice for individuals and businesses looking to run a successful website.",
                 title: "Contacts",
-                location: "123 Main Street, City, Country",
-                phoneNumber: "+123456789",
                 companyName: "Tech Solutions Inc.",
+                companyUrl:"business_website_url",
               ),
             ],
           ),

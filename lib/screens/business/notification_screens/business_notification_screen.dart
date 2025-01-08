@@ -99,6 +99,11 @@ class _BusinessNotificationScreenState
                 ),
               );
             },
+            onFiltersUpdated: (updatedFilters) {
+              // Handle the updated filters in the parent widget
+              print("Filters updated: $updatedFilters");
+              // Optionally update additional UI or state here
+            },
           ),
 
           SizedBox(height: 10),

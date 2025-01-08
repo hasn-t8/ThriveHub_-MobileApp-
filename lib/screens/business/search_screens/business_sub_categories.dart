@@ -34,13 +34,26 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
         // Dynamically filter out categories with no items
         categoriesData = [
           {
+            "title": "Top Companies",
+            "items": (fetchedCompanies
+                .toList() // Convert to List to enable sorting
+              ..sort((a, b) => (b['avg_rating'] ?? 0).compareTo(a['avg_rating'] ?? 0))) // Sort by avg_rating descending
+                .map((e) => {
+              "name": (e['org_name'] ?? "Unknown").toString(),
+              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
+              "rating": (e['avg_rating'] ?? 0).toString(), // Include rating if needed
+            })
+                .toList(), // Convert back to a list after mapping
+          },
+          {
             "title": "Tech",
             "items": fetchedCompanies
                 .where((company) => company['category'] == 'Tech')
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
               "logoUrl": (e['logo_url'] ?? "").toString(),
-              "profileId": (e['profile_id'] ?? "-1").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
           },
@@ -51,7 +64,7 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
               "logoUrl": (e['logo_url'] ?? "").toString(),
-              "profileId": (e['profile_id'] ?? "-1").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
           },
@@ -62,21 +75,23 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
               "logoUrl": (e['logo_url'] ?? "").toString(),
-              "profileId": (e['profile_id'] ?? "-1").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
           },
           {
             "title": "Electronics",
             "items": fetchedCompanies
-                .where((company) => company['category'] == 'Electronics')
+                .where((company) =>
+            company['category'] == 'Electronics' || company['category'] == 'Home Electronic')
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
               "logoUrl": (e['logo_url'] ?? "").toString(),
-              "profileId": (e['profile_id'] ?? "-1").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
           },
+
         ]
             .where((category) => (category['items'] as List).isNotEmpty) // Filter out empty categories
             .toList();
@@ -111,6 +126,7 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
           ),
         ),
       ),
+      backgroundColor: Color(0xFFF0F0F0),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
@@ -132,9 +148,9 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
                   items: items,
                   onItemTap: (itemIndex) {
                     final selectedItem = items[itemIndex];
-                    final profileId = (selectedItem['profileId']?? "-1").toString();
+                    final business_profile_id = (selectedItem['business_profile_id']?? "-1").toString();
 
-                    if (profileId == "-1") {
+                    if (business_profile_id == "-1") {
                       // Show a loader or handle no action
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text("Profile unavailable")),
@@ -144,7 +160,7 @@ class _BusinessSubcategoriesScreenState extends State<BusinessSubcategoriesScree
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BusinessServicesScreen(profileId: profileId),
+                        builder: (context) => BusinessServicesScreen(business_profile_id: business_profile_id),
                       ),
                     );
                   },

@@ -68,7 +68,11 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
               ),
             ),
             CategoriesTopBar(
-              categories: ['Tech', 'Design', 'Science', 'Art', 'Music', 'Finance'],
+              categories: ['All','Tech', 'Wellness', 'Finance', 'Electronics'],
+              // initialSelectedCategory: selectedCategory, // Pass initial category
+              onCategorySelected: (selectedCategory) {
+                // _filterCompanies(selectedCategory); // Filter on selection
+              },
             ),
           ],
         ),
@@ -93,6 +97,11 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
                   sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'],
                 ),
               );
+            },
+            onFiltersUpdated: (updatedFilters) {
+              // Handle the updated filters in the parent widget
+              print("Filters updated: $updatedFilters");
+              // Optionally update additional UI or state here
             },
           ),
           const SizedBox(height: 8.0),

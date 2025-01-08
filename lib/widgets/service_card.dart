@@ -31,7 +31,7 @@ class ServiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Calculate dynamic height based on visible buttons
-    double dynamicHeight = 170.0; // Base height without buttons
+    double dynamicHeight = 150.0; // Base height without buttons
     if (showWriteReviewButton) dynamicHeight += 64.0; // Add height for Write Review button
     if (showTryServiceButton) dynamicHeight += 64.0; // Add height for Try Service button
 
@@ -61,10 +61,7 @@ class ServiceCard extends StatelessWidget {
                   width: 90.0,
                   height: 96.0,
                   decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12.0),
-                      topRight: Radius.circular(0),
-                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
                     color: Color(0xFFEFEFEF),
                   ),
                   child: ClipRRect(
@@ -104,6 +101,7 @@ class ServiceCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 4.0),
+                        if (location.isNotEmpty)
                         Row(
                           children: [
                             const Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D)),
