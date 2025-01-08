@@ -98,6 +98,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     ),
                   );
                 },
+                onFiltersUpdated: (updatedFilters) {
+                  // Handle the updated filters in the parent widget
+                  print("Filters updated: $updatedFilters");
+                  // Optionally update additional UI or state here
+                },
               ),
 
             SizedBox(height: 8.0), // Space between filter/sort buttons and review cards
