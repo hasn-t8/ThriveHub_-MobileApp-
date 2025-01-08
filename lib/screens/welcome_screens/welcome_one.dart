@@ -13,8 +13,7 @@ class Welcome1Screen extends StatelessWidget {
         children: [
           // Top section with the first background color
           Container(
-            // color: Color(0xFFD8DADC),
-            color: Color(0xFF118BF6),
+            color: Color(0xFFD8DADC),
             width: double.infinity,
             padding: const EdgeInsets.only(top: 80.0, bottom: 6.0), // Adjusted padding
             child: Center(
@@ -24,7 +23,6 @@ class Welcome1Screen extends StatelessWidget {
                   fontSize: 28,
                   fontFamily: 'Inter', // Set the font family to 'Inter'
                   fontWeight: FontWeight.w700, // Set font weight to 500
-                  color: Colors.white,
                 ),
               ),
             ),
