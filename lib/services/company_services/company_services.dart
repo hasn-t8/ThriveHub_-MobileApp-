@@ -88,4 +88,26 @@ class CompanyService {
       throw Exception('Failed to fetch business profile: $e');
     }
   }
+
+///get reviews by businessid
+  Future<List<Map<String, dynamic>>> getReviewsByBusinessId(String businessId) async {
+    final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+    final String apiUrl = "$_baseUrl/reviews/business/$businessId";
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        // Decode the JSON response
+        final List<dynamic> reviewsJson = json.decode(response.body);
+        return reviewsJson.map((review) => review as Map<String, dynamic>).toList();
+      } else {
+        // Handle non-200 responses
+        throw Exception('Failed to load reviews: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle errors (e.g., network issues, parsing issues)
+      throw Exception('Error fetching reviews: $e');
+    }
+  }
 }
