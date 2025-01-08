@@ -13,7 +13,8 @@ class Welcome1Screen extends StatelessWidget {
         children: [
           // Top section with the first background color
           Container(
-            color: Color(0xFFD8DADC),
+            // color: Color(0xFFD8DADC),
+            color: Color(0xFF118BF6),
             width: double.infinity,
             padding: const EdgeInsets.only(top: 80.0, bottom: 6.0), // Adjusted padding
             child: Center(
@@ -23,6 +24,7 @@ class Welcome1Screen extends StatelessWidget {
                   fontSize: 28,
                   fontFamily: 'Inter', // Set the font family to 'Inter'
                   fontWeight: FontWeight.w700, // Set font weight to 500
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -57,8 +59,8 @@ class Welcome1Screen extends StatelessWidget {
                   ),
                   SizedBox(height: 40),  // Add space between container and image
                   Image.asset(
-                    'assets/splash_logo.png',  // Ensure the image is placed in the assets folder
-                    width: 143.61,
+                    'assets/logo.png',  // Ensure the image is placed in the assets folder
+                    width: 250,
                     height: 124.41,
                   ),
                   SizedBox(height: 40),  // Add space between image and button
