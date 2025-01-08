@@ -16,16 +16,16 @@ class Welcome2Screen extends StatelessWidget {
               children: [
                 //   Image in the center
                 Container(
-                  height: 196.12,
-                  width: 226.39,
+                  height: 126.12,
+                  width: 250,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/main.png'), // Make sure the path is correct
+                      image: AssetImage('assets/logo.png'), // Make sure the path is correct
                       fit: BoxFit.contain,
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                // SizedBox(height: 20),
                 // Bold text below the image
                 Text(
                   'Hello!',
