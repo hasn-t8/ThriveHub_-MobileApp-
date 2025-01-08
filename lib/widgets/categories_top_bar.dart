@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 class CategoriesTopBar extends StatefulWidget {
   final List<String> categories;
+  final Function(String) onCategorySelected; // Callback for selected category
+  final String? initialSelectedCategory; // Optional initial selected category
 
   const CategoriesTopBar({
     Key? key,
     required this.categories,
+    required this.onCategorySelected,
+    this.initialSelectedCategory,
   }) : super(key: key);
 
   @override
@@ -13,7 +17,17 @@ class CategoriesTopBar extends StatefulWidget {
 }
 
 class _CategoriesTopBarState extends State<CategoriesTopBar> {
-  int? _selectedCategoryIndex; // Track the selected category index
+  int? _selectedCategoryIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set initial selected category if provided
+    if (widget.initialSelectedCategory != null) {
+      _selectedCategoryIndex =
+          widget.categories.indexOf(widget.initialSelectedCategory!);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +59,17 @@ class _CategoriesTopBarState extends State<CategoriesTopBar> {
                       setState(() {
                         _selectedCategoryIndex = index; // Update selected index
                       });
+                      // Notify parent widget about the selected category
+                      widget.onCategorySelected(category);
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(right: 12),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
                         decoration: BoxDecoration(
-                          color: isSelected ? const Color(0xFFBFBFBF) : Colors.white, // Background color
+                          color: isSelected
+                              ? const Color(0xFFBFBFBF)
+                              : Colors.white, // Background color
                           borderRadius: BorderRadius.circular(40),
                           border: isSelected
                               ? null // No border for selected category
@@ -68,7 +86,7 @@ class _CategoriesTopBarState extends State<CategoriesTopBar> {
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
                               fontFamily: 'SF Pro Display',
-                              height: 18/15,
+                              height: 18 / 15,
                             ),
                           ),
                         ),
