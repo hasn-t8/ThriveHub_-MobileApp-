@@ -8,20 +8,10 @@ class FilterScreen extends StatefulWidget {
 
 class _FilterScreenState extends State<FilterScreen> {
   List<String> filterOptions = [
-    'Web Hosting Services',
-    'VPN Providers',
-    'Cloud Storage Providers',
-    'Ecommerce Platforms',
-    'Security Software Companies',
-    'CRM Software',
-    'Accounting Software',
-    'Email Marketing Tools',
-    'Video Editing Software',
-    'Education & Productivity',
-    'Project Management Tools',
-    'Customer Service Software ',
-    'Graphic Design Software',
-    'Marketing Automation Software',
+    'Tech',
+    'Wellness',
+    'Finance',
+    'Electronics'
   ];
 
   Set<String> selectedFilters = Set();
@@ -49,6 +39,7 @@ class _FilterScreenState extends State<FilterScreen> {
         ),
         centerTitle: true,
       ),
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -57,7 +48,7 @@ class _FilterScreenState extends State<FilterScreen> {
             // Add SelectableScrollableRow here
             SelectableScrollableRow(
               title: 'Rating', // Pass the title here
-              options: ['All', '4+', '4','3','2'], // Add your list
+              options: ['All', '5', '4','3','2'], // Add your list
               selectedOptions: additionalFilters,
               onSelectionChanged: (newSelection) {
                 setState(() {
@@ -155,19 +146,19 @@ class _FilterScreenState extends State<FilterScreen> {
             ),
 
 
-            // Add SelectableScrollableRow here
-            SelectableScrollableRow(
-              title: 'Special needs', // Pass the title here
-              options: ['Free services', 'Only with reviews',], // Add your list
-              selectedOptions: additionalFilters2,
-              showStarIcon: false, // Set to false if you don't want the star icon
-              onSelectionChanged: (newSelection) {
-                setState(() {
-                  additionalFilters2 = newSelection;
-                });
-
-              },
-            ),
+            // // Add SelectableScrollableRow here
+            // SelectableScrollableRow(
+            //   title: 'Special needs', // Pass the title here
+            //   options: ['Free services', 'Only with reviews',], // Add your list
+            //   selectedOptions: additionalFilters2,
+            //   showStarIcon: false, // Set to false if you don't want the star icon
+            //   onSelectionChanged: (newSelection) {
+            //     setState(() {
+            //       additionalFilters2 = newSelection;
+            //     });
+            //
+            //   },
+            // ),
             // Show Results Button
             Padding(
               padding: const EdgeInsets.all(16.0),
