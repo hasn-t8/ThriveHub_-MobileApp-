@@ -100,7 +100,9 @@ class Welcome1Screen extends StatelessWidget {
                     child: OutlinedButton(
                       onPressed: () {
                         // Add your onPressed code here!
-                        Navigator.pushNamed(context, '/welcome2');
+                        // Navigator.pushNamed(context, '/welcome2');
+                        Navigator.pushNamed(context, '/business-sign-up');
+
                         // Navigator.push(
                         //   context,
                         //   MaterialPageRoute(builder: (context) => BusinessSignInScreen()),

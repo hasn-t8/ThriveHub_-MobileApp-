@@ -15,7 +15,7 @@ class SliderScreen extends StatelessWidget {
           PageView(
             controller: _pageController,
             children: [
-              LauncherScreen(),
+              // LauncherScreen(),
               Welcome1Screen(),
               Welcome2Screen(),
             ],
@@ -27,7 +27,7 @@ class SliderScreen extends StatelessWidget {
             child: Center(
               child: SmoothPageIndicator(
                 controller: _pageController,
-                count: 3,
+                count: 2,
 
                 effect: WormEffect(),  // Customize the effect as needed
               ),

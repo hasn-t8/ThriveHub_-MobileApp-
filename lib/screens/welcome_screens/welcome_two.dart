@@ -73,7 +73,7 @@ class Welcome2Screen extends StatelessWidget {
                   width: 335,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/business-sign-up');
+                      Navigator.pushNamed(context, '/signup');
                       // Add your onPressed code here!
                       // Navigator.push(
                       //   context,
@@ -104,7 +104,7 @@ class Welcome2Screen extends StatelessWidget {
                   width: 335,
                   child: OutlinedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/business-sign-in');
+                      Navigator.pushNamed(context, '/login');
                       // Add your onPressed code here!
                       // Navigator.push(
                       //   context,

@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
       routes: {
         // user screen routes
         '/': (context) => SplashScreen(),  // Set SliderScreen as the initial route
-        // '/': (context) => SliderScreen(),  // Set SliderScreen as the initial route
+        '/welcome': (context) => SliderScreen(),  // Set SliderScreen as the initial route
         '/dashboard': (context) => MainScreen(),
         '/launcher': (context) => LauncherScreen(),
         '/welcome1': (context) => Welcome1Screen(),
