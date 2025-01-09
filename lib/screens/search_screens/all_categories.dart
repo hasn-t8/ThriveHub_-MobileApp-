@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/screens/business/search_screens/business_services_screen.dart';
-import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
+import 'package:thrive_hub/screens/search_screens/services_screen.dart';
+import 'package:thrive_hub/screens/search_screens/filter_screen.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/search_bar.dart';
 import 'package:thrive_hub/widgets/categories_top_bar.dart';
@@ -8,16 +8,16 @@ import 'package:thrive_hub/widgets/filter_sort_buttons.dart';
 import 'package:thrive_hub/widgets/company_card.dart';
 import 'package:thrive_hub/widgets/sort.dart';
 
-class BusinessAllCategoriesScreen extends StatefulWidget {
+class AllCategoriesScreen extends StatefulWidget {
   final String categoryTitle;
-  const BusinessAllCategoriesScreen({Key? key, this.categoryTitle = ''})
+  const AllCategoriesScreen({Key? key, this.categoryTitle = ''})
       : super(key: key);
 
   @override
-  _BusinessAllCategoriesScreenState createState() => _BusinessAllCategoriesScreenState();
+  _AllCategoriesScreenState createState() => _AllCategoriesScreenState();
 }
 
-class _BusinessAllCategoriesScreenState extends State<BusinessAllCategoriesScreen> {
+class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
   List<dynamic> companies = []; // List to hold all companies from API
   List<dynamic> filteredCompanies = []; // List to hold filtered companies
   bool isLoading = true; // Track loading state
@@ -211,7 +211,7 @@ class _BusinessAllCategoriesScreenState extends State<BusinessAllCategoriesScree
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              BusinessServicesScreen(business_profile_id: businessProfileId),
+                              ServicesScreen(business_profile_id: businessProfileId),
                         ),
                       );
                     } else {

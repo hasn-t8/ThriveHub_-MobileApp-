@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thrive_hub/screens/business/search_screens/business_sub_categories.dart';
+import 'package:thrive_hub/screens/search_screens/sub_categories.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/categories.dart';
 import 'package:thrive_hub/widgets/top_bar.dart'; // Import your new HeaderWidget file
 
-class BusinessSearchScreen extends StatefulWidget {
+class SearchScreen extends StatefulWidget {
   @override
-  _BusinessSearchScreenState createState() => _BusinessSearchScreenState();
+  _SearchScreenState createState() => _SearchScreenState();
 }
 
-class _BusinessSearchScreenState extends State<BusinessSearchScreen> {
+class _SearchScreenState extends State<SearchScreen> {
   @override
   void initState() {
     super.initState();
@@ -65,7 +65,7 @@ class _BusinessSearchScreenState extends State<BusinessSearchScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BusinessSubcategoriesScreen(categoryTitle: categoryTitle),
+        builder: (context) => SubcategoriesScreen(categoryTitle: categoryTitle),
       ),
     );
   }

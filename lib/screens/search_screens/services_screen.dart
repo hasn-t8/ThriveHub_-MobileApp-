@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thrive_hub/core/utils/no_page_found.dart';
-import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
+import 'package:thrive_hub/screens/search_screens/filter_screen.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/feedback_bottom_sheet.dart';
 import 'package:thrive_hub/widgets/rating_card.dart';
@@ -12,19 +12,21 @@ import 'package:thrive_hub/widgets/service_about_tab.dart';
 import 'package:thrive_hub/widgets/filter_sort_buttons.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/sort.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class BusinessServicesScreen extends StatefulWidget {
+
+class ServicesScreen extends StatefulWidget {
   final String business_profile_id;
 
-  const BusinessServicesScreen({Key? key, required this.business_profile_id})
+  const ServicesScreen({Key? key, required this.business_profile_id})
       : super(key: key);
-  // BusinessServicesScreen({required this.profileId});
+  // ServicesScreen({required this.profileId});
 
   @override
-  _BusinessServicesScreenState createState() => _BusinessServicesScreenState();
+  _ServicesScreenState createState() => _ServicesScreenState();
 }
 
-class _BusinessServicesScreenState extends State<BusinessServicesScreen> {
+class _ServicesScreenState extends State<ServicesScreen> {
   bool isFirstTabSelected = true; // State to track the selected tab
   Map<String, dynamic>? businessProfile;
   List<Map<String, dynamic>> allReviews = []; // Updated to fetch from API
@@ -34,12 +36,21 @@ class _BusinessServicesScreenState extends State<BusinessServicesScreen> {
   String errorMessage = '';
   // Initialize rating distribution
   Map<int, double> ratingDistribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
+  List<String>? userTypes;
 
   @override
   void initState() {
     super.initState();
     _fetchBusinessProfile();
     _fetchReviews(); // Fetch reviews when the screen initializes
+    _loadUserTypes();
+  }
+
+  Future<void> _loadUserTypes() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userTypes = prefs.getStringList('user_types') ?? [];
+    });
   }
 
   // Helper function to calculate the number of days ago
@@ -213,6 +224,7 @@ class _BusinessServicesScreenState extends State<BusinessServicesScreen> {
               children: [
                 // Service Card
                 ServiceCard(
+                  userTypes: userTypes!,
                   serviceName: businessProfile?['org_name'] ?? '',
                   imageUrl: businessProfile?['logo_url'] ??
                       'https://via.placeholder.com/90x96',
@@ -227,7 +239,7 @@ class _BusinessServicesScreenState extends State<BusinessServicesScreen> {
                     print("create a service clicked");
                     NoPageFound.show(context);
                   },
-                  showWriteReviewButton: false,
+                  // showWriteReviewButton: true,
                   showTryServiceButton: false,
                   onTryService: () {
                     print("Try Service clicked");

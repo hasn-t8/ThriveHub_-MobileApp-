@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/screens/search_screens/all_categories.dart';
+import 'package:thrive_hub/screens/search_screens/search_screen.dart';
+import 'package:thrive_hub/screens/search_screens/sub_categories.dart';
 import 'package:thrive_hub/screens/user/auth/sign_in.dart';
-import 'package:thrive_hub/screens/user/search_screens/search_screen.dart';
 import 'package:thrive_hub/screens/user/reviews_screens/review_screen.dart';
-import 'package:thrive_hub/screens/user/notifications_screens/notification_screen.dart';
 import 'package:thrive_hub/screens/user/profile_screens/profile_screen.dart';
-import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -18,7 +18,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _screens = [
     SearchNavigator(), // Custom Navigator for Search tab
     ReviewScreen(),
-    NotificationScreen(),
+    AllCategoriesScreen(),
     ProfileScreen(),
   ];
 
@@ -62,16 +62,16 @@ class _MainScreenState extends State<MainScreen> {
         iconSize: 24, // Set icon size
         items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+            icon: Icon(Icons.home_filled),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.reviews_outlined),
             label: 'Reviews',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_outlined),
-            label: 'Notifications',
+            icon: Icon(Icons.search),
+            label: 'Search',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),

@@ -5,8 +5,6 @@ import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:thrive_hub/screens/business/slider_screens/business_slider_screen.dart';
 import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
-import 'package:thrive_hub/screens/user/search_screens/services_screen.dart';
-import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 import 'screens/welcome_screens/main_screen.dart';
 import 'screens/welcome_screens/first_screen.dart';
@@ -59,11 +57,6 @@ class MyApp extends StatelessWidget {
         '/my-companies': (context) => MyCompaniesScreen(),
         '/account-settings': (context) => AccountSettingsScreen(),
         '/help-center': (context) => HelpCenterScreen(),
-        '/subcategory': (context) => SubcategoriesScreen(
-              categoryTitle: '',
-            ),
-        '/service': (context) => ServicesScreen(),
-
         //business screens
         '/business-sign-up': (context) => BusinessSignUpScreen(),
         '/business-sign-in': (context) => BusinessSignInScreen(),

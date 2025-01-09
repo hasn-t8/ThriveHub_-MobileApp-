@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:thrive_hub/widgets/sub_categories.dart';
-import 'package:thrive_hub/widgets/search_bar.dart'; // Adjust the import path for your reusable search bar
-import 'package:thrive_hub/screens/business/search_screens/business_all_categories.dart';
+import 'package:thrive_hub/screens/search_screens/all_categories.dart';
+import 'package:thrive_hub/screens/search_screens/services_screen.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
+import 'package:thrive_hub/widgets/sub_categories.dart';
+import 'package:thrive_hub/widgets/search_bar.dart';
 
 class SubcategoriesScreen extends StatefulWidget {
   final String categoryTitle;
 
-  const SubcategoriesScreen({Key? key, required this.categoryTitle})
-      : super(key: key);
+  const SubcategoriesScreen({Key? key, required this.categoryTitle}) : super(key: key);
 
   @override
   _SubcategoriesScreenState createState() => _SubcategoriesScreenState();
@@ -31,8 +31,21 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
       final List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
 
       setState(() {
-        // Ensure consistent typing for items
+        // Dynamically filter out categories with no items
         categoriesData = [
+          {
+            "title": "Top Companies",
+            "items": (fetchedCompanies
+                .toList() // Convert to List to enable sorting
+              ..sort((a, b) => (b['avg_rating'] ?? 0).compareTo(a['avg_rating'] ?? 0))) // Sort by avg_rating descending
+                .map((e) => {
+              "name": (e['org_name'] ?? "Unknown").toString(),
+              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
+              "rating": (e['avg_rating'] ?? 0).toString(), // Include rating if needed
+            })
+                .toList(), // Convert back to a list after mapping
+          },
           {
             "title": "Tech",
             "items": fetchedCompanies
@@ -40,6 +53,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
               "logoUrl": (e['logo_url'] ?? "").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
           },
@@ -50,6 +64,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
               "logoUrl": (e['logo_url'] ?? "").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
           },
@@ -60,20 +75,27 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
               "logoUrl": (e['logo_url'] ?? "").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
           },
           {
             "title": "Electronics",
             "items": fetchedCompanies
-                .where((company) => company['category'] == 'Electronics')
+                .where((company) =>
+            company['category'] == 'Electronics' || company['category'] == 'Home Electronic')
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
               "logoUrl": (e['logo_url'] ?? "").toString(),
+              "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
           },
-        ];
+
+        ]
+            .where((category) => (category['items'] as List).isNotEmpty) // Filter out empty categories
+            .toList();
+
         isLoading = false;
       });
     } catch (e) {
@@ -83,9 +105,6 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
       });
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -107,6 +126,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
           ),
         ),
       ),
+      backgroundColor: Color(0xFFF0F0F0),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : errorMessage.isNotEmpty
@@ -128,13 +148,27 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
                   items: items,
                   onItemTap: (itemIndex) {
                     final selectedItem = items[itemIndex];
-                    print('Tapped item: ${selectedItem['name']} in $title');
+                    final business_profile_id = (selectedItem['business_profile_id']?? "-1").toString();
+
+                    if (business_profile_id == "-1") {
+                      // Show a loader or handle no action
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Profile unavailable")),
+                      );
+                      return;
+                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ServicesScreen(business_profile_id: business_profile_id),
+                      ),
+                    );
                   },
                   onSeeAllTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BusinessAllCategoriesScreen(
+                        builder: (context) => AllCategoriesScreen(
                           categoryTitle: title,
                         ),
                       ),
