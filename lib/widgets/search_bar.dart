@@ -16,6 +16,7 @@ class CustomSearchBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         // Back Button
+        if (Navigator.canPop(context))
         IconButton(
           onPressed: onBackButtonPressed,
           icon: const Icon(Icons.arrow_back_ios),
