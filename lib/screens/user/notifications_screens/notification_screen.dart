@@ -47,7 +47,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Notification',
-        showBackButton: false,
+        showBackButton: true,
         centerTitle: true,
       ),
       backgroundColor: Color(0xFFFFFFFF), // Set background color of the screen

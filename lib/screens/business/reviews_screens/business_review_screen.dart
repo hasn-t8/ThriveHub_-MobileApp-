@@ -5,7 +5,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:thrive_hub/core/utils/thank_you.dart';
 import 'package:thrive_hub/screens/business/widgets/description_bottom_sheet.dart';
 import 'package:thrive_hub/screens/user/reviews_screens/create_review_screen.dart';
-import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
+import 'package:thrive_hub/screens/search_screens/filter_screen.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/sort.dart';

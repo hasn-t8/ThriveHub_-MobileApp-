@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ServiceCard extends StatelessWidget {
+class ServiceCard extends StatefulWidget {
   final String serviceName;
   final String imageUrl;
   final double rating;
@@ -8,10 +8,10 @@ class ServiceCard extends StatelessWidget {
   final String location;
   final VoidCallback onWriteReview;
   final VoidCallback onTryService;
-  final bool showWriteReviewButton;
   final bool showTryServiceButton;
   final String writeReviewText;
   final String tryServiceText;
+  final List<String> userTypes; // Add userTypes parameter
 
   const ServiceCard({
     Key? key,
@@ -22,18 +22,40 @@ class ServiceCard extends StatelessWidget {
     required this.location,
     required this.onWriteReview,
     required this.onTryService,
-    this.showWriteReviewButton = true,
     this.showTryServiceButton = true,
     this.writeReviewText = 'Write a Review',
     this.tryServiceText = 'Try Service',
+    required this.userTypes, // Add this
   }) : super(key: key);
 
   @override
+  _ServiceCardState createState() => _ServiceCardState();
+}
+
+class _ServiceCardState extends State<ServiceCard> {
+  late bool showWriteReviewButton;
+
+  @override
+  void initState() {
+    super.initState();
+    _determineButtonVisibility();
+  }
+
+  void _determineButtonVisibility() {
+    if (widget.userTypes.contains('business-owner')) {
+      showWriteReviewButton = false; // Hide button for business owners
+    } else if (widget.userTypes.contains('registered-user')) {
+      showWriteReviewButton = true; // Show button for registered users
+    } else {
+      showWriteReviewButton = false; // Default behavior for others
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Calculate dynamic height based on visible buttons
     double dynamicHeight = 150.0; // Base height without buttons
     if (showWriteReviewButton) dynamicHeight += 64.0; // Add height for Write Review button
-    if (showTryServiceButton) dynamicHeight += 64.0; // Add height for Try Service button
+    if (widget.showTryServiceButton) dynamicHeight += 64.0; // Add height for Try Service button
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -67,7 +89,7 @@ class ServiceCard extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12.0),
                     child: Image.network(
-                      imageUrl,
+                      widget.imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -81,7 +103,7 @@ class ServiceCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          serviceName,
+                          widget.serviceName,
                           style: const TextStyle(
                             fontFamily: 'Inter',
                             fontSize: 22.0,
@@ -92,32 +114,32 @@ class ServiceCard extends StatelessWidget {
                         const SizedBox(height: 4.0),
                         Row(
                           children: [
-                            Text('$rating', style: const TextStyle(color: Color(0xFF888686))),
+                            Text('${widget.rating}', style: const TextStyle(color: Color(0xFF888686))),
                             const Icon(Icons.star, color: Color(0xFF888686)),
                             const SizedBox(width: 8.0),
                             const Text('|', style: TextStyle(color: Color(0xFFA5A5A5))),
                             const SizedBox(width: 8.0),
-                            Text('$reviewCount Reviews', style: const TextStyle(color: Color(0xFF888686))),
+                            Text('${widget.reviewCount} Reviews', style: const TextStyle(color: Color(0xFF888686))),
                           ],
                         ),
                         const SizedBox(height: 4.0),
-                        if (location.isNotEmpty)
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D)),
-                            Text(
-                              location,
-                              style: const TextStyle(
-                                color: Color(0xFFA5A5A5),
-                                fontFamily: 'Inter',
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w400,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Color(0xFFA5A5A5),
+                        if (widget.location.isNotEmpty)
+                          Row(
+                            children: [
+                              const Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D)),
+                              Text(
+                                widget.location,
+                                style: const TextStyle(
+                                  color: Color(0xFFA5A5A5),
+                                  fontFamily: 'Inter',
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w400,
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Color(0xFFA5A5A5),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -127,7 +149,7 @@ class ServiceCard extends StatelessWidget {
           ),
           const SizedBox(height: 16.0),
           // Buttons Section
-          if (showWriteReviewButton || showTryServiceButton)
+          if (showWriteReviewButton || widget.showTryServiceButton)
             Column(
               children: [
                 if (showWriteReviewButton)
@@ -141,9 +163,9 @@ class ServiceCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(16.0),
                         ),
                       ),
-                      onPressed: onWriteReview,
+                      onPressed: widget.onWriteReview,
                       child: Text(
-                        writeReviewText,
+                        widget.writeReviewText,
                         style: const TextStyle(
                           color: Colors.white,
                           fontFamily: 'Inter',
@@ -154,7 +176,7 @@ class ServiceCard extends StatelessWidget {
                     ),
                   ),
                 if (showWriteReviewButton) const SizedBox(height: 10.0),
-                if (showTryServiceButton)
+                if (widget.showTryServiceButton)
                   Container(
                     width: double.infinity,
                     height: 54.0,
@@ -167,9 +189,9 @@ class ServiceCard extends StatelessWidget {
                         ),
                         shadowColor: Colors.black.withOpacity(0.5),
                       ),
-                      onPressed: onTryService,
+                      onPressed: widget.onTryService,
                       child: Text(
-                        tryServiceText,
+                        widget.tryServiceText,
                         style: const TextStyle(
                           color: Colors.black,
                           fontFamily: 'Inter',

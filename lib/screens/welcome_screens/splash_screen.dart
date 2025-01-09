@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     // Start navigation after 5 seconds
     Future.delayed(Duration(seconds: 8), () {
-      Navigator.pushReplacementNamed(context, '/welcome1');
+      Navigator.pushReplacementNamed(context, '/welcome');
     });
   }
 

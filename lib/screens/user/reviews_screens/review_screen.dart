@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thrive_hub/screens/user/reviews_screens/create_review_screen.dart';
 import 'package:thrive_hub/screens/user/reviews_screens/review_screen.dart';
-import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
+import 'package:thrive_hub/screens/search_screens/filter_screen.dart';
+import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/sort.dart';
 import 'package:thrive_hub/widgets/tab_buttons.dart';
-import 'package:thrive_hub/widgets/filter_sort_buttons.dart'; // Import the new FilterSortButtons widget
+import 'package:thrive_hub/widgets/filter_sort_buttons.dart';
 
 class ReviewScreen extends StatefulWidget {
   @override
@@ -15,26 +16,45 @@ class ReviewScreen extends StatefulWidget {
 }
 
 class _ReviewScreenState extends State<ReviewScreen> {
-  bool isSavedSelected = true; // Initially, Saved button is selected
+  bool isSavedSelected = true; // Initially, All reviews are selected
+  List<Map<String, dynamic>> allReviews = []; // List to hold all reviews
+  List<Map<String, dynamic>> myReviews = []; // List for My Reviews
+  bool isLoading = true; // Track loading state
+  String errorMessage = ''; // For error handling
 
-  // Sample data for reviews
-  final List<Map<String, dynamic>> allReviews = List.generate(
-    10,
-        (index) => {
-      'imageUrl': 'https://via.placeholder.com/40',
-      'title': 'Company $index',
-      'rating': 4.8,
-      'location': 'USA',
-      'timeAgo': '1 day ago',
-      'reviewerName': 'Reviewer $index',
-      'reviewText':
-      'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'likes': 43,
-      'isLiked': false,
-    },
-  );
+  @override
+  void initState() {
+    super.initState();
+    _fetchReviews(); // Fetch reviews on initialization
+  }
 
-  final List<Map<String, dynamic>> myReviews = []; // Empty list for my reviews
+  // Fetch all reviews from the API
+  Future<void> _fetchReviews() async {
+    try {
+      final CompanyService reviewService = CompanyService();
+      final List<dynamic> fetchedReviews = await reviewService.fetchAllReviews();
+
+      setState(() {
+        allReviews = fetchedReviews.map((review) => Map<String, dynamic>.from(review)).toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = e.toString();
+        print('Error fetching reviews: $errorMessage');
+      });
+    }
+  }
+  String _calculateDaysAgo(String? createdAt) {
+    if (createdAt == null || createdAt.isEmpty) {
+      return 'Some time ago';
+    }
+    DateTime parsedDate = DateTime.parse(createdAt);
+    DateTime now = DateTime.now();
+    int daysDifference = now.difference(parsedDate).inDays;
+    return '$daysDifference day${daysDifference != 1 ? 's' : ''}';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +66,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
         showBackButton: false,
         centerTitle: true,
         onAddPressed: () {
-          // Handle the + icon press action here
-          print('Add icon pressed!');
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => CreateReviewScreen()),
@@ -55,7 +73,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
         },
       ),
       backgroundColor: Colors.white, // Set background color of the screen
-      body: Padding(
+      body: isLoading
+          ? Center(
+        child: CircularProgressIndicator(),
+      )
+          : errorMessage.isNotEmpty
+          ? Center(
+        child: Text(
+          'Error: $errorMessage',
+          style: TextStyle(color: Colors.red, fontSize: 16),
+        ),
+      )
+          : Padding(
         padding: const EdgeInsets.all(10.0), // Apply 10 padding to all sides
         child: Column(
           children: [
@@ -71,41 +100,36 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   isSavedSelected = false;
                 });
               },
-              allText: 'All', // Customizable text for the "All" button
-              myReviewsText: 'My reviews', // Customizable text for the "My reviews" button
+              allText: 'All',
+              myReviewsText: 'My reviews',
             ),
-            SizedBox(height: 10.0), // Space between buttons and filter/sort buttons
-            if (isSavedSelected) // Conditionally show FilterSortButtons
+            SizedBox(height: 10.0),
+            if (isSavedSelected)
               FilterSortButtons(
                 onFilter: (context) async {
-                  // Your filter logic here
                   return await Navigator.push<List<String>>(
                     context,
                     MaterialPageRoute(builder: (context) => FilterScreen()),
-                  ) ?? [];
+                  ) ??
+                      [];
                 },
                 onSort: (context) async {
-                  // Your sort logic here
                   return await showModalBottomSheet<String>(
                     context: context,
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                     ),
                     builder: (context) => const SortBottomSheet(
-                      title: 'Sort By', // Pass custom title
-                      sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'], // Pass custom options
-
+                      title: 'Sort By',
+                      sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'],
                     ),
                   );
                 },
                 onFiltersUpdated: (updatedFilters) {
-                  // Handle the updated filters in the parent widget
                   print("Filters updated: $updatedFilters");
-                  // Optionally update additional UI or state here
                 },
               ),
-
-            SizedBox(height: 8.0), // Space between filter/sort buttons and review cards
+            SizedBox(height: 8.0),
             Expanded(
               child: reviews.isEmpty
                   ? Center(
@@ -113,28 +137,29 @@ class _ReviewScreenState extends State<ReviewScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      'assets/no_review.png', // Replace with your actual image path
+                      'assets/no_review.png',
                       width: 254,
                       height: 256,
                     ),
                     SizedBox(height: 16.0),
                     Text(
-                      'You have not written any review yet',
-                      style:TextStyle(
+                      isSavedSelected
+                          ? 'No reviews found'
+                          : 'You have not written any review yet',
+                      style: TextStyle(
                         color: Color(0xFF000000),
-                        fontSize: 14, // Equivalent to the 12px font-size
-                        fontWeight: FontWeight.w500, // Regular weight
-                        fontFamily: 'SF Pro Display', // Set the font to 'SF Pro Display'
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'SF Pro Display',
                         height: 1.43,
                       ),
                     ),
                     SizedBox(height: 16.0),
                     SizedBox(
-                      width: 343, // Fixed width in pixels
-                      height: 54, // Fixed height in pixels
+                      width: 343,
+                      height: 54,
                       child: OutlinedButton(
                         onPressed: () {
-                          // Handle button action
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => CreateReviewScreen()),
@@ -144,25 +169,22 @@ class _ReviewScreenState extends State<ReviewScreen> {
                           'Write a Review',
                           style: TextStyle(
                             color: Colors.black,
-                            fontFamily: 'Inter', // Set the font family
-                            fontSize: 16, // Font size
-                            fontWeight: FontWeight.w500, // Medium weight
-                            height: 1.25, // Line height (20px / 16px)
-                            textBaseline: TextBaseline.alphabetic, // Ensures proper alignment
+                            fontFamily: 'Inter',
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            height: 1.25,
                           ),
-                          textAlign: TextAlign.left, // Align text to the left
                         ),
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white, // White background
-                          padding: EdgeInsets.symmetric(horizontal: 19, vertical: 17), // Custom padding
+                          backgroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(horizontal: 19, vertical: 17),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(16),),
-                            side: BorderSide(color: Color(0xFFA5A5A5)), // Border color
+                            borderRadius: BorderRadius.all(Radius.circular(16)),
+                            side: BorderSide(color: Color(0xFFA5A5A5)),
                           ),
                         ),
                       ),
                     ),
-
                   ],
                 ),
               )
@@ -171,15 +193,15 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 itemBuilder: (context, index) {
                   final review = reviews[index];
                   return ReviewCard(
-                    imageUrl: review['imageUrl'],
-                    title: review['title'],
-                    rating: review['rating'],
-                    location: review['location'],
-                    timeAgo: review['timeAgo'],
-                    reviewerName: review['reviewerName'],
-                    reviewText: review['reviewText'],
-                    likes: review['likes'],
-                    isLiked:review['isLiked'],
+                    imageUrl: review['logo_url'] ?? 'https://via.placeholder.com/40',
+                    title: review['org_name'] ?? 'No Title',
+                    rating: (double.tryParse(review?['rating']?.toString() ?? '0.0') ?? 0.0) / 2,
+                    location: review['location'] ?? '',
+                    timeAgo: _calculateDaysAgo(review['created_at']),
+                    reviewerName: review['customer_name'] ?? 'Anonymous',
+                    reviewText: review['feedback'] ?? 'No review text provided.',
+                    likes: review['likes'] ?? 0,
+                    isLiked: review['isLiked'] ?? false,
                     onTap: () {
                       print('ReviewCard tapped: ${review['title']}');
                     },

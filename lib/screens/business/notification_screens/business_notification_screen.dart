@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/screens/business/widgets/toggle_bar.dart';
-import 'package:thrive_hub/screens/user/search_screens/filter_screen.dart';
+import 'package:thrive_hub/screens/search_screens/filter_screen.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'package:thrive_hub/widgets/filter_sort_buttons.dart';
 import 'package:thrive_hub/widgets/notification_card.dart';
@@ -53,7 +53,7 @@ class _BusinessNotificationScreenState
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Notification',
-        showBackButton: false,
+        showBackButton: true,
         centerTitle: true,
       ),
       backgroundColor: const Color(0xFFFFFFFF),

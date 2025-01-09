@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/business/auth/sign_up.dart';
+import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
 import 'package:thrive_hub/screens/user/auth/activate_account.dart';
 import 'package:thrive_hub/screens/user/auth/forget_password.dart';
 import 'package:thrive_hub/screens/user/auth/sign_up.dart';
+import 'package:thrive_hub/screens/welcome_screens/main_screen.dart';
 import 'package:thrive_hub/services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/bottom_navigation_bar.dart';
 import 'package:thrive_hub/widgets/google_facbook_button.dart';
@@ -57,25 +59,13 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
         : '';
     // Save the access token
     await prefs.setString('access_token', responseData['token']);
-
     // Save other user data
     await prefs.setString('full_name', fullName);
     await prefs.setString('email', responseData['user']['email'] ?? '');
     await prefs.setStringList('user_types', List<String>.from(responseData['user']['userTypes']));
     await prefs.setString('profile_image', responseData['user']['profileImage'] ?? '');
     await prefs.setString('city', responseData['user']['city'] ?? 'city');
-
-    // Optionally, print the saved data to verify
-    print('User Data saved:');
-    print('Full Name: ${responseData['user']['full_name']}');
-    print('Email: ${responseData['user']['email']}');
-    print('User Types: ${responseData['user']['userTypes']}');
-    print('Profile Image: ${responseData['user']['profileImage']}');
-    print('City: ${responseData['user']['city']}');
-
-    // Retrieve and print the access token to confirm it's saved correctly
     final accessToken = prefs.getString('access_token') ?? 'No access token';
-    print('Access Token: $accessToken');
   }
 
   Future<void> _login() async {
@@ -108,7 +98,10 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
           // Check the user type and navigate accordingly
           List<String> userTypes = List<String>.from(response['user']['userTypes']);
           if (userTypes.contains('business-owner')) {
-            Navigator.of(context).pushReplacementNamed('/business-home');
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => BusinessMainScreen()),
+                  (Route<dynamic> route) => false, // This will remove all the routes
+            );
           } else if (userTypes.contains('registered-user')) {
             Navigator.pushAndRemoveUntil(
               context,
@@ -364,40 +357,65 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
                     SizedBox(height: 80),
                     // "Don't have an account" row
                     Center(
-                      child: Row(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text(
-                            'Don\'t have an account? ',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black.withOpacity(0.7), // Black with 70% opacity
-                              fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
-                              fontWeight: FontWeight.w400, // Set font weight to 400
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Don\'t have an account? ',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black.withOpacity(0.7), // Black with 70% opacity
+                                  fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                  fontWeight: FontWeight.w400, // Set font weight to 400
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => BusinessSignUpScreen()),
+                                  );
+
+                                },
+                                child: Text(
+                                  'Sign up',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black, // Black with 70% opacity
+                                    fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                    fontWeight: FontWeight.w500, // Set font weight to 500
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          SizedBox(height: 16), // Add some spacing between the two sections
                           GestureDetector(
                             onTap: () {
-                              // Add your onTap code here!
-                              Navigator.push(
+                              Navigator.pushAndRemoveUntil(
                                 context,
-                                MaterialPageRoute(builder: (context) => BusinessSignUpScreen()),
+                                MaterialPageRoute(builder: (context) => SliderScreen()), // Replace with your main menu screen
+                                    (Route<dynamic> route) => false,
                               );
                             },
                             child: Text(
-                              'Sign up',
+                              'Go to Main Menu',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.black, // Black with 70% opacity
-                                fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
-                                fontWeight: FontWeight.w500, // Set font weight to 500
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
                                 decoration: TextDecoration.underline,
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ),
+                    )
+
                   ],
                 ),
               ),

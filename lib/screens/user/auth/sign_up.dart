@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/user/auth/activate_account.dart';
+import 'package:thrive_hub/screens/welcome_screens/main_screen.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
 import '../../../widgets/google_facbook_button.dart';
@@ -81,14 +82,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // Save the access token safely
     await prefs.setString('access_token', responseData['token']?.toString() ?? '');
-
     // Save other user data with null checks
     await prefs.setString('full_name', fullName);
     await prefs.setString('email', responseData['user']?['email']?.toString() ?? '');
     await prefs.setStringList('user_types', List<String>.from(responseData['user']?['userTypes'] ?? []));
     await prefs.setString('profile_image', responseData['user']?['profileImage']?.toString() ?? '');
     await prefs.setString('city', responseData['user']?['city']?.toString() ?? 'Unknown');
-
     // Save business profile information
     if (responseData.containsKey('businessProfile')) {
       final businessProfile = responseData['businessProfile'];
@@ -97,24 +96,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await prefs.setInt('business_profile_id', businessProfile['businessProfileId'] ?? 0);
       }
     }
-
-    // Debug logs for verification
-    print('--- User Data Saved in SharedPreferences ---');
-    print('Full Name: ${prefs.getString('full_name')}');
-    print('Email: ${prefs.getString('email')}');
-    print('User Types: ${prefs.getStringList('user_types')}');
-    print('Profile Image: ${prefs.getString('profile_image')}');
-    print('City: ${prefs.getString('city')}');
-    print('Access Token: ${prefs.getString('access_token')}');
-
-    if (prefs.containsKey('profile_id')) {
-      print('Profile ID: ${prefs.getInt('profile_id')}');
-    }
-    if (prefs.containsKey('business_profile_id')) {
-      print('Business Profile ID: ${prefs.getInt('business_profile_id')}');
-    }
-
-    print('--- End of Saved Data ---');
   }
 
 
@@ -435,38 +416,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         SizedBox(height: 12),
                         Center(
-                          child: Row(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                'Already have an account? ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black.withOpacity(
-                                      0.7), // Black with 70% opacity
-                                  fontFamily:
-                                      'SF Pro Display', // Set the font family to 'SF Pro Display'
-                                  fontWeight:
-                                      FontWeight.w400, // Set font weight to 400
-                                ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Already have an account? ',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black.withOpacity(0.7), // Black with 70% opacity
+                                      fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                      fontWeight: FontWeight.w400, // Set font weight to 400
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => SignInScreen()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Login',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                        fontWeight: FontWeight.w500, // Set font weight to 500
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              SizedBox(height: 2), // Add some spacing between the two sections
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
+                                  Navigator.pushAndRemoveUntil(
                                     context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SignInScreen()),
+                                    MaterialPageRoute(builder: (context) => SliderScreen()), // Replace with your main menu screen
+                                        (Route<dynamic> route) => false,
                                   );
                                 },
                                 child: Text(
-                                  'Login',
+                                  'Go to Main Menu',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.black,
-                                    fontFamily:
-                                        'SF Pro Display', // Set the font family to 'Inter'
-                                    fontWeight: FontWeight
-                                        .w500, // Set font weight to 500
+                                    color: Colors.blue,
+                                    fontFamily: 'SF Pro Display',
+                                    fontWeight: FontWeight.w500,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),

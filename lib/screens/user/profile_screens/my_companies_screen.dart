@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/company_card.dart'; // Import the CompanyCard widget
 import 'package:thrive_hub/widgets/appbar.dart';
 import '../../../widgets/tab_buttons.dart';
@@ -10,37 +11,44 @@ class MyCompaniesScreen extends StatefulWidget {
 
 class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
   bool isSavedSelected = true; // Initially, Saved button is selected
+  List<dynamic> allCompanies = []; // List to hold all companies from API
+  List<dynamic> savedCompanies = []; // Companies with `bookmark: true`
+  bool isLoading = true; // Track loading state
+  String errorMessage = ''; // For error handling
 
-  // Sample data for saved and history companies
-  final List<Map<String, dynamic>> savedCompanies = List.generate(
-    10,
-        (index) => {
-      'imageUrl': 'https://via.placeholder.com/93',
-      'title': 'BlueHost $index',
-      'rating': 4.8,
-      'reviews': 4123,
-      'service': 'Web Hosting Services',
-      'description': 'Our goal is to help you achieve a balanced lifestyle, improve your overall health, and enhance your quality of life. $index',
-      'isBookmarked': true,
-    },
-  );
+  // Fetch the company list from the API
+  void _fetchCompanyList() async {
+    try {
+      CompanyService companyService = CompanyService();
+      List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
 
-  final List<Map<String, dynamic>> historyCompanies = List.generate(
-    10,
-        (index) => {
-      'imageUrl': 'https://via.placeholder.com/93',
-      'title': 'HostGator $index',
-      'rating': 4.5,
-      'reviews': 3000,
-      'service': 'Cloud Services',
-      'description': 'Our goal is to help you achieve a balanced lifestyle, improve your overall health, and enhance your quality of life. $index',
-      'isBookmarked': false,
-    },
-  );
+      setState(() {
+        allCompanies = fetchedCompanies;
+
+        // Filter saved companies based on the `bookmark` tag
+        savedCompanies = allCompanies.where((company) => company['bookmark'] == true).toList();
+
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        errorMessage = e.toString();
+        print('$errorMessage');
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchCompanyList(); // Fetch the company list on initialization
+  }
 
   @override
   Widget build(BuildContext context) {
-    final companies = isSavedSelected ? savedCompanies : historyCompanies;
+    // Determine which list to display: Saved or History
+    final companies = isSavedSelected ? savedCompanies : allCompanies;
 
     return Scaffold(
       appBar: CustomAppBar(title: 'My Companies', showBackButton: true, centerTitle: true),
@@ -65,22 +73,49 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
               myReviewsText: 'History',
             ),
             SizedBox(height: 8.0), // Space between buttons and cards
+
             Expanded(
-              child: ListView.builder(
+              child: isLoading
+                  ? Center(
+                child: CircularProgressIndicator(),
+              )
+                  : errorMessage.isNotEmpty
+                  ? Center(
+                child: Text(
+                  'Error: $errorMessage',
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
+              )
+                  : companies.isEmpty
+                  ? Center(
+                child: Text(
+                  isSavedSelected
+                      ? 'No saved companies found'
+                      : 'No company history found',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+              )
+                  : ListView.builder(
                 itemCount: companies.length, // Use dynamic data length
                 itemBuilder: (context, index) {
                   final company = companies[index];
                   return CompanyCard(
-                    imageUrl: company['imageUrl'],
-                    title: company['title'],
-                    rating: company['rating'],
-                    reviews: company['reviews'],
-                    service: company['service'],
-                    description: company['description'],
-                    isBookmarked: company['isBookmarked'],
+                    imageUrl: company['logo_url'] ?? 'https://via.placeholder.com/93',
+                    title: company['org_name'] ?? 'No Title',
+                    rating: (double.tryParse(company['avg_rating'] ?? '0.0') ?? 0.0) / 2,
+                    reviews: company['total_reviews'] ?? 0,
+                    service: company['category'] ?? 'No Service Info',
+                    description: company['about_business'] ?? 'No Description',
+                    isBookmarked: company['bookmark'] ?? false,
                     onBookmarkToggle: () {
                       setState(() {
-                        company['isBookmarked'] = !company['isBookmarked'];
+                        company['bookmark'] = !(company['bookmark'] ?? false);
+                        // Update savedCompanies dynamically
+                        if (company['bookmark'] == true) {
+                          savedCompanies.add(company);
+                        } else {
+                          savedCompanies.removeWhere((c) => c['id'] == company['id']);
+                        }
                       });
                     },
                     onTap: () {

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/user/auth/activate_account.dart';
+import 'package:thrive_hub/screens/welcome_screens/main_screen.dart';
 import '../../../core/constants/text_styles.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
@@ -87,7 +88,6 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
     await prefs.setStringList('user_types', List<String>.from(responseData['user']?['userTypes'] ?? []));
     await prefs.setString('profile_image', responseData['user']?['profileImage']?.toString() ?? '');
     await prefs.setString('city', responseData['user']?['city']?.toString() ?? 'Unknown');
-
     // Save business profile information
     if (responseData.containsKey('businessProfile')) {
       final businessProfile = responseData['businessProfile'];
@@ -96,24 +96,6 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
         await prefs.setInt('business_profile_id', businessProfile['businessProfileId'] ?? 0);
       }
     }
-
-    // Debug logs for verification
-    print('--- User Data Saved in SharedPreferences ---');
-    print('Full Name: ${prefs.getString('full_name')}');
-    print('Email: ${prefs.getString('email')}');
-    print('User Types: ${prefs.getStringList('user_types')}');
-    print('Profile Image: ${prefs.getString('profile_image')}');
-    print('City: ${prefs.getString('city')}');
-    print('Access Token: ${prefs.getString('access_token')}');
-
-    if (prefs.containsKey('profile_id')) {
-      print('Profile ID: ${prefs.getInt('profile_id')}');
-    }
-    if (prefs.containsKey('business_profile_id')) {
-      print('Business Profile ID: ${prefs.getInt('business_profile_id')}');
-    }
-
-    print('--- End of Saved Data ---');
   }
 
   Future<void> _registerUser() async {
@@ -387,27 +369,51 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                   ),
                   SizedBox(height: 20),
                   Center(
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Already have an account? ',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Already have an account? ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushReplacementNamed(context, '/business-sign-in');
+                              },
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        SizedBox(height: 8), // Add some spacing between the two sections
                         GestureDetector(
                           onTap: () {
-                              Navigator.pushNamed(context, '/business-sign-in');
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => SliderScreen()), // Replace with your main menu screen
+                                  (Route<dynamic> route) => false,
+                            );
                           },
                           child: const Text(
-                            'Login',
+                            'Go to Main Menu',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.black,
-                              decoration: TextDecoration.underline,
+                              color: Colors.blue,
                               fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
                             ),
                           ),
                         ),

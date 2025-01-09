@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/screens/search_screens/sub_categories.dart';
+import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
 import 'package:thrive_hub/widgets/categories.dart';
-import 'package:thrive_hub/widgets/top_bar.dart'; // Import your new HeaderWidget file
-import 'package:thrive_hub/screens/user/search_screens/sub_categories_screen.dart';
-
+import 'package:thrive_hub/widgets/top_bar.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -13,41 +13,60 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  String name = ''; // Replace with the actual name variable or dynamic input
+  int selectedBoxIndex = -1;
+  List<Map<String, dynamic>> allReviews = [];
+  List<Map<String, dynamic>> filteredReviews = [];
+  bool isLoadingReviews = true;
+  final CompanyService apiService = CompanyService();
+
   @override
   void initState() {
     super.initState();
-     // _loadUserData();
+    _loadUserData();
+    _fetchAllReviews();
   }
 
-  String name = ''; // Replace with the actual name variable or dynamic input
-  int selectedBoxIndex = -1;
+  Future<void> _loadUserData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final fullName = prefs.getString('full_names') ?? 'Alex';
+    final firstName = fullName.split(' ').first;
+    setState(() {
+      name = firstName;
+    });
+  }
+// Helper function to calculate the number of days ago
+  String _calculateDaysAgo(String? createdAt) {
+    if (createdAt == null || createdAt.isEmpty) {
+      return 'Some time ago';
+    }
+    DateTime parsedDate = DateTime.parse(createdAt);
+    DateTime now = DateTime.now();
+    int daysDifference = now.difference(parsedDate).inDays;
+    return '$daysDifference day${daysDifference != 1 ? 's' : ''}';
+  }
 
-  // Future<void> _loadUserData() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   final accessToken = prefs.getString('access_token');
-  //   final fullName = prefs.getString('full_name') ?? 'Alex';
-  //   final firstName = fullName.split(' ').first;
-  //   setState(() {
-  //     name = firstName;
-  //   });
-  // }
+  Future<void> _fetchAllReviews() async {
+    try {
+      final reviews = await apiService.fetchAllReviews();
+      setState(() {
+        allReviews = reviews;
+        _filterLatestReviews(); // Apply filtering after fetching
+        isLoadingReviews = false;
+      });
+    } catch (e) {
+      print('Error fetching reviews: $e');
+      setState(() {
+        isLoadingReviews = false;
+      });
+    }
+  }
 
-  // Sample data for reviews
-  final List<Map<String, dynamic>> allReviews = List.generate(
-    5,
-        (index) => {
-      'imageUrl': 'https://via.placeholder.com/40',
-      'title': 'Company $index',
-      'rating': 4.8,
-      'location': 'USA',
-      'timeAgo': '1 day ago',
-      'reviewerName': 'Reviewer $index',
-      'reviewText':
-      'This is a review for company $index. Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      'likes': 43,
-      'isLiked': false,
-    },
-  );
+  void _filterLatestReviews() {
+    filteredReviews = List.from(allReviews); // Start with all reviews
+    filteredReviews.sort((a, b) => DateTime.parse(b['created_at']).compareTo(DateTime.parse(a['created_at'])));
+    filteredReviews = filteredReviews.take(10).toList(); // Take the latest 10
+  }
 
   final List<Map<String, String>> categories = [
     {'title': 'Tech', 'description': 'Our goal is to help you achieve a balanced lifestyle ', 'image': 'assets/tech.png'},
@@ -67,17 +86,18 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // _loadUserData();
     String heading = name.isNotEmpty ? 'Hi, $name!' : 'Hi!';
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(121),
+        preferredSize: Size.fromHeight(90),
         child: SafeArea(
           child: HeaderWidget(
-            heading: heading,
-            showHeading: true,
-            showSearchBar: true,
+            heading: "Welcome!",
+            showLogo: true, // Show logo
+            showNotificationIcon: true, // Show notification icon
+            showHeading: false,
+            showSearchBar: false,
             showLine: true,
           ),
         ),
@@ -95,7 +115,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                     color: Colors.black,
-                    height: 25/20,
+                    height: 25 / 20,
                     letterSpacing: 0.38,
                   ),
                   textAlign: TextAlign.center,
@@ -121,74 +141,64 @@ class _SearchScreenState extends State<SearchScreen> {
             maxChildSize: 0.8,
             builder: (context, scrollController) {
               return Container(
-                padding: EdgeInsets.only(left: 16.0,right: 16.0,bottom: 0.0,top: 20.0),
-                // padding: EdgeInsets.symmetric(horizontal: 14.0),
+                padding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 0.0, top: 20.0),
                 decoration: BoxDecoration(
                   color: Color(0xFFEDEDED),
                   borderRadius: BorderRadius.vertical(
                     top: Radius.circular(20),
                   ),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: Colors.black26,
-                  //     blurRadius: 10,
-                  //     spreadRadius: 1,
-                  //   ),
-                  //
-                  // ],
                 ),
                 child: SingleChildScrollView(
                   controller: scrollController,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // SizedBox(height: 30),
                       Text(
                         'The latest reviews about services',
                         style: TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 20,
                           fontWeight: FontWeight.w600,
-                          height: 25/20,
+                          height: 25 / 20,
                           letterSpacing: -0.58,
                           color: Colors.black,
                         ),
                       ),
-                      SizedBox(height: 20),
-                      ListView.builder(
+                      SizedBox(height: 10),
+                      isLoadingReviews
+                          ? Center(child: CircularProgressIndicator())
+                          : filteredReviews.isEmpty
+                          ? Center(child: Text('No reviews found', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)))
+                          : ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: allReviews.length,
+                        itemCount: filteredReviews.length,
                         controller: scrollController,
                         itemBuilder: (context, index) {
-                          final review = allReviews[index];
+                          final review = filteredReviews[index];
                           return ReviewCard(
-                            imageUrl: review['imageUrl'],
-                            title: review['title'],
-                            rating: review['rating'],
-                            location: review['location'],
-                            timeAgo: review['timeAgo'],
-                            reviewerName: review['reviewerName'],
-                            reviewText: review['reviewText'],
-                            likes: review['likes'],
-                            isLiked:review['isLiked'],
+                            imageUrl: review['logo_url'] ?? 'https://via.placeholder.com/40',
+                            title: review['org_name'] ?? 'No Title',
+                              rating: (double.tryParse(review?['rating']?.toString() ?? '0.0') ?? 0.0) / 2,
+                            location: review['location'] ?? '',
+                            timeAgo: _calculateDaysAgo(review['created_at']),
+                            reviewerName: review['customer_name'] ?? 'Anonymous',
+                            reviewText: review['feedback'] ?? 'No review text provided.',
+                            likes: review['likes'] ?? 0,
+                            isLiked: review['isLiked'] ?? false,
                             showShareButton: false,
                             onTap: () {
-                              print('ReviewCard tapped: ${review['title']}');
+                              print('ReviewCard tapped: ${review['org_name']}');
                             },
                             onLike: () {
                               setState(() {
-                                if (review['isLiked']) {
-                                  review['likes'] -= 1;
-                                } else {
-                                  review['likes'] += 1;
-                                }
-                                review['isLiked'] = !review['isLiked'];
+                                review['isLiked'] = !(review['isLiked'] ?? false);
+                                review['likes'] = (review['likes'] ?? 0) + (review['isLiked'] ? 1 : -1);
                               });
                             },
                             onShare: () {
                               Share.share(
-                                'Check out this review on Thrive Hub:\n\n"${review['reviewText']}"\nRead more at: https://example.com/review/${review['title']}',
+                                'Check out this review: "${review['reviewText']}"',
                                 subject: 'Review of ${review['title']}',
                               );
                             },
