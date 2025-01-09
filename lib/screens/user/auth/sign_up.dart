@@ -82,14 +82,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     // Save the access token safely
     await prefs.setString('access_token', responseData['token']?.toString() ?? '');
-
     // Save other user data with null checks
     await prefs.setString('full_name', fullName);
     await prefs.setString('email', responseData['user']?['email']?.toString() ?? '');
     await prefs.setStringList('user_types', List<String>.from(responseData['user']?['userTypes'] ?? []));
     await prefs.setString('profile_image', responseData['user']?['profileImage']?.toString() ?? '');
     await prefs.setString('city', responseData['user']?['city']?.toString() ?? 'Unknown');
-
     // Save business profile information
     if (responseData.containsKey('businessProfile')) {
       final businessProfile = responseData['businessProfile'];
@@ -98,24 +96,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         await prefs.setInt('business_profile_id', businessProfile['businessProfileId'] ?? 0);
       }
     }
-
-    // Debug logs for verification
-    print('--- User Data Saved in SharedPreferences ---');
-    print('Full Name: ${prefs.getString('full_name')}');
-    print('Email: ${prefs.getString('email')}');
-    print('User Types: ${prefs.getStringList('user_types')}');
-    print('Profile Image: ${prefs.getString('profile_image')}');
-    print('City: ${prefs.getString('city')}');
-    print('Access Token: ${prefs.getString('access_token')}');
-
-    if (prefs.containsKey('profile_id')) {
-      print('Profile ID: ${prefs.getInt('profile_id')}');
-    }
-    if (prefs.containsKey('business_profile_id')) {
-      print('Business Profile ID: ${prefs.getInt('business_profile_id')}');
-    }
-
-    print('--- End of Saved Data ---');
   }
 
 

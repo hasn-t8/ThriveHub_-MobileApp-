@@ -58,25 +58,13 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
         : '';
     // Save the access token
     await prefs.setString('access_token', responseData['token']);
-
     // Save other user data
     await prefs.setString('full_name', fullName);
     await prefs.setString('email', responseData['user']['email'] ?? '');
     await prefs.setStringList('user_types', List<String>.from(responseData['user']['userTypes']));
     await prefs.setString('profile_image', responseData['user']['profileImage'] ?? '');
     await prefs.setString('city', responseData['user']['city'] ?? 'city');
-
-    // Optionally, print the saved data to verify
-    print('User Data saved:');
-    print('Full Name: ${responseData['user']['full_name']}');
-    print('Email: ${responseData['user']['email']}');
-    print('User Types: ${responseData['user']['userTypes']}');
-    print('Profile Image: ${responseData['user']['profileImage']}');
-    print('City: ${responseData['user']['city']}');
-
-    // Retrieve and print the access token to confirm it's saved correctly
     final accessToken = prefs.getString('access_token') ?? 'No access token';
-    print('Access Token: $accessToken');
   }
 
   Future<void> _login() async {
