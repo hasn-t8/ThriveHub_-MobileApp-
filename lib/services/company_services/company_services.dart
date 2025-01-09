@@ -110,4 +110,29 @@ class CompanyService {
       throw Exception('Error fetching reviews: $e');
     }
   }
+//get all reviews by authenticated user
+  Future<List<Map<String, dynamic>>> fetchAllReviews() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+    final accessToken = prefs.getString('access_token');
+    if (accessToken == null) {
+      throw Exception('Access token is missing');
+    }
+
+    final url = Uri.parse('$_baseUrl/reviews/business/3');
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((e) => Map<String, dynamic>.from(e)).toList();
+    } else {
+      throw Exception('Failed to fetch reviews: ${response.statusCode}');
+    }
+  }
 }

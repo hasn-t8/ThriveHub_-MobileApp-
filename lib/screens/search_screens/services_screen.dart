@@ -244,7 +244,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                   onTryService: () {
                     print("Try Service clicked");
                   },
-                  writeReviewText: 'Create New Service',
+                  writeReviewText: 'Write a Review',
                 ),
 
                 // Centered Service Tabs

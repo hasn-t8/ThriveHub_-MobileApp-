@@ -58,7 +58,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     ));
 
     if (result['success']) {
-      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
     }
   }
   Future<void> _loadUserData() async {

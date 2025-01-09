@@ -40,7 +40,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
               ..sort((a, b) => (b['avg_rating'] ?? 0).compareTo(a['avg_rating'] ?? 0))) // Sort by avg_rating descending
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
-              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "logoUrl": (e['logo_url'] ?? "https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png").toString(),
               "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
               "rating": (e['avg_rating'] ?? 0).toString(), // Include rating if needed
             })
@@ -52,7 +52,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
                 .where((company) => company['category'] == 'Tech')
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
-              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "logoUrl": (e['logo_url'] ?? "https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png").toString(),
               "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
@@ -63,7 +63,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
                 .where((company) => company['category'] == 'Wellness')
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
-              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "logoUrl": (e['logo_url'] ?? "https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png").toString(),
               "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
@@ -74,7 +74,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
                 .where((company) => company['category'] == 'Finance')
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
-              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "logoUrl": (e['logo_url'] ?? "https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png").toString(),
               "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
@@ -86,7 +86,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
             company['category'] == 'Electronics' || company['category'] == 'Home Electronic')
                 .map((e) => {
               "name": (e['org_name'] ?? "Unknown").toString(),
-              "logoUrl": (e['logo_url'] ?? "").toString(),
+              "logoUrl": (e['logo_url'] ?? "https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png").toString(),
               "business_profile_id": (e['business_profile_id'] ?? "-1").toString(),
             })
                 .toList(),
@@ -123,6 +123,7 @@ class _SubcategoriesScreenState extends State<SubcategoriesScreen> {
             onSearchChanged: (value) {
               print('Search input: $value');
             },
+            showSearchBar: false,
           ),
         ),
       ),

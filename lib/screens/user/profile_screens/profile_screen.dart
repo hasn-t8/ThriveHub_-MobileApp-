@@ -120,9 +120,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // Use default values if the retrieved values are null
     final fullName = prefs.getString('full_name') ?? 'Name'; // Default value for full name
     final profileImage = prefs.getString('profile_image');
-    final location = prefs.getString('city') ?? 'Location'; // Default if null
-    final reviews = prefs.getInt('reviews') ?? 28; // Default value for reviews
-    final companyCount = prefs.getInt('company_count') ?? 38; // Default value for company count
+    final location = prefs.getString('city') ?? ''; // Default if null
+    final reviews = prefs.getInt('reviews') ?? 0; // Default value for reviews
+    final companyCount = prefs.getInt('company_count') ?? 0; // Default value for company count
 
     // Optionally, print the retrieved data to verify
     print('Full Name : $fullName');
@@ -164,12 +164,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (result['success']) {
       // Successful logout
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
     } else if (result['message'] == 'Unauthorized. Please log in again.') {
       // Handle 401 specifically
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
     } else {
-      Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(result['message']),
