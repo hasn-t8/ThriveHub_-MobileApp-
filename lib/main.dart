@@ -25,13 +25,7 @@ import 'package:thrive_hub/screens/business/auth/sign_up.dart';
 import 'package:thrive_hub/screens/business/auth/sign_in.dart';
 
 Future<void> main() async {
-  // Load the .env file
   await dotenv.load(fileName: ".env");
-// Debug prints
-  print('Current directory: ${Directory.current.path}');
-  print('Does .env file exist? ${File('.env').existsSync()}');
-
-
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.white, // Status bar color
     statusBarIconBrightness: Brightness.dark, // For Android: dark icons
@@ -40,13 +34,11 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
-
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,  // Disable the debug banner
+      debugShowCheckedModeBanner: false, // Disable the debug banner
       title: 'Thrive Hub',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -54,8 +46,10 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         // user screen routes
-        '/': (context) => SplashScreen(),  // Set SliderScreen as the initial route
-        '/welcome': (context) => SliderScreen(),  // Set SliderScreen as the initial route
+        '/': (context) =>
+            SplashScreen(), // Set SliderScreen as the initial route
+        '/welcome': (context) =>
+            SliderScreen(), // Set SliderScreen as the initial route
         '/dashboard': (context) => MainScreen(),
         '/launcher': (context) => LauncherScreen(),
         '/welcome1': (context) => Welcome1Screen(),
@@ -65,21 +59,20 @@ class MyApp extends StatelessWidget {
         '/my-companies': (context) => MyCompaniesScreen(),
         '/account-settings': (context) => AccountSettingsScreen(),
         '/help-center': (context) => HelpCenterScreen(),
-        '/subcategory': (context) => SubcategoriesScreen(categoryTitle: '',),
+        '/subcategory': (context) => SubcategoriesScreen(
+              categoryTitle: '',
+            ),
         '/service': (context) => ServicesScreen(),
 
-
         //business screens
-        '/business-sign-up':(context)=> BusinessSignUpScreen(),
-        '/business-sign-in':(context)=> BusinessSignInScreen(),
-        '/business-notification':(context)=> BusinessNotificationScreen(),
-        '/business-help-center':(context) => BusinessHelpCenterScreen(),
-        '/business-account-settings' : (context) => BusinessAccountScreen(),
-        '/business-profile-setup' : (context) => BusinessSliderScreen(),
+        '/business-sign-up': (context) => BusinessSignUpScreen(),
+        '/business-sign-in': (context) => BusinessSignInScreen(),
+        '/business-notification': (context) => BusinessNotificationScreen(),
+        '/business-help-center': (context) => BusinessHelpCenterScreen(),
+        '/business-account-settings': (context) => BusinessAccountScreen(),
+        '/business-profile-setup': (context) => BusinessSliderScreen(),
         '/business-home': (context) => BusinessMainScreen(),
       },
     );
   }
 }
-
-

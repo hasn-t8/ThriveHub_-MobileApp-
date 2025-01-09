@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/user/auth/activate_account.dart';
+import 'package:thrive_hub/screens/welcome_screens/main_screen.dart';
 import '../../../core/constants/text_styles.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
@@ -387,27 +388,51 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                   ),
                   SizedBox(height: 20),
                   Center(
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Already have an account? ',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Already have an account? ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushReplacementNamed(context, '/business-sign-in');
+                              },
+                              child: const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.underline,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
+                        SizedBox(height: 8), // Add some spacing between the two sections
                         GestureDetector(
                           onTap: () {
-                              Navigator.pushNamed(context, '/business-sign-in');
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => SliderScreen()), // Replace with your main menu screen
+                                  (Route<dynamic> route) => false,
+                            );
                           },
                           child: const Text(
-                            'Login',
+                            'Go to Main Menu',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.black,
-                              decoration: TextDecoration.underline,
+                              color: Colors.blue,
                               fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
                             ),
                           ),
                         ),

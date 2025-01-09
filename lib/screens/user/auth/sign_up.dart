@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/user/auth/activate_account.dart';
+import 'package:thrive_hub/screens/welcome_screens/main_screen.dart';
 import 'sign_in.dart';
 import '../../../widgets/input_fields.dart';
 import '../../../widgets/google_facbook_button.dart';
@@ -435,38 +436,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         SizedBox(height: 12),
                         Center(
-                          child: Row(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                'Already have an account? ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.black.withOpacity(
-                                      0.7), // Black with 70% opacity
-                                  fontFamily:
-                                      'SF Pro Display', // Set the font family to 'SF Pro Display'
-                                  fontWeight:
-                                      FontWeight.w400, // Set font weight to 400
-                                ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Already have an account? ',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black.withOpacity(0.7), // Black with 70% opacity
+                                      fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                      fontWeight: FontWeight.w400, // Set font weight to 400
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => SignInScreen()),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Login',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black,
+                                        fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                        fontWeight: FontWeight.w500, // Set font weight to 500
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                              SizedBox(height: 2), // Add some spacing between the two sections
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
+                                  Navigator.pushAndRemoveUntil(
                                     context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SignInScreen()),
+                                    MaterialPageRoute(builder: (context) => SliderScreen()), // Replace with your main menu screen
+                                        (Route<dynamic> route) => false,
                                   );
                                 },
                                 child: Text(
-                                  'Login',
+                                  'Go to Main Menu',
                                   style: TextStyle(
                                     fontSize: 14,
-                                    color: Colors.black,
-                                    fontFamily:
-                                        'SF Pro Display', // Set the font family to 'Inter'
-                                    fontWeight: FontWeight
-                                        .w500, // Set font weight to 500
+                                    color: Colors.blue,
+                                    fontFamily: 'SF Pro Display',
+                                    fontWeight: FontWeight.w500,
                                     decoration: TextDecoration.underline,
                                   ),
                                 ),

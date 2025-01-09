@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/business/slider_screens/business_slider_screen.dart';
 import 'package:thrive_hub/screens/user/auth/activate_account.dart';
+import 'package:thrive_hub/screens/welcome_screens/main_screen.dart';
 import 'package:thrive_hub/services/auth_services/auth_service.dart';
 import 'package:thrive_hub/widgets/google_facbook_button.dart';
 import 'sign_up.dart';
@@ -364,39 +365,70 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 80),
+                  SizedBox(height: 65),
                   // "Don't have an account" row
                   Center(
-                    child: Row(
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(
-                          'Don\'t have an account? ',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.black.withOpacity(0.7), // Black with 70% opacity
-                            fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
-                            fontWeight: FontWeight.w400, // Set font weight to 400
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            // Add your onTap code here!
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => SignUpScreen()),
-                            );
-                          },
-                          child: Text(
-                            'Sign up',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black, // Black with 70% opacity
-                              fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
-                              fontWeight: FontWeight.w500, // Set font weight to 500
-                              decoration: TextDecoration.underline,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Don\'t have an account? ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black.withOpacity(0.7), // Black with 70% opacity
+                                fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                fontWeight: FontWeight.w400, // Set font weight to 400
+                              ),
                             ),
-                          ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => SignUpScreen()),
+                                );
+                              },
+                              child: Text(
+                                'Sign up',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.black, // Black
+                                  fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                  fontWeight: FontWeight.w500, // Set font weight to 500
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 6), // Add some spacing between the rows
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                // Navigate to the slider screen and remove all previous routes
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => SliderScreen()),
+                                      (Route<dynamic> route) => false, // This condition removes all previous routes
+                                );
+                              },
+
+                              child: Text(
+                                'Go to Main Menu',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.blue, // Blue text for distinction
+                                  fontFamily: 'SF Pro Display', // Set the font family to 'SF Pro Display'
+                                  fontWeight: FontWeight.w500, // Set font weight to 500
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
