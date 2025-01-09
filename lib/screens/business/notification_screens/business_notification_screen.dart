@@ -53,7 +53,7 @@ class _BusinessNotificationScreenState
     return Scaffold(
       appBar: CustomAppBar(
         title: 'Notification',
-        showBackButton: false,
+        showBackButton: true,
         centerTitle: true,
       ),
       backgroundColor: const Color(0xFFFFFFFF),
