@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
 import 'package:thrive_hub/screens/business/slider_screens/business_slider_screen.dart';
+import 'package:thrive_hub/screens/business/widgets/business_bottom_navigation_bar.dart';
 import 'package:thrive_hub/screens/user/auth/activate_account.dart';
 import 'package:thrive_hub/screens/welcome_screens/main_screen.dart';
 import 'package:thrive_hub/services/auth_services/auth_service.dart';
@@ -98,11 +99,11 @@ class _SignInScreenState extends State<SignInScreen> {
           // Check the user type and navigate accordingly
           List<String> userTypes = List<String>.from(response['user']['userTypes']);
           if (userTypes.contains('business-owner')) {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => BusinessSliderScreen()),
-                  (Route<dynamic> route) => false,
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => BusinessMainScreen()),
+                  (Route<dynamic> route) => false, // This will remove all the routes
             );
+
           } else if (userTypes.contains('registered-user')) {
             Navigator.pushAndRemoveUntil(
               context,
