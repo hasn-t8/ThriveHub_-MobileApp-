@@ -10,7 +10,7 @@ import 'package:thrive_hub/widgets/sort.dart';
 
 class BusinessAllCategoriesScreen extends StatefulWidget {
   final String categoryTitle;
-  const BusinessAllCategoriesScreen({Key? key, required this.categoryTitle})
+  const BusinessAllCategoriesScreen({Key? key, this.categoryTitle = ''})
       : super(key: key);
 
   @override
