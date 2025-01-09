@@ -79,11 +79,14 @@ class _BusinessSearchScreenState extends State<BusinessSearchScreen> {
         preferredSize: Size.fromHeight(90),
         child: SafeArea(
           child: HeaderWidget(
-            heading: heading,
+            heading: "Welcome!",
+            showLogo: true, // Show logo
+            showNotificationIcon: true, // Show notification icon
             showHeading: false,
-            showSearchBar: true,
+            showSearchBar: false,
             showLine: true,
-          ),
+          )
+
         ),
       ),
       body: Stack(
