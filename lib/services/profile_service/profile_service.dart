@@ -89,16 +89,19 @@ class ProfileService {
   }
 
   //upload user profile image
-   Future<http.StreamedResponse> uploadImage(String filePath) async {
-     final accessToken = await _getAccessToken();
+  Future<http.Response> uploadImage(String filePath) async {
+    final accessToken = await _getAccessToken();
+
     try {
       // Create a multipart request
-      var request = http.MultipartRequest('POST',
-        Uri.parse('$_baseUrl/upload-profile-image'),);
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$_baseUrl/upload-profile-image'),
+      );
 
-      // Add headers (if required)
+      // Add headers
       request.headers.addAll({
-        'Authorization': 'Bearer $accessToken', // Attach the token here
+        'Authorization': 'Bearer $accessToken', // Attach the token
         'Content-Type': 'multipart/form-data',
       });
 
@@ -109,7 +112,17 @@ class ProfileService {
       ));
 
       // Send the request
-      return await request.send();
+      final streamedResponse = await request.send();
+
+      // Convert StreamedResponse to Response
+      final response = await http.Response.fromStream(streamedResponse);
+
+      // Check status code and throw an exception if necessary
+      if (response.statusCode != 200) {
+        throw Exception('Failed to upload image: ${response.reasonPhrase}');
+      }
+
+      return response;
     } catch (e) {
       throw Exception('Failed to upload image: $e');
     }

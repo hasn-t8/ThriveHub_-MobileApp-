@@ -33,13 +33,11 @@ class CustomAlertBox extends StatelessWidget {
             if (imagePath != null && imagePath!.isNotEmpty)
               Image.asset(
                 imagePath!,
-                width: 164.5,
-                height: 142.51,
-                fit: BoxFit.cover,
+                width: 224.5,
+                height: 132.51,
+                // fit: BoxFit.cover,
               ),
             if (imagePath != null && imagePath!.isNotEmpty)
-              SizedBox(height: 8),
-
             // Title and optional name
             Align(
               alignment: Alignment.centerLeft, // Align to the left
