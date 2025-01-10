@@ -5,6 +5,7 @@ import 'package:thrive_hub/core/utils/image_picker.dart';
 import 'package:thrive_hub/core/utils/thank_you.dart';
 import 'package:thrive_hub/screens/business/widgets/description_bottom_sheet.dart';
 import 'package:thrive_hub/screens/business/widgets/edit_account_form.dart';
+import 'package:thrive_hub/services/profile_service/profile_service.dart';
 import 'package:thrive_hub/widgets/alert_box.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 
@@ -16,8 +17,7 @@ class BusinessAccountScreen extends StatefulWidget {
 class _BusinessAccountScreenState extends State<BusinessAccountScreen> {
   final TextEditingController _companyNameController = TextEditingController();
   final TextEditingController _websiteController = TextEditingController();
-  final TextEditingController _phoneCodeController =
-  TextEditingController(text: "+1213");
+  final TextEditingController _phoneCodeController = TextEditingController(text: "+1213");
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -25,17 +25,52 @@ class _BusinessAccountScreenState extends State<BusinessAccountScreen> {
   String? _description;
   File? _selectedImage;
 
+  final ProfileService _apiService = ProfileService();
+
   @override
   void initState() {
     super.initState();
-    _fetchDescription();
+    _fetchBusinessDetails();
   }
 
-  void _fetchDescription() async {
-    await Future.delayed(Duration(seconds: 1));
-    setState(() {
-      _description = ""; // Replace with fetched value, e.g., from API or database
-    });
+  Future<void> _fetchBusinessDetails() async {
+    try {
+      final data = await _apiService.fetchBusinessDetails();
+      setState(() {
+        _companyNameController.text = data['companyName'] ?? '';
+        _websiteController.text = data['website'] ?? '';
+        _phoneCodeController.text = data['phoneCode'] ?? '';
+        _phoneController.text = data['phone'] ?? '';
+        _emailController.text = data['email'] ?? '';
+        _description = data['description'] ?? '';
+      });
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load business details')),
+      );
+    }
+  }
+
+  Future<void> _updateBusinessDetails() async {
+    try {
+      final data = {
+        'companyName': _companyNameController.text,
+        'website': _websiteController.text,
+        'phoneCode': _phoneCodeController.text,
+        'phone': _phoneController.text,
+        'email': _emailController.text,
+        'description': _description,
+      };
+
+      await _apiService.createAndUpdateProfile(data);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Business details updated successfully')),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update business details')),
+      );
+    }
   }
 
   void _saveDescription(String description, File? selectedImage) {
@@ -90,7 +125,8 @@ class _BusinessAccountScreenState extends State<BusinessAccountScreen> {
                   children: [
                     Text(
                       "About Company",
-                      style: bHeadingTextStyle.copyWith(color: Color(0xFF5A5A5A)),
+                      style:
+                      bHeadingTextStyle.copyWith(color: Color(0xFF5A5A5A)),
                     ),
                     SizedBox(height: 8),
                     Padding(
@@ -161,7 +197,10 @@ class _BusinessAccountScreenState extends State<BusinessAccountScreen> {
                       ),
                       child: Text(
                         "Add Description",
-                        style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500),
                       ),
                     ),
                   ],

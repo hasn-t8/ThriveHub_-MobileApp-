@@ -13,7 +13,7 @@ class ProfileService {
     return prefs.getString('access_token');
   }
 
-  // Function to create a profile with the profile data and access token
+  // Function to create a business-profile with the profile
   Future<void> createAndUpdateProfile(Map<String, dynamic> profileData) async {
     try {
       // Fetch the access token
@@ -48,6 +48,23 @@ class ProfileService {
       }
     } catch (e) {
       print('Error creating profile: $e');
+    }
+  }
+
+  //to fetch business profile by business id
+  Future<Map<String, dynamic>> fetchBusinessDetails() async {
+    final accessToken = await _getAccessToken();
+    final prefs = await SharedPreferences.getInstance();
+    final businessID= prefs.getString('business_profile_id') ?? '';
+    print("Access Token:  $businessID ");
+
+    final url = Uri.parse('$_baseUrl/businessprofiles/$businessID');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to fetch business details');
     }
   }
 
