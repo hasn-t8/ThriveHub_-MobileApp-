@@ -13,7 +13,7 @@ class ProfileService {
     return prefs.getString('access_token');
   }
 
-  // Function to create a profile with the profile data and access token
+  // Function to create a business-profile with the profile
   Future<void> createAndUpdateProfile(Map<String, dynamic> profileData) async {
     try {
       // Fetch the access token
@@ -48,6 +48,23 @@ class ProfileService {
       }
     } catch (e) {
       print('Error creating profile: $e');
+    }
+  }
+
+  //to fetch business profile by business id
+  Future<Map<String, dynamic>> fetchBusinessDetails() async {
+    final accessToken = await _getAccessToken();
+    final prefs = await SharedPreferences.getInstance();
+    final businessID= prefs.getString('business_profile_id') ?? '';
+    print("Access Token:  $businessID ");
+
+    final url = Uri.parse('$_baseUrl/businessprofiles/$businessID');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to fetch business details');
     }
   }
 
@@ -89,16 +106,19 @@ class ProfileService {
   }
 
   //upload user profile image
-   Future<http.StreamedResponse> uploadImage(String filePath) async {
-     final accessToken = await _getAccessToken();
+  Future<http.Response> uploadImage(String filePath) async {
+    final accessToken = await _getAccessToken();
+
     try {
       // Create a multipart request
-      var request = http.MultipartRequest('POST',
-        Uri.parse('$_baseUrl/upload-profile-image'),);
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('$_baseUrl/upload-profile-image'),
+      );
 
-      // Add headers (if required)
+      // Add headers
       request.headers.addAll({
-        'Authorization': 'Bearer $accessToken', // Attach the token here
+        'Authorization': 'Bearer $accessToken', // Attach the token
         'Content-Type': 'multipart/form-data',
       });
 
@@ -109,7 +129,17 @@ class ProfileService {
       ));
 
       // Send the request
-      return await request.send();
+      final streamedResponse = await request.send();
+
+      // Convert StreamedResponse to Response
+      final response = await http.Response.fromStream(streamedResponse);
+
+      // Check status code and throw an exception if necessary
+      if (response.statusCode != 200) {
+        throw Exception('Failed to upload image: ${response.reasonPhrase}');
+      }
+
+      return response;
     } catch (e) {
       throw Exception('Failed to upload image: $e');
     }

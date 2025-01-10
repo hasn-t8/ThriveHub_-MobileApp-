@@ -8,6 +8,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool showConfirmationButtons; // Whether to show Yes/No buttons
   final VoidCallback? onYesPressed; // Callback for Yes button press
   final VoidCallback? onNoPressed; // Callback for No button press
+  final bool showAddIcon; // Whether to show the + icon
   final VoidCallback? onAddPressed; // Callback for the + icon press
 
   CustomAppBar({
@@ -18,7 +19,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.showConfirmationButtons = false,
     this.onYesPressed,
     this.onNoPressed,
-    this.onAddPressed, // Receive the callback for the + icon
+    this.showAddIcon = false, // Default to not showing the add icon
+    this.onAddPressed,
   });
 
   @override
@@ -71,7 +73,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 style: TextStyle(color: Colors.red),
               ),
             ),
-          if (onAddPressed != null) // Conditionally show the + icon
+          if (showAddIcon && onAddPressed != null) // Conditionally show the + icon
             IconButton(
               icon: Icon(
                 Icons.add,

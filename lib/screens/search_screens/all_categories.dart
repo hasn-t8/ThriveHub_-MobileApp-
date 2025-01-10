@@ -192,7 +192,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
               itemBuilder: (context, index) {
                 final company = filteredCompanies[index];
                 return CompanyCard(
-                  imageUrl: company['logo_url'] ?? '',
+                  imageUrl: company['logo_url'] ?? 'https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png',
                   title: company['org_name'] ?? 'Unknown',
                   rating: double.tryParse(company['avg_rating'] ?? '0.0') ?? 0.0,
                   reviews: company['total_reviews'] ?? 0,

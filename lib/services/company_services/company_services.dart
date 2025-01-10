@@ -110,16 +110,36 @@ class CompanyService {
       throw Exception('Error fetching reviews: $e');
     }
   }
-//get all reviews by authenticated user
-  Future<List<Map<String, dynamic>>> fetchAllReviews() async {
+//get all reviews
+ Future<List<Map<String, dynamic>>> fetchAllReviews() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+    final url = Uri.parse('$_baseUrl/reviews');
+    final response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      return data.map((e) => Map<String, dynamic>.from(e)).toList();
+    } else {
+      throw Exception('Failed to fetch reviews: ${response.statusCode}');
+    }
+  }
+  //get all reviews by user id
+  Future<List<Map<String, dynamic>>> fetchAllReviewsbyuserid() async {
     final prefs = await SharedPreferences.getInstance();
     final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
     final accessToken = prefs.getString('access_token');
+    final userid = prefs.getInt('userid');
     if (accessToken == null) {
       throw Exception('Access token is missing');
     }
 
-    final url = Uri.parse('$_baseUrl/reviews/business/3');
+    final url = Uri.parse('$_baseUrl/reviews/business/$userid');
     final response = await http.get(
       url,
       headers: {
@@ -135,4 +155,73 @@ class CompanyService {
       throw Exception('Failed to fetch reviews: ${response.statusCode}');
     }
   }
+
+
+  //creat a review by user
+  Future<bool> createReview({
+    required String businessId,
+    required int rating,
+    required String feedback,
+  }) async {
+    try {
+      print('Starting createReview method');
+      print('Business ID: $businessId');
+      print('Rating: $rating');
+      print('Feedback: $feedback');
+
+      final prefs = await SharedPreferences.getInstance();
+      final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+      final accessToken = prefs.getString('access_token');
+
+      if (_baseUrl.isEmpty) {
+        print('Base URL is missing');
+        return false; // Indicate failure
+      }
+
+      if (accessToken == null) {
+        print('Access token not found');
+        return false; // Indicate failure
+      }
+
+      // API endpoint
+      final String url = '$_baseUrl/reviews';
+      print('API URL: $url');
+
+      // Request body
+      final Map<String, dynamic> body = {
+        'businessId': businessId,
+        'rating': rating,
+        'feedback': feedback,
+      };
+      print('Request body: ${jsonEncode(body)}');
+
+      // Send POST request
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: jsonEncode(body),
+      );
+
+      print('Response received');
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 201) {
+        print('Review created successfully');
+        return true; // Indicate success
+      } else {
+        print('Failed to create review: ${response.statusCode}');
+        print('Response details: ${response.body}');
+        return false; // Indicate failure
+      }
+    } catch (e) {
+      print('Error creating review: $e');
+      return false; // Indicate failure
+    }
+  }
+
+
 }

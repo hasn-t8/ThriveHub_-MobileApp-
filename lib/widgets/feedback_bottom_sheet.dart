@@ -1,12 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/alert_box.dart';
 
 class FeedbackBottomSheet extends StatefulWidget {
+  final String business_profile_id;
   final String companyTitle;
 
-  FeedbackBottomSheet({required this.companyTitle});
+  FeedbackBottomSheet({required this.business_profile_id,required this.companyTitle});
 
   @override
   _FeedbackBottomSheetState createState() => _FeedbackBottomSheetState();
@@ -18,6 +23,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
   final ScrollController scrollController = ScrollController();
   final ImagePicker _picker = ImagePicker();
   XFile? selectedImage;
+  bool isLoading = false;
 
   Future<void> _pickImage() async {
     try {
@@ -31,6 +37,64 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
       print("Error selecting image: $e");
     }
   }
+
+  Future<void> _submitFeedback() async {
+    if (selectedFaceIndex == -1) {
+      // Show a message if no face is selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select a face for your rating')),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final CompanyService apiService = CompanyService(); // Replace with your API service
+      final String businessId = widget.business_profile_id; // Replace with actual business logic
+      final int rating = (selectedFaceIndex + 1) * 2; // Calculate rating based on face selection
+
+      final bool isSuccess = await apiService.createReview(
+        businessId: businessId,
+        rating: rating,
+        feedback: reviewController.text,
+      );
+
+      if (isSuccess) {
+        Navigator.pop(context);
+        Navigator.of(context).pop();
+
+        // Show custom alert dialog
+        showDialog(
+          context: context,
+          builder: (context) => CustomAlertBox(
+            imagePath: 'assets/logo.png',
+            title: 'Thank You!',
+            message: 'Your feedback is important to us and makes us better!',
+            name: '', // Optional
+          ),
+        );
+      } else {
+        // Show SnackBar for failure
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Review submission failed.')),
+        );
+      }
+    } catch (e) {
+      // Show SnackBar for error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please try again later.')),
+      );
+      print('Error submitting feedback: $e');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +130,6 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Heading with close button
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -77,8 +140,6 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                     fontFamily: 'SF Pro Display',
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
-                    letterSpacing: -0.5,
-
                   ),
                 ),
                 Spacer(),
@@ -93,40 +154,21 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               ],
             ),
             SizedBox(height: 8),
-            Divider(
-              color: Colors.grey, // Set the divider color to gray
-              thickness: 1.0,     // Optional: Adjust the thickness
-              height: 4.0,       // Optional: Adjust the space around the divider
-            ),
-
-            // Instruction text
+            Divider(color: Colors.grey, thickness: 1.0, height: 4.0),
             SizedBox(height: 16),
             Text(
               'How was your experience with ${widget.companyTitle}?',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-              ),
+              style: TextStyle(fontFamily: 'Inter', fontSize: 20),
             ),
             SizedBox(height: 16),
-
-            // Selected face label text (above the faces row)
             if (selectedFaceIndex != -1)
               Text(
                 faceLabels[selectedFaceIndex],
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'SF Pro Display',
-                  fontSize: 24,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.592,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
               ),
             SizedBox(height: 16),
-
-            // Face icons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: List.generate(faces.length, (index) {
@@ -143,17 +185,9 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                         height: 44,
                         decoration: BoxDecoration(
                           color: selectedFaceIndex == index
-                              ? Color(0x33FFC700) // 20% opacity
+                              ? Color(0x33FFC700)
                               : Colors.transparent,
                           shape: BoxShape.circle,
-                          boxShadow: selectedFaceIndex == index
-                              ? [
-                            BoxShadow(
-                              color: Color(0xFF000000).withOpacity(0.12),
-                              blurRadius: 10,
-                            )
-                          ]
-                              : [],
                         ),
                         child: Icon(
                           faces[index],
@@ -169,22 +203,13 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               }),
             ),
             SizedBox(height: 16),
-
-            // Review text box
             Container(
               width: 341,
               height: 154,
               padding: EdgeInsets.all(10),
-              decoration:BoxDecoration(
-                color: Color(0xFFFBFBFB), // Background color of the box
-                borderRadius: BorderRadius.circular(16), // Rounded corners
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0xFF000000).withOpacity(0.12), // Shadow color with opacity
-                    blurRadius: 10, // The blur radius of the shadow
-                    offset: Offset(0, 1), // The offset of the shadow
-                  ),
-                ],
+              decoration: BoxDecoration(
+                color: Color(0xFFFBFBFB),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: TextField(
                 controller: reviewController,
@@ -198,30 +223,6 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
               ),
             ),
             SizedBox(height: 16),
-
-            // Attach photo and button
-            GestureDetector(
-              onTap: _pickImage,
-              child:Row(
-                children: [
-                  Image.asset(
-                    'assets/upload_image.png', // Replace with your image path
-                    width: 24, // Adjust the width
-                    height: 24, // Adjust the height
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Attach photo',
-                    style: TextStyle(
-                      color: Color(0xFFA5A5A5),
-                      fontFamily: 'Inter',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
             if (selectedImage != null)
               Stack(
                 alignment: Alignment.topRight,
@@ -241,7 +242,7 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedImage = null; // Clear the selected image
+                        selectedImage = null;
                       });
                     },
                     child: CircleAvatar(
@@ -253,26 +254,10 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 ],
               ),
             SizedBox(height: 16),
-
-            // Done button
-            ElevatedButton(
-              onPressed: () {
-                print('Feedback submitted');
-                print('Selected face: ${faceLabels[selectedFaceIndex]}');
-                print('Review: ${reviewController.text}');
-                print('Selected Image: ${selectedImage?.path}');
-                Navigator.pop(context); // Close the bottom sheet
-                // Show custom alert dialog
-                showDialog(
-                context: context,
-                builder: (context) => CustomAlertBox(
-                imagePath: 'assets/main.png', // Replace with your image path or leave null
-                title: 'Thank You!',
-                message: 'Your feedback is important to us and makes us better!',
-                  name: 'Alex', // Optional
-                ),
-                );
-              },
+            isLoading
+                ? CircularProgressIndicator()
+                : ElevatedButton(
+              onPressed: _submitFeedback,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 minimumSize: Size(343, 54),
@@ -285,7 +270,6 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 16,
-                  fontWeight: FontWeight.w400,
                   color: Colors.white,
                 ),
               ),
@@ -295,16 +279,4 @@ class _FeedbackBottomSheetState extends State<FeedbackBottomSheet> {
       ),
     );
   }
-}
-
-// Usage: Show the bottom sheet with a company title
-void showFeedbackBottomSheet(BuildContext context, String companyTitle) {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
-    builder: (context) => FeedbackBottomSheet(companyTitle: companyTitle),
-  );
 }

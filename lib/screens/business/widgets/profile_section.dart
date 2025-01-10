@@ -6,6 +6,7 @@ class ProfileSection extends StatelessWidget {
   final String profileImagePath;
   final VoidCallback onEditProfile;
   final VoidCallback onEditImage; // Callback for image or icon click
+  final bool showInfoBoxes;
   final List<Map<String, String>> infoBoxes;
 
   const ProfileSection({
@@ -15,6 +16,7 @@ class ProfileSection extends StatelessWidget {
     required this.profileImagePath,
     required this.onEditProfile,
     required this.onEditImage, // New callback
+    this.showInfoBoxes=false,
     required this.infoBoxes,
   }) : super(key: key);
 
@@ -98,7 +100,7 @@ class ProfileSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-
+        if (showInfoBoxes)
         // Info Boxes
         Container(
           width: double.infinity,
@@ -118,7 +120,6 @@ class ProfileSection extends StatelessWidget {
       ],
     );
   }
-
   Widget _buildInfoBox(String title, String subtitle) {
     return Expanded(
       child: Column(

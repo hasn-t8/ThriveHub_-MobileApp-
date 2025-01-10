@@ -20,6 +20,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int _reviews = 0; // Default value for reviews
   int _companyCount = 0; // Default value for company count
   File? _imageFile;
+  String? _profileImageUrl;
 
   @override
   void initState() {
@@ -28,8 +29,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> uploadProfileImage() async {
-    if (_imageFile == null) {
-      print("No image selected.");
+    if (_imageFile == null || _imageFile!.path.isEmpty) {
+      print("No valid image selected.");
       return;
     }
 
@@ -38,30 +39,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final response = await profileService.uploadImage(_imageFile!.path);
 
       if (response.statusCode == 200) {
-        print('Image uploaded successfully');
+        final responseData = jsonDecode(response.body);
+
+        // Extract URL from the response
+        final imageUrl = responseData['url'];
+        // Save the URL to SharedPreferences
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('profile_image', imageUrl);
+        await _loadUserData();
+        setState(() {
+          _profileImageUrl = imageUrl;
+        });
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile image uploaded successfully!'), backgroundColor: Colors.green),
+          SnackBar(
+            content: Text('Profile image uploaded successfully!'),
+            backgroundColor: Colors.green,
+          ),
         );
       } else {
         print('Failed to upload image: ${response.reasonPhrase}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to upload profile image.')),
+          SnackBar(
+            content: Text('Failed to upload profile image.'),
+          ),
         );
       }
     } catch (e) {
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error uploading profile image: $e')),
+        SnackBar(
+          content: Text('Error uploading profile image: $e'),
+        ),
       );
     }
-  }
-
-
-
-  void _removeLogo() {
-    setState(() {
-      _imageFile = null; // Clear the selected image
-    });
   }
 
   Future<void> _pickImage() async {
@@ -113,36 +124,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadUserData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // Retrieve the access token
-    final accessToken = prefs.getString('access_token');
-    print('Access Token in profile: $accessToken');
+    final fullName = prefs.getString('full_name') ?? 'Name';
+    final profileImage = prefs.getString('profile_image'); // Retrieve profile image URL
+    final location = prefs.getString('city') ?? '';
+    final reviews = prefs.getInt('reviews') ?? 0;
+    final companyCount = prefs.getInt('company_count') ?? 0;
 
-    // Use default values if the retrieved values are null
-    final fullName = prefs.getString('full_name') ?? 'Name'; // Default value for full name
-    final profileImage = prefs.getString('profile_image');
-    final location = prefs.getString('city') ?? ''; // Default if null
-    final reviews = prefs.getInt('reviews') ?? 0; // Default value for reviews
-    final companyCount = prefs.getInt('company_count') ?? 0; // Default value for company count
-
-    // Optionally, print the retrieved data to verify
-    print('Full Name : $fullName');
-    print('Profile Image: $profileImage');
-    print('Location: $location');
-    print('Reviews: $reviews');
-    print('Company Count: $companyCount');
-
-    // Update the UI fields with the retrieved data
     setState(() {
-      // Set fields with the retrieved values, default to empty strings or null if not found
       _full_name = fullName;
       _location = location;
-      _reviews = reviews; // Set default reviews count
-      _companyCount = companyCount; // Set default company count
-
-      // If there's a profile image in SharedPreferences, set it
-      if (profileImage != null) {
-        _imageFile = File(profileImage); // Set the profile image from SharedPreferences
-      }
+      _reviews = reviews;
+      _companyCount = companyCount;
+      _profileImageUrl = profileImage; // Assign URL or null
     });
   }
 
@@ -163,14 +156,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ));
 
     if (result['success']) {
-      // Successful logout
-      Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
-    } else if (result['message'] == 'Unauthorized. Please log in again.') {
-      // Handle 401 specifically
       Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
     } else {
       Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
-      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(result['message']),
       ));
@@ -195,7 +183,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Stack(
               alignment: Alignment.center,
               children: [
-                // Profile Image
                 GestureDetector(
                   onTap: _pickImage,
                   child: Container(
@@ -204,19 +191,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     decoration: BoxDecoration(
                       color: Color(0xFFD9D9D9),
                       shape: BoxShape.circle,
-                      image: _imageFile != null
-                          ? DecorationImage(
-                        image: FileImage(_imageFile!),
-                        fit: BoxFit.cover, // Ensure the image fills the circle properly
-                      )
-                          : DecorationImage(
-                        image: AssetImage('assets/avtar.jpg'), // Default avatar
+                      image: DecorationImage(
+                        image: _imageFile != null
+                            ? FileImage(_imageFile!) // Use local file
+                            : (_profileImageUrl != null && _profileImageUrl!.isNotEmpty
+                            ? NetworkImage(_profileImageUrl!) // Use URL
+                            : AssetImage('assets/avtar.jpg') as ImageProvider), // Default avatar
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                 ),
-                // Edit Icon
                 Positioned(
                   bottom: 0,
                   right: 0,
@@ -226,7 +211,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       radius: 16,
                       backgroundColor: Color(0xFFD9D9D9),
                       child: Image.asset(
-                        'assets/edit_profile.png', // Replace with your image icon
+                        'assets/edit_profile.png',
                         width: 20,
                         height: 20,
                       ),
@@ -235,41 +220,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            // SizedBox(height: 6),
-            // GestureDetector(
-            //   onTap: _removeLogo, // Define the action for removing the logo
-            //   child: Text(
-            //     'Remove logo',
-            //     style: TextStyle(
-            //       fontSize: 14,
-            //       color: Color(0xFFA5A5A5),
-            //       fontFamily: 'Inter',
-            //       fontWeight: FontWeight.w700,
-            //     ),
-            //   ),
-            // ),
-
             SizedBox(height: 12),
-            // Name and Location
             Text(
-              '$_full_name',
+              _full_name,
               style: TextStyle(
                 fontSize: 20,
-                fontFamily: 'Inter',
                 fontWeight: FontWeight.w700,
               ),
             ),
             Text(
-              '$_location', // Use the location from the state variable
+              _location,
               style: TextStyle(
                 fontSize: 16,
                 color: Color(0xFFA5A5A5),
-                fontFamily: 'Inter',
-                fontWeight: FontWeight.w400,
               ),
             ),
             SizedBox(height: 10),
-            // Information Box
             Container(
               width: 343,
               height: 104,
@@ -277,17 +243,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Color(0xFFE9E8E8),
                 borderRadius: BorderRadius.circular(31),
               ),
-              padding: const EdgeInsets.only(top: 20.0, left: 20.0, right: 20.0, bottom: 20.0),
+              padding: const EdgeInsets.all(20.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildInfoBox('Reviews\n$_reviews'), // Use reviews
-                  _buildInfoBox('Company\n$_companyCount'), // Use company count
+                  _buildInfoBox('Reviews\n$_reviews'),
+                  _buildInfoBox('Company\n$_companyCount'),
                 ],
               ),
             ),
             SizedBox(height: 16),
-            // Clickable List Items
             ProfileListItem(
               leadingIcon: Icons.business,
               text: 'My Companies',
@@ -317,10 +282,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
             ),
             SizedBox(height: 16),
-            // Logout Button
             ProfileListItem(
               leadingIcon: Icons.logout,
-              border: Border.all(color: Color(0xFFFBFBFB)), // Custom border
+              border: Border.all(color: Color(0xFFFBFBFB)),
               text: _isLoading ? 'Logging out...' : 'Logout',
               leadingIconColor: Color(0xFFFB0000),
               textColor: Color(0xFFFB0000),
@@ -343,7 +307,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               color: Color(0x1F000000),
               offset: Offset(0, 1),
               blurRadius: 10,
-              spreadRadius: 0,
             ),
           ],
         ),
@@ -355,7 +318,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
-              fontFamily: 'Inter',
               fontWeight: FontWeight.w500,
             ),
           ),

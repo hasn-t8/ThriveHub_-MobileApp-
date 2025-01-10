@@ -61,9 +61,10 @@ class _SignInScreenState extends State<SignInScreen> {
     // Save other user data
     await prefs.setString('full_name', fullName);
     await prefs.setString('email', responseData['user']['email'] ?? '');
+    await prefs.setInt('userid', responseData['user']['id'] ?? '');
     await prefs.setStringList('user_types', List<String>.from(responseData['user']['userTypes']));
     await prefs.setString('profile_image', responseData['user']['profileImage'] ?? '');
-    await prefs.setString('city', responseData['user']['city'] ?? 'city');
+    await prefs.setString('city', responseData['user']['city'] ?? '');
     // Retrieve and print the access token to confirm it's saved correctly
     final accessToken = prefs.getString('access_token') ?? 'No access token';
   }

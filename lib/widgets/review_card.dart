@@ -15,6 +15,7 @@ class ReviewCard extends StatelessWidget {
   final VoidCallback onShare;
   final VoidCallback? onTap;
   final bool showShareButton;
+  final bool showLikeButton;
   final bool showDivider;
 
   // New Parameters
@@ -38,7 +39,8 @@ class ReviewCard extends StatelessWidget {
     required this.onLike,
     required this.onShare,
     this.onTap,
-    this.showShareButton = true,
+    this.showShareButton = false,
+    this.showLikeButton = false,
     this.showDivider = true,
     this.showReplyButton = false,
     this.onReply,
@@ -190,6 +192,7 @@ class ReviewCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  if (showLikeButton)
                   GestureDetector(
                     onTap: onLike,
                     child: Row(
