@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thrive_hub/core/helper/time_helper.dart';
 import 'package:thrive_hub/core/utils/no_page_found.dart';
 import 'package:thrive_hub/screens/search_screens/filter_screen.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
@@ -45,23 +46,22 @@ class _ServicesScreenState extends State<ServicesScreen> {
     _fetchReviews(); // Fetch reviews when the screen initializes
     _loadUserTypes();
   }
+  void showFeedbackBottomSheet(BuildContext context, String companyTitle) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) => FeedbackBottomSheet(companyTitle: businessProfile?['org_name'] ?? '',business_profile_id: widget.business_profile_id),
+    );
+  }
 
   Future<void> _loadUserTypes() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       userTypes = prefs.getStringList('user_types') ?? [];
     });
-  }
-
-  // Helper function to calculate the number of days ago
-  String _calculateDaysAgo(String? createdAt) {
-    if (createdAt == null || createdAt.isEmpty) {
-      return 'Some time ago';
-    }
-    DateTime parsedDate = DateTime.parse(createdAt);
-    DateTime now = DateTime.now();
-    int daysDifference = now.difference(parsedDate).inDays;
-    return '$daysDifference day${daysDifference != 1 ? 's' : ''}';
   }
 
   Future<void> _fetchBusinessProfile() async {
@@ -105,11 +105,11 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
           return {
             'imageUrl': businessProfile?['logo_url'] ??
-                'https://via.placeholder.com/40',
+                'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s',
             'title': businessProfile?['org_name'] ?? '',
             'rating': scaledRating.toDouble(),
             'location': review['location'] ?? '',
-            'timeAgo': _calculateDaysAgo(review['created_at']),
+            'timeAgo':calculateTimeAgo(review['created_at']),
             'reviewerName': review['customer_name'] ?? 'Anonymous',
             'reviewText': review['feedback'] ?? 'No review text provided.',
             'likes': review['likes'] ?? 0,
@@ -227,7 +227,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                   userTypes: userTypes!,
                   serviceName: businessProfile?['org_name'] ?? '',
                   imageUrl: businessProfile?['logo_url'] ??
-                      'https://via.placeholder.com/90x96',
+                      'https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png',
                   rating: (double.tryParse(
                               businessProfile?['avg_rating']?.toString() ??
                                   '0.0') ??
@@ -237,7 +237,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
                   location: businessProfile?['location'] ?? '',
                   onWriteReview: () {
                     print("create a service clicked");
-                    NoPageFound.show(context);
+                    showFeedbackBottomSheet(context, "Thrive hub");
                   },
                   // showWriteReviewButton: true,
                   showTryServiceButton: false,

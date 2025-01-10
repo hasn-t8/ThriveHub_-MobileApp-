@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thrive_hub/core/helper/time_helper.dart';
 import 'package:thrive_hub/screens/search_screens/sub_categories.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/review_card.dart';
@@ -19,7 +20,6 @@ class _SearchScreenState extends State<SearchScreen> {
   List<Map<String, dynamic>> filteredReviews = [];
   bool isLoadingReviews = true;
   final CompanyService apiService = CompanyService();
-
   @override
   void initState() {
     super.initState();
@@ -34,16 +34,6 @@ class _SearchScreenState extends State<SearchScreen> {
     setState(() {
       name = firstName;
     });
-  }
-// Helper function to calculate the number of days ago
-  String _calculateDaysAgo(String? createdAt) {
-    if (createdAt == null || createdAt.isEmpty) {
-      return 'Some time ago';
-    }
-    DateTime parsedDate = DateTime.parse(createdAt);
-    DateTime now = DateTime.now();
-    int daysDifference = now.difference(parsedDate).inDays;
-    return '$daysDifference day${daysDifference != 1 ? 's' : ''}';
   }
 
   Future<void> _fetchAllReviews() async {
@@ -177,11 +167,11 @@ class _SearchScreenState extends State<SearchScreen> {
                         itemBuilder: (context, index) {
                           final review = filteredReviews[index];
                           return ReviewCard(
-                            imageUrl: review['logo_url'] ?? 'https://via.placeholder.com/40',
+                            imageUrl: review['logo_url'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s',
                             title: review['org_name'] ?? 'No Title',
                               rating: (double.tryParse(review?['rating']?.toString() ?? '0.0') ?? 0.0) / 2,
                             location: review['location'] ?? '',
-                            timeAgo: _calculateDaysAgo(review['created_at']),
+                            timeAgo : calculateTimeAgo(review['created_at']),
                             reviewerName: review['customer_name'] ?? 'Anonymous',
                             reviewText: review['feedback'] ?? 'No review text provided.',
                             likes: review['likes'] ?? 0,

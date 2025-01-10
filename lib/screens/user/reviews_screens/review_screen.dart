@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:thrive_hub/screens/user/reviews_screens/create_review_screen.dart';
-import 'package:thrive_hub/screens/user/reviews_screens/review_screen.dart';
+import 'package:thrive_hub/core/helper/time_helper.dart';
 import 'package:thrive_hub/screens/search_screens/filter_screen.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
@@ -19,7 +18,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
   bool isSavedSelected = true; // Initially, All reviews are selected
   List<Map<String, dynamic>> allReviews = []; // List to hold all reviews
   List<Map<String, dynamic>> myReviews = []; // List for My Reviews
-  bool isLoading = true; // Track loading state
+  bool isLoading = true; // Track loading state for reviews
   String errorMessage = ''; // For error handling
 
   @override
@@ -30,12 +29,18 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
   // Fetch all reviews from the API
   Future<void> _fetchReviews() async {
+    setState(() {
+      isLoading = true; // Show loading only for the reviews area
+    });
+
     try {
       final CompanyService reviewService = CompanyService();
       final List<dynamic> fetchedReviews = await reviewService.fetchAllReviews();
+      final List<dynamic> fetchedReviewsbyuserid = await reviewService.fetchAllReviewsbyuserid();
 
       setState(() {
         allReviews = fetchedReviews.map((review) => Map<String, dynamic>.from(review)).toList();
+        myReviews = fetchedReviewsbyuserid.map((review) => Map<String, dynamic>.from(review)).toList();
         isLoading = false;
       });
     } catch (e) {
@@ -45,15 +50,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
         print('Error fetching reviews: $errorMessage');
       });
     }
-  }
-  String _calculateDaysAgo(String? createdAt) {
-    if (createdAt == null || createdAt.isEmpty) {
-      return 'Some time ago';
-    }
-    DateTime parsedDate = DateTime.parse(createdAt);
-    DateTime now = DateTime.now();
-    int daysDifference = now.difference(parsedDate).inDays;
-    return '$daysDifference day${daysDifference != 1 ? 's' : ''}';
   }
 
   @override
@@ -65,45 +61,34 @@ class _ReviewScreenState extends State<ReviewScreen> {
         title: 'Reviews',
         showBackButton: false,
         centerTitle: true,
-        onAddPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => CreateReviewScreen()),
-          );
-        },
+        showAddIcon: false,
+        onAddPressed: () {},
       ),
       backgroundColor: Colors.white, // Set background color of the screen
-      body: isLoading
-          ? Center(
-        child: CircularProgressIndicator(),
-      )
-          : errorMessage.isNotEmpty
-          ? Center(
-        child: Text(
-          'Error: $errorMessage',
-          style: TextStyle(color: Colors.red, fontSize: 16),
-        ),
-      )
-          : Padding(
+      body: Padding(
         padding: const EdgeInsets.all(10.0), // Apply 10 padding to all sides
         child: Column(
           children: [
+            // Tab Buttons (All / My Reviews)
             TabButtons(
               isAllSelected: isSavedSelected,
               onSelectAll: () {
                 setState(() {
                   isSavedSelected = true;
                 });
+                _fetchReviews(); // Fetch latest reviews
               },
               onSelectMyReviews: () {
                 setState(() {
                   isSavedSelected = false;
                 });
+                _fetchReviews(); // Fetch latest reviews
               },
               allText: 'All',
               myReviewsText: 'My reviews',
             ),
             SizedBox(height: 10.0),
+            // Filter and Sort Buttons (Visible only for "All" tab)
             if (isSavedSelected)
               FilterSortButtons(
                 onFilter: (context) async {
@@ -121,7 +106,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                     ),
                     builder: (context) => const SortBottomSheet(
                       title: 'Sort By',
-                      sortOptions: ['Price Low to High', 'Price High to Low', 'Rating', 'Newest'],
+                      sortOptions: ['Rating', 'Newest'],
                     ),
                   );
                 },
@@ -130,18 +115,24 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 },
               ),
             SizedBox(height: 8.0),
+            // Reviews List Area (with loader and error message)
             Expanded(
-              child: reviews.isEmpty
+              child: isLoading
+                  ? Center(
+                child: CircularProgressIndicator(),
+              )
+                  : errorMessage.isNotEmpty
+                  ? Center(
+                child: Text(
+                  'Error: $errorMessage',
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
+              )
+                  : reviews.isEmpty
                   ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/no_review.png',
-                      width: 254,
-                      height: 256,
-                    ),
-                    SizedBox(height: 16.0),
                     Text(
                       isSavedSelected
                           ? 'No reviews found'
@@ -154,37 +145,6 @@ class _ReviewScreenState extends State<ReviewScreen> {
                         height: 1.43,
                       ),
                     ),
-                    SizedBox(height: 16.0),
-                    SizedBox(
-                      width: 343,
-                      height: 54,
-                      child: OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => CreateReviewScreen()),
-                          );
-                        },
-                        child: Text(
-                          'Write a Review',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Inter',
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            height: 1.25,
-                          ),
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          padding: EdgeInsets.symmetric(horizontal: 19, vertical: 17),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(16)),
-                            side: BorderSide(color: Color(0xFFA5A5A5)),
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               )
@@ -193,11 +153,11 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 itemBuilder: (context, index) {
                   final review = reviews[index];
                   return ReviewCard(
-                    imageUrl: review['logo_url'] ?? 'https://via.placeholder.com/40',
+                    imageUrl: review['logo_url'] ?? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTtuphMb4mq-EcVWhMVT8FCkv5dqZGgvn_QiA&s',
                     title: review['org_name'] ?? 'No Title',
                     rating: (double.tryParse(review?['rating']?.toString() ?? '0.0') ?? 0.0) / 2,
                     location: review['location'] ?? '',
-                    timeAgo: _calculateDaysAgo(review['created_at']),
+                    timeAgo : calculateTimeAgo(review['created_at']),
                     reviewerName: review['customer_name'] ?? 'Anonymous',
                     reviewText: review['feedback'] ?? 'No review text provided.',
                     likes: review['likes'] ?? 0,
