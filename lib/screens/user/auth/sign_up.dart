@@ -85,9 +85,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // Save other user data with null checks
     await prefs.setString('full_name', fullName);
     await prefs.setString('email', responseData['user']?['email']?.toString() ?? '');
+    await prefs.setInt('userid', responseData['user']['id'] ?? '');
     await prefs.setStringList('user_types', List<String>.from(responseData['user']?['userTypes'] ?? []));
     await prefs.setString('profile_image', responseData['user']?['profileImage']?.toString() ?? '');
-    await prefs.setString('city', responseData['user']?['city']?.toString() ?? 'Unknown');
+    await prefs.setString('city', responseData['user']?['city']?.toString() ?? '');
     // Save business profile information
     if (responseData.containsKey('businessProfile')) {
       final businessProfile = responseData['businessProfile'];
