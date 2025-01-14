@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
 
-
 class ReviewCard extends StatelessWidget {
-  final String imageUrl;
-  final String title;
-  final double rating;
-  final String location;
-  final String timeAgo;
-  final String reviewerName;
-  final String reviewText;
-  final int likes;
+  final String? imageUrl;
+  final String? title;
+  final double? rating;
+  final String? location;
+  final String? timeAgo;
+  final String? reviewerName;
+  final String? reviewText;
+  final int? likes;
   final bool isLiked;
-  final VoidCallback onLike;
-  final VoidCallback onShare;
+  final VoidCallback? onLike;
+  final VoidCallback? onShare;
   final VoidCallback? onTap;
-  final bool showShareButton;
-  final bool showLikeButton;
-  final bool showDivider;
 
-  // New Parameters
+  // Visibility toggles for all elements
+  final bool showImage;
+  final bool showTitle;
+  final bool showRating;
+  final bool showLocation;
+  final bool showTimeAgo;
+  final bool showReviewerName;
+  final bool showReviewText;
+  final bool showLikeButton;
+  final bool showShareButton;
+  final bool showDivider;
   final bool showReplyButton;
   final VoidCallback? onReply;
   final bool isReplied;
@@ -26,21 +32,28 @@ class ReviewCard extends StatelessWidget {
   final String? replyTimeAgo;
   final String? replyMessage;
 
-  ReviewCard({
-    required this.imageUrl,
-    required this.title,
-    required this.rating,
-    required this.location,
-    required this.timeAgo,
-    required this.reviewerName,
-    required this.reviewText,
-    required this.likes,
-    required this.isLiked,
-    required this.onLike,
-    required this.onShare,
+  const ReviewCard({
+    this.imageUrl,
+    this.title,
+    this.rating,
+    this.location,
+    this.timeAgo,
+    this.reviewerName,
+    this.reviewText,
+    this.likes,
+    this.isLiked = false,
+    this.onLike,
+    this.onShare,
     this.onTap,
-    this.showShareButton = false,
+    this.showImage = false,
+    this.showTitle = true,
+    this.showRating = true,
+    this.showLocation = true,
+    this.showTimeAgo = true,
+    this.showReviewerName = false,
+    this.showReviewText = true,
     this.showLikeButton = false,
+    this.showShareButton = false,
     this.showDivider = true,
     this.showReplyButton = false,
     this.onReply,
@@ -48,10 +61,12 @@ class ReviewCard extends StatelessWidget {
     this.replyTitle,
     this.replyTimeAgo,
     this.replyMessage,
+
   });
 
   @override
   Widget build(BuildContext context) {
+    final title = this.reviewerName;
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -60,19 +75,19 @@ class ReviewCard extends StatelessWidget {
         ),
         shadowColor: Colors.grey.withOpacity(0.5),
         elevation: 4,
-        color: Color(0xFFF1F3F4),
+        color: const Color(0xFFF1F3F4),
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: Color(0xFFFFFFFF),
+            color: const Color(0xFFFFFFFF),
             borderRadius: BorderRadius.circular(8.0),
             boxShadow: [
               BoxShadow(
-                color: Colors.grey.withOpacity(0),
+                color: Colors.grey.withOpacity(0.2),
                 spreadRadius: 1,
                 blurRadius: 4,
-                offset: Offset(0, 1),
+                offset: const Offset(0, 1),
               ),
             ],
           ),
@@ -81,158 +96,152 @@ class ReviewCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Color(0xFFD9D9D9),
-                    radius: 20.0,
-                    backgroundImage: NetworkImage(imageUrl),
-                  ),
-                  SizedBox(width: 8.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'SF Pro Display',
-                            height: 1.19357,
-                          ),
-                        ),
-                        Row(
-                          children: [
+                  if (showImage && imageUrl != null)
+                    CircleAvatar(
+                      backgroundColor: const Color(0xFFD9D9D9),
+                      radius: 20.0,
+                      backgroundImage: NetworkImage(imageUrl!),
+                    ),
+                  if (showImage && imageUrl != null) const SizedBox(width: 8.0),
+                  if ((showTitle && title != null) || (showRating && rating != null))
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (showTitle && title != null)
                             Text(
-                              rating.toString(),
-                              style: TextStyle(
-                                fontSize: 13.0,
-                                color: Color(0xFF555555),
-                                fontWeight: FontWeight.w400,
+                              title!,
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w700,
                                 fontFamily: 'SF Pro Display',
-                                height: 18.2 / 13,
+                                height: 1.2,
                               ),
                             ),
-                            SizedBox(width: 4.0),
-                            Icon(Icons.star, color: Color(0xFF4D4D4D), size: 18.0),
-                          ],
-                        ),
-                      ],
+                          if (showRating && rating != null)
+                            Row(
+                              children: [
+                                Text(
+                                  rating!.toStringAsFixed(1),
+                                  style: const TextStyle(
+                                    fontSize: 13.0,
+                                    color: Color(0xFF555555),
+                                    fontWeight: FontWeight.w400,
+                                    fontFamily: 'SF Pro Display',
+                                    height: 1.4,
+                                  ),
+                                ),
+                                const SizedBox(width: 4.0),
+                                const Icon(Icons.star, color: Color(0xFF4D4D4D), size: 18.0),
+                              ],
+                            ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D), size: 16.0),
-                          SizedBox(width: 4.0),
+                  if ((showLocation && location?.isNotEmpty == true) || (showTimeAgo && timeAgo != null))
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        if (showLocation && location?.isNotEmpty == true)
+                          Row(
+                            children: [
+                              const Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D), size: 16.0),
+                              const SizedBox(width: 4.0),
+                              Text(
+                                location!,
+                                style: const TextStyle(
+                                  fontSize: 13.0,
+                                  color: Color(0xFF777777),
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'SF Pro Display',
+                                  height: 1.4,
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (showTimeAgo && timeAgo != null)
                           Text(
-                            location,
-                            style: TextStyle(
+                            timeAgo!,
+                            style: const TextStyle(
                               fontSize: 13.0,
-                              color: Color(0xFF777777),
+                              color: Color(0xFF79747E),
                               fontWeight: FontWeight.w400,
                               fontFamily: 'SF Pro Display',
                               height: 1.4,
                             ),
                           ),
-                        ],
-                      ),
-                      Text(
-                        timeAgo,
-                        style: TextStyle(
-                          fontSize: 13.0,
-                          color: Color(0xFF79747E),
-                          fontWeight: FontWeight.w400,
-                          fontFamily: 'SF Pro Display',
-                          height: 18.2 / 13,
-                        ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                 ],
               ),
-              SizedBox(height: 8.0),
-              if (showDivider)
-                Divider(
-                  thickness: 1.2,
-                  color: Color(0xFFE9E8E8),
-                )
-              else
-                SizedBox(height: 8.0),
-              GestureDetector(
-                onTap: () {
-                  // Handle reviewer name tap
-                },
-                child: Text(
-                  reviewerName,
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    color: Colors.black,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.black,
-                    fontWeight: FontWeight.w500,
-                    fontFamily: 'Inter',
-                    height: 14.5 / 12,
+              if (showDivider) const Divider(thickness: 1.2, color: Color(0xFFE9E8E8)),
+              if (showReviewerName && reviewerName != null)
+                GestureDetector(
+                  onTap: () {},
+                  child: Text(
+                    reviewerName!,
+                    style: const TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.black,
+                      decoration: TextDecoration.underline,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: 'Inter',
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 8.0),
-              Text(
-                reviewText,
-                style: TextStyle(
-                  fontSize: 14.0,
-                  color: Color(0xFF777777),
-                  fontWeight: FontWeight.w400,
-                  fontFamily: 'SF Pro Display',
-                  height: 21 / 14,
+              if (showReviewText && reviewText != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    reviewText!,
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                      color: Color(0xFF777777),
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'SF Pro Display',
+                      height: 1.5,
+                    ),
+                  ),
                 ),
-              ),
-              SizedBox(height: 8.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  if (showLikeButton)
-                  GestureDetector(
-                    onTap: onLike,
-                    child: Row(
-                      children: [
-                        Icon(
-                          isLiked ? Icons.favorite : Icons.favorite_border,
-                          color: const Color(0xFF434242),
-                        ),
-                        SizedBox(width: 4.0),
-                        Text(
-                          likes.toString(),
-                          style: TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w400,
-                            height: 18.0 / 14.0,
-                            letterSpacing: -0.08,
-                            color: Color(0xFF434242),
-                            decoration: TextDecoration.none,
+                  if (showLikeButton && onLike != null)
+                    GestureDetector(
+                      onTap: onLike,
+                      child: Row(
+                        children: [
+                          Icon(
+                            isLiked ? Icons.favorite : Icons.favorite_border,
+                            color: const Color(0xFF434242),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 4.0),
+                          Text(
+                            likes?.toString() ?? '0',
+                            style: const TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xFF434242),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(width: 12.0),
-                  if (showShareButton)
+                  if (showShareButton && onShare != null)
                     GestureDetector(
                       onTap: onShare,
-                      child: Icon(
+                      child: const Icon(
                         Icons.share_outlined,
                         color: Color(0xFF434242),
                       ),
                     ),
                 ],
               ),
-              if (showReplyButton)
+              if (showReplyButton && onReply != null)
                 Container(
                   margin: const EdgeInsets.only(top: 16.0),
-                  width: 303.0,
-                  height: 48.0,
+                  width: double.infinity,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     border: Border.all(color: Colors.grey),
@@ -240,7 +249,7 @@ class ReviewCard extends StatelessWidget {
                   ),
                   child: TextButton(
                     onPressed: onReply,
-                    child: Text(
+                    child: const Text(
                       'Reply',
                       style: TextStyle(
                         fontSize: 14.0,
@@ -255,12 +264,12 @@ class ReviewCard extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 16.0),
                   padding: const EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                    color: Color(0xFFEAEAEA),
+                    color: const Color(0xFFEAEAEA),
                     borderRadius: BorderRadius.circular(8.0),
-                    border: Border(
+                    border: const Border(
                       left: BorderSide(
-                        color: Color(0xFF888888), // Left border color
-                        width: 6.0, // Border width
+                        color: Color(0xFF888888),
+                        width: 6.0,
                       ),
                     ),
                   ),
@@ -269,12 +278,12 @@ class ReviewCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.reply_all_outlined, size: 18.0, color: Colors.grey),
-                          SizedBox(width: 8.0),
+                          const Icon(Icons.reply_all_outlined, size: 18.0, color: Colors.grey),
+                          const SizedBox(width: 8.0),
                           Expanded(
                             child: Text(
                               replyTitle ?? "",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -282,17 +291,17 @@ class ReviewCard extends StatelessWidget {
                           ),
                           Text(
                             replyTimeAgo ?? "",
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontSize: 12.0,
                               color: Colors.grey,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 8.0),
+                      const SizedBox(height: 8.0),
                       Text(
                         replyMessage ?? "",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14.0,
                           color: Colors.black87,
                         ),
