@@ -53,7 +53,8 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
 
   Future<void> _saveUserData(Map<String, dynamic> responseData) async {
     final prefs = await SharedPreferences.getInstance();
-    // Capitalize the first letter of full name if it's not empty
+
+// Capitalize the first letter of full name if it's not empty
     String fullName = (responseData['user']['full_name'] ?? '').isNotEmpty
         ? responseData['user']['full_name'][0].toUpperCase() + responseData['user']['full_name'].substring(1).toLowerCase()
         : '';
@@ -66,9 +67,19 @@ class _BusinessSignInScreenState extends State<BusinessSignInScreen> {
     await prefs.setStringList('user_types', List<String>.from(responseData['user']['userTypes']));
     await prefs.setString('profile_image', responseData['user']['profileImage'] ?? '');
     await prefs.setString('city', responseData['user']['city'] ?? '');
+    // Retrieve and print the access token to confirm it's saved correctly
     final accessToken = prefs.getString('access_token') ?? 'No access token';
-  }
 
+    // Save business profile data if it exists
+    if (responseData['businessProfiles'] != null && responseData['businessProfiles'].isNotEmpty) {
+      final businessProfile = responseData['businessProfiles'][0];
+      await prefs.setInt('business_profile_id', businessProfile['id'] ?? 0);
+      await prefs.setString('business_org_name', businessProfile['org_name'] ?? '');
+      await prefs.setString('business_category', businessProfile['category'] ?? '');
+      await prefs.setString('business_logo_url', businessProfile['logo_url'] ?? '');
+      await prefs.setString('business_logo_url', businessProfile['about_business'] ?? '');
+    }
+  }
   Future<void> _login() async {
     final email = _emailController.text.trim();
     final validationError = emailValidator(email);

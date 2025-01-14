@@ -56,9 +56,9 @@ class AccountForm extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: EdgeInsets.fromLTRB(16,16, 16, 0),
+            padding: EdgeInsets.fromLTRB(16, 16, 16, 0),
             decoration: BoxDecoration(
-              color: Colors.white, // Set background color to white
+              color: Colors.white,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Column(
@@ -66,8 +66,8 @@ class AccountForm extends StatelessWidget {
               children: [
                 _buildTextField("Company Name", "Thrive Hub", companyNameController),
                 _buildTextField("Website", "www.thrivehub.com", websiteController),
-                _buildPhoneField(),
-                _buildTextField("Email", "Enter email address", emailController),
+                // _buildPhoneField(),
+                _buildTextField("Email", "Enter email address", emailController, isEnabled: false),
               ],
             ),
           ),
@@ -76,7 +76,7 @@ class AccountForm extends StatelessWidget {
     );
   }
 
-  Widget _buildTextField(String label, String hintText, TextEditingController controller) {
+  Widget _buildTextField(String label, String hintText, TextEditingController controller, {bool isEnabled = true}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -93,11 +93,15 @@ class AccountForm extends StatelessWidget {
         ),
         Container(
           height: 50,
-          margin: EdgeInsets.only(top: 8, bottom: 16),
+          margin: EdgeInsets.only(top: 4, bottom: 16),
           decoration: _boxDecoration(),
           child: TextField(
             controller: controller,
+            enabled: isEnabled, // Dynamically control if the field is editable
             decoration: _inputDecoration(hintText),
+            style: TextStyle(
+              color: isEnabled ? Colors.black : Colors.grey,
+            ),
           ),
         ),
       ],

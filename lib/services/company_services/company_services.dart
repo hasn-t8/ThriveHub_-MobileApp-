@@ -111,6 +111,8 @@ class CompanyService {
     }
   }
 //get all reviews
+
+
  Future<List<Map<String, dynamic>>> fetchAllReviews() async {
     final prefs = await SharedPreferences.getInstance();
     final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
@@ -130,6 +132,7 @@ class CompanyService {
     }
   }
   //get all reviews by user id
+
   Future<List<Map<String, dynamic>>> fetchAllReviewsbyuserid() async {
     final prefs = await SharedPreferences.getInstance();
     final String _baseUrl = dotenv.env['BASE_URL'] ?? '';

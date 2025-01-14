@@ -51,20 +51,79 @@ class ProfileService {
     }
   }
 
-  //to fetch business profile by business id
+  // Function to update a business-profile with the business_profile_id
+  Future<void> UpdateBusinessProfile(Map<String, dynamic> profileData) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final businessProfileId = prefs.getInt('business_profile_id') ?? -1;
+
+
+    try {
+      // Fetch the access token
+      final accessToken = await _getAccessToken();
+      print("Access Token: $accessToken");
+
+      if (accessToken == null) {
+        print('Access token is missing!');
+        return;
+      }
+
+      // Add the access token to the request headers
+      final response = await http.put(
+        Uri.parse('$_baseUrl//businessprofiles/$businessProfileId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken', // Attach the token here
+        },
+        body: jsonEncode(profileData),
+      );
+
+      if (response.statusCode == 200) {
+        // Profile created successfully
+        final responseBody = jsonDecode(response.body);
+        print('Profile created successfully');
+        print('Response: $responseBody');
+      } else {
+        // Error handling for failed request
+        final responseBody = jsonDecode(response.body);
+        print('Failed to create profile: ${response.statusCode}');
+        print('Error message: ${responseBody['message'] ?? 'No message'}');
+      }
+    } catch (e) {
+      print('Error creating profile: $e');
+    }
+  }
+
+
+
   Future<Map<String, dynamic>> fetchBusinessDetails() async {
     final accessToken = await _getAccessToken();
     final prefs = await SharedPreferences.getInstance();
-    final businessID= prefs.getString('business_profile_id') ?? '';
-    print("Access Token:  $businessID ");
+
+    // Retrieve the business ID and handle the type mismatch
+    final businessID = prefs.getInt('business_profile_id')?.toString() ?? '';
+    print("Business ID: $businessID");
+
+    if (businessID.isEmpty) {
+      throw Exception('Business ID is missing. Please check your settings.');
+    }
 
     final url = Uri.parse('$_baseUrl/businessprofiles/$businessID');
-    final response = await http.get(url);
+    print("Request URL: ${url.toString()}");
+
+    final response = await http.get(
+      url,
+      headers: {
+        'Authorization': 'Bearer $accessToken',
+      },
+    );
+
+    print("Response Status Code: ${response.statusCode}");
+    print("Response Body: ${response.body}");
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('Failed to fetch business details');
+      throw Exception('Failed to fetch business details: ${response.body}');
     }
   }
 
@@ -151,7 +210,6 @@ class ProfileService {
     final prefs = await SharedPreferences.getInstance();
     final businessProfileId = prefs.getInt('business_profile_id') ?? -1;
     final accessToken = await _getAccessToken(); // Assuming this function retrieves the token
-    print("proffff  $businessProfileId");
 
     if (businessProfileId == -1) {
       print('Business profile ID not found!');

@@ -40,7 +40,9 @@ class ProfileSection extends StatelessWidget {
                       color: const Color(0xFFD9D9D9),
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: AssetImage(profileImagePath),
+                        image: profileImagePath.startsWith('http')
+                            ? NetworkImage(profileImagePath)
+                            : AssetImage(profileImagePath) as ImageProvider,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -49,6 +51,7 @@ class ProfileSection extends StatelessWidget {
                     bottom: 0,
                     right: 0,
                     child: GestureDetector(
+                      onTap: onEditImage,
                       child: CircleAvatar(
                         radius: 12,
                         backgroundColor: Color(0xFFD9D9D9),
@@ -69,9 +72,7 @@ class ProfileSection extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    fullName.isNotEmpty
-                        ? '$fullName'
-                        : 'Your Name',
+                    fullName.isNotEmpty ? fullName : 'Your Name',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -81,11 +82,14 @@ class ProfileSection extends StatelessWidget {
                     children: [
                       const Icon(Icons.email, size: 16, color: Colors.grey),
                       const SizedBox(width: 4),
-                      Text(
-                        email.isNotEmpty ? email : 'gmail@example.com',
-                        style: const TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey,
+                      Expanded(
+                        child: Text(
+                          email.isNotEmpty ? email : 'example@gmail.com',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ],
@@ -102,21 +106,20 @@ class ProfileSection extends StatelessWidget {
         const SizedBox(height: 16),
         if (showInfoBoxes)
         // Info Boxes
-        Container(
-          width: double.infinity,
-          height: 90,
-          decoration: BoxDecoration(
-            color: const Color(0xFFF4F4F4),
-            borderRadius: BorderRadius.circular(10),
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF4F4F4),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: infoBoxes.map((box) {
+                return _buildInfoBox(box['title']!, box['subtitle']!);
+              }).toList(),
+            ),
           ),
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: infoBoxes.map((box) {
-              return _buildInfoBox(box['title']!, box['subtitle']!);
-            }).toList(),
-          ),
-        ),
       ],
     );
   }
