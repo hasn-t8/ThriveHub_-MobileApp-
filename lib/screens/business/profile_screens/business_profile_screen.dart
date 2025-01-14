@@ -1,4 +1,4 @@
-// import 'dart:convert';
+ // import 'dart:convert';
 // import 'dart:io';
 // import 'package:flutter/material.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
@@ -318,6 +318,8 @@ import 'package:thrive_hub/widgets/profile_listitem.dart';
 import 'package:thrive_hub/core/utils/image_picker.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+ import 'dart:typed_data';
+ import 'package:image/image.dart' as img;
 
 class BusinessProfileScreen extends StatefulWidget {
   @override
@@ -347,6 +349,12 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
     super.initState();
     _loadUserData();
   }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadUserData(); // Refresh user data
+  }
+
 
   Future<void> _logout(BuildContext context) async {
     setState(() {
@@ -390,26 +398,48 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
   }
 
   Future<void> _onImageIconPressed() async {
-    if (_image == null || _image!.path.isEmpty) {
-      print("No valid image selected.");
+    final selectedImage = await pickImageWithUI(context);
+
+    if (selectedImage == null) {
+      print("No image selected.");
       return;
     }
 
+    // Check if the file size exceeds 4 MB
+    final int maxFileSize = 5 * 1024 * 1024; // 4 MB in bytes
+    final int fileSize = await selectedImage.length();
+
+    File imageToUpload = selectedImage;
+
+    if (fileSize > maxFileSize) {
+      // Compress the image
+      final compressedImage = await compressImage(selectedImage);
+      if (compressedImage != null) {
+        imageToUpload = compressedImage;
+        print("Image compressed successfully.");
+      } else {
+        print("Failed to compress the image.");
+        return;
+      }
+    }
+
+    setState(() {
+      _image = imageToUpload;
+    });
+
     try {
-      final profileService = ProfileService(); // Create an instance
-      final response = await profileService.uploadImage(_image!.path);
+      final profileService = ProfileService();
+      final response = await profileService.uploadImage(imageToUpload.path);
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-
-        // Extract URL from the response
         final imageUrl = responseData['url'];
-        // Save the URL to SharedPreferences
+
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('profile_image', imageUrl);
-        await _loadUserData();
+
         setState(() {
-          _profileImageUrl = imageUrl;
+          _profileImageUrl = '$imageUrl?timestamp=${DateTime.now().millisecondsSinceEpoch}';
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -419,22 +449,51 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
           ),
         );
       } else {
-        print('Failed to upload image: ${response.reasonPhrase}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to upload profile image.'),
-          ),
+          SnackBar(content: Text('Failed to upload profile image.')),
         );
       }
     } catch (e) {
-      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error uploading profile image: $e'),
-        ),
+        SnackBar(content: Text('Error uploading profile image: $e')),
       );
     }
   }
+
+  Future<File?> compressImage(File imageFile) async {
+    try {
+      // Read the image as bytes
+      final Uint8List bytes = await imageFile.readAsBytes();
+
+      // Decode the image
+      final img.Image? originalImage = img.decodeImage(bytes);
+
+      if (originalImage == null) {
+        return null;
+      }
+
+      // Compress the image to 80% quality and resize if needed
+      final img.Image compressedImage = img.copyResize(
+        originalImage,
+        width: originalImage.width > 1080 ? 1080 : originalImage.width,
+        height: originalImage.height > 1080 ? 1080 : originalImage.height,
+      );
+
+      // Encode the image to JPEG with reduced quality
+      final List<int> compressedBytes = img.encodeJpg(compressedImage, quality: 80);
+
+      // Write the compressed image to a new file
+      final File compressedFile = File(imageFile.path.replaceAll('.jpg', '_compressed.jpg'));
+      await compressedFile.writeAsBytes(compressedBytes);
+
+      return compressedFile;
+    } catch (e) {
+      print("Error compressing image: $e");
+      return null;
+    }
+  }
+
+
 
 
   List<Map<String, dynamic>> _getProfileItemsForRole(String role) {
@@ -518,7 +577,7 @@ class _BusinessProfileScreenState extends State<BusinessProfileScreen> {
               fullName: _full_name,
               email: _email,
               profileImagePath: _profileImageUrl,
-              onEditProfile: () async {},
+              onEditProfile: () async {Navigator.pushNamed(context, '/business-account-settings');},
               onEditImage: _onImageIconPressed,
               infoBoxes: infoBoxes,
             ),

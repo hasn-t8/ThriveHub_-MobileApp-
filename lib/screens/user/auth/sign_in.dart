@@ -67,7 +67,18 @@ class _SignInScreenState extends State<SignInScreen> {
     await prefs.setString('city', responseData['user']['city'] ?? '');
     // Retrieve and print the access token to confirm it's saved correctly
     final accessToken = prefs.getString('access_token') ?? 'No access token';
+
+    // Save business profile data if it exists
+    if (responseData['businessProfiles'] != null && responseData['businessProfiles'].isNotEmpty) {
+      final businessProfile = responseData['businessProfiles'][0];
+      await prefs.setInt('business_profile_id', businessProfile['id'] ?? 0);
+      await prefs.setString('business_org_name', businessProfile['org_name'] ?? '');
+      await prefs.setString('business_category', businessProfile['category'] ?? '');
+      await prefs.setString('business_logo_url', businessProfile['logo_url'] ?? '');
+      await prefs.setString('business_logo_url', businessProfile['about_business'] ?? '');
+    }
   }
+
 
 
   Future<void> _login() async {
