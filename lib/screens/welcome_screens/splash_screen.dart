@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'dart:convert'; // For decoding the token if necessary
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -26,10 +28,37 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       end: Offset(0.0, 0.0), // End at its original position
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
-    // Start navigation after 5 seconds
-    Future.delayed(Duration(seconds: 8), () {
-      Navigator.pushReplacementNamed(context, '/welcome');
-    });
+    // Perform token and profile type check
+    _checkAccessTokenAndNavigate();
+  }
+
+  Future<void> _checkAccessTokenAndNavigate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token');
+    final userTypes = prefs.getStringList('user_types') ?? [];
+
+    // Simulate a delay for splash screen appearance
+    await Future.delayed(Duration(seconds: 8));
+
+    if (accessToken != null && accessToken.isNotEmpty) {
+      // Example of token validation if required
+      bool isTokenValid = true; // Replace with actual token validation logic
+
+      if (isTokenValid) {
+        // Check user type and navigate accordingly
+        if (userTypes.contains('business-owner')) {
+          Navigator.pushReplacementNamed(context, '/business-home'); // Replace with your business owner screen route
+        } else if (userTypes.contains('registered-user')) {
+          Navigator.pushReplacementNamed(context, '/dashboard'); // Replace with your registered user screen route
+        } else {
+          Navigator.pushReplacementNamed(context, '/welcome'); // Fallback if no valid user type
+        }
+        return;
+      }
+    }
+
+    // If no valid token, navigate to the login screen
+    Navigator.pushReplacementNamed(context, '/welcome');
   }
 
   @override
