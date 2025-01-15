@@ -11,7 +11,8 @@ class ServiceCard extends StatefulWidget {
   final bool showTryServiceButton;
   final String writeReviewText;
   final String tryServiceText;
-  final List<String> userTypes; // Add userTypes parameter
+  final List<String> userTypes;
+  final bool isImageTop; // Add this flag
 
   const ServiceCard({
     Key? key,
@@ -25,7 +26,8 @@ class ServiceCard extends StatefulWidget {
     this.showTryServiceButton = true,
     this.writeReviewText = 'Write a Review',
     this.tryServiceText = 'Try Service',
-    required this.userTypes, // Add this
+    required this.userTypes,
+    this.isImageTop = true,
   }) : super(key: key);
 
   @override
@@ -43,19 +45,19 @@ class _ServiceCardState extends State<ServiceCard> {
 
   void _determineButtonVisibility() {
     if (widget.userTypes.contains('business-owner')) {
-      showWriteReviewButton = false; // Hide button for business owners
+      showWriteReviewButton = false;
     } else if (widget.userTypes.contains('registered-user')) {
-      showWriteReviewButton = true; // Show button for registered users
+      showWriteReviewButton = true;
     } else {
-      showWriteReviewButton = false; // Default behavior for others
+      showWriteReviewButton = false;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double dynamicHeight = 150.0; // Base height without buttons
-    if (showWriteReviewButton) dynamicHeight += 64.0; // Add height for Write Review button
-    if (widget.showTryServiceButton) dynamicHeight += 64.0; // Add height for Try Service button
+    double dynamicHeight = widget.isImageTop ? 200.0 : 150.0;
+    if (showWriteReviewButton) dynamicHeight += 64.0;
+    if (widget.showTryServiceButton) dynamicHeight += 64.0;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -67,144 +69,227 @@ class _ServiceCardState extends State<ServiceCard> {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Image and Info Section
-          Container(
-            width: double.infinity,
-            height: 128.0,
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: Row(
-              children: [
-                // Image Container
-                Container(
-                  width: 90.0,
-                  height: 96.0,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(12.0)),
-                    color: Color(0xFFEFEFEF),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
-                    child: Image.network(
-                      widget.imageUrl,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 13.0),
-                // Info Section
-                Expanded(
-                  child: SizedBox(
-                    height: 96.0,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.serviceName,
-                          style: const TextStyle(
-                            fontFamily: 'Inter',
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0.35,
-                          ),
-                        ),
-                        const SizedBox(height: 4.0),
-                        Row(
-                          children: [
-                            Text('${widget.rating}', style: const TextStyle(color: Color(0xFF888686))),
-                            const Icon(Icons.star, color: Color(0xFF888686)),
-                            const SizedBox(width: 8.0),
-                            const Text('|', style: TextStyle(color: Color(0xFFA5A5A5))),
-                            const SizedBox(width: 8.0),
-                            Text('${widget.reviewCount} Reviews', style: const TextStyle(color: Color(0xFF888686))),
-                          ],
-                        ),
-                        const SizedBox(height: 4.0),
-                        if (widget.location.isNotEmpty)
-                          Row(
-                            children: [
-                              const Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D)),
-                              Text(
-                                widget.location,
-                                style: const TextStyle(
-                                  color: Color(0xFFA5A5A5),
-                                  fontFamily: 'Inter',
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w400,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Color(0xFFA5A5A5),
-                                ),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          // Buttons Section
-          if (showWriteReviewButton || widget.showTryServiceButton)
-            Column(
-              children: [
-                if (showWriteReviewButton)
-                  Container(
-                    width: double.infinity,
-                    height: 54.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                      ),
-                      onPressed: widget.onWriteReview,
-                      child: Text(
-                        widget.writeReviewText,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                  ),
-                if (showWriteReviewButton) const SizedBox(height: 10.0),
-                if (widget.showTryServiceButton)
-                  Container(
-                    width: double.infinity,
-                    height: 54.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        shadowColor: Colors.black.withOpacity(0.5),
-                      ),
-                      onPressed: widget.onTryService,
-                      child: Text(
-                        widget.tryServiceText,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontFamily: 'Inter',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-        ],
+        children: widget.isImageTop ? _buildTopImageLayout() : _buildDefaultLayout(),
       ),
     );
+  }
+
+  List<Widget> _buildTopImageLayout() {
+    return [
+      // Image at the top, aligned to the left
+      Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: Container(
+          width: 90.0,
+          height: 96.0,
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(12.0)),
+            color: Color(0xFFEFEFEF),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12.0),
+            child: Image.network(
+              widget.imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+      const SizedBox(height: 8.0),
+      // Service name and details below the image
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              widget.serviceName,
+              style: const TextStyle(
+                fontFamily: 'Inter',
+                fontSize: 22.0,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.35,
+              ),
+            ),
+            const SizedBox(height: 4.0),
+            Row(
+              children: [
+                Text('${widget.rating}', style: const TextStyle(color: Color(0xFF888686))),
+                const Icon(Icons.star, color: Color(0xFF888686)),
+                const SizedBox(width: 8.0),
+                const Text('|', style: TextStyle(color: Color(0xFFA5A5A5))),
+                const SizedBox(width: 8.0),
+                Text('${widget.reviewCount} Reviews', style: const TextStyle(color: Color(0xFF888686))),
+              ],
+            ),
+            const SizedBox(height: 4.0),
+            if (widget.location.isNotEmpty)
+              Row(
+                children: [
+                  const Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D)),
+                  Text(
+                    widget.location,
+                    style: const TextStyle(
+                      color: Color(0xFFA5A5A5),
+                      fontFamily: 'Inter',
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Color(0xFFA5A5A5),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 16.0),
+      ..._buildButtonsSection()
+    ];
+  }
+
+  List<Widget> _buildDefaultLayout() {
+    return [
+      // Image and Info Section
+      Container(
+        width: double.infinity,
+        height: 128.0,
+        padding: const EdgeInsets.symmetric(vertical: 16.0),
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
+        ),
+        child: Row(
+          children: [
+            // Image Container
+            Container(
+              width: 90.0,
+              height: 96.0,
+              decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                color: Color(0xFFEFEFEF),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: Image.network(
+                  widget.imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(width: 13.0),
+            // Info Section
+            Expanded(
+              child: SizedBox(
+                height: 96.0,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.serviceName,
+                      style: const TextStyle(
+                        fontFamily: 'Inter',
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.35,
+                      ),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Row(
+                      children: [
+                        Text('${widget.rating}', style: const TextStyle(color: Color(0xFF888686))),
+                        const Icon(Icons.star, color: Color(0xFF888686)),
+                        const SizedBox(width: 8.0),
+                        const Text('|', style: TextStyle(color: Color(0xFFA5A5A5))),
+                        const SizedBox(width: 8.0),
+                        Text('${widget.reviewCount} Reviews', style: const TextStyle(color: Color(0xFF888686))),
+                      ],
+                    ),
+                    const SizedBox(height: 4.0),
+                    if (widget.location.isNotEmpty)
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on_outlined, color: Color(0xFF4D4D4D)),
+                          Text(
+                            widget.location,
+                            style: const TextStyle(
+                              color: Color(0xFFA5A5A5),
+                              fontFamily: 'Inter',
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w400,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Color(0xFFA5A5A5),
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      const SizedBox(height: 16.0),
+      ..._buildButtonsSection()
+    ];
+  }
+
+  List<Widget> _buildButtonsSection() {
+    return [
+      if (showWriteReviewButton || widget.showTryServiceButton)
+        Column(
+          children: [
+            if (showWriteReviewButton)
+              Container(
+                width: double.infinity,
+                height: 54.0,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                  ),
+                  onPressed: widget.onWriteReview,
+                  child: Text(
+                    widget.writeReviewText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ),
+            if (showWriteReviewButton) const SizedBox(height: 10.0),
+            if (widget.showTryServiceButton)
+              Container(
+                width: double.infinity,
+                height: 54.0,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    shadowColor: Colors.black.withOpacity(0.5),
+                  ),
+                  onPressed: widget.onTryService,
+                  child: Text(
+                    widget.tryServiceText,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontFamily: 'Inter',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+    ];
   }
 }
