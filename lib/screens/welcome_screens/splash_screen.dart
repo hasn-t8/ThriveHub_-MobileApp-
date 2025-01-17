@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import 'dart:convert'; // For decoding the token if necessary
+import 'dart:convert';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -38,25 +38,21 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     if (accessToken != null && accessToken.isNotEmpty) {
       try {
-        // Decode the JWT token
         final parts = accessToken.split('.');
         if (parts.length != 3) throw Exception('Invalid token format');
         final payload = json.decode(utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))));
 
         // Print the payload for debugging
         print('Decoded Token Payload: $payload');
-        // Check token expiration
         final exp = payload['exp'] as int;
         final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
         if (currentTime >= exp) {
           print('Token is expired.');
-          // Clear preferences and navigate to login
           await prefs.clear();
           Navigator.pushReplacementNamed(context, '/login');
         } else {
           print('Token is valid.');
-          // Proceed with user type-based navigation
           final userTypes = prefs.getStringList('user_types') ?? [];
           if (userTypes.contains('business-owner')) {
             Navigator.pushReplacementNamed(context, '/business-home');
@@ -72,7 +68,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         Navigator.pushReplacementNamed(context, '/welcome');
       }
     } else {
-      // No token found, navigate to login
       await prefs.clear();
       Navigator.pushReplacementNamed(context, '/welcome');
     }
