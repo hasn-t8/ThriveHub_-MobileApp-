@@ -21,31 +21,59 @@ class ReusableBottomSheet extends StatefulWidget {
 
 class _ReusableBottomSheetState extends State<ReusableBottomSheet> {
   File? _selectedImage;
+  bool _hasChanges = false;
 
   @override
   void initState() {
     super.initState();
     _selectedImage = widget.initialSelectedImage;
+    widget.descriptionController.addListener(_updateState);
+  }
+
+  @override
+  void dispose() {
+    widget.descriptionController.removeListener(_updateState);
+    super.dispose();
+  }
+
+  void _updateState() {
+    final hasChanges =
+        widget.descriptionController.text.isNotEmpty || _selectedImage != null;
+    if (_hasChanges != hasChanges) {
+      setState(() {
+        _hasChanges = hasChanges;
+      });
+    }
   }
 
   Future<void> _pickImage() async {
     try {
-      final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final pickedFile =
+          await ImagePicker().pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
         setState(() {
           _selectedImage = File(pickedFile.path);
         });
+        _updateState();
       }
     } catch (e) {
       print("Error picking image: $e");
     }
   }
 
+  void _clearState() {
+    widget.descriptionController.clear();
+    setState(() {
+      _selectedImage = null;
+    });
+    _updateState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white, // Set entire sheet color to white
+        color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Padding(
@@ -74,7 +102,10 @@ class _ReusableBottomSheetState extends State<ReusableBottomSheet> {
                   ),
                   Spacer(),
                   GestureDetector(
-                    onTap: widget.onClose ?? () => Navigator.pop(context),
+                    onTap: () {
+                      widget.onClose?.call();
+                      _clearState();
+                    },
                     child: CircleAvatar(
                       radius: 8.5,
                       backgroundColor: Color(0xFF8E8E93),
@@ -113,50 +144,57 @@ class _ReusableBottomSheetState extends State<ReusableBottomSheet> {
                 ),
               ),
               SizedBox(height: 20),
-              // Attach Photo button
-              TextButton.icon(
-                onPressed: _pickImage,
-                icon: Icon(Icons.attach_file, color: Color(0xFFB3B3B3)),
-                label: Text(
-                  "Attach Photo",
-                  style: TextStyle(color: Color(0xFFB3B3B3)),
-                ),
-              ),
-              // Show selected image with remove option
-              if (_selectedImage != null)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        '${_selectedImage!.path.split('/').last}',
-                        style: TextStyle(color: Colors.black),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.close, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          _selectedImage = null;
-                        });
-                      },
-                    ),
-                  ],
-                ),
+              // // Attach Photo button
+              // TextButton.icon(
+              //   onPressed: _pickImage,
+              //   icon: Icon(Icons.attach_file, color: Color(0xFFB3B3B3)),
+              //   label: Text(
+              //     "Attach Photo",
+              //     style: TextStyle(color: Color(0xFFB3B3B3)),
+              //   ),
+              // ),
+              // // Show selected image with remove option
+              // if (_selectedImage != null)
+              //   Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Expanded(
+              //         child: Text(
+              //           '${_selectedImage!.path.split('/').last}',
+              //           style: TextStyle(color: Colors.black),
+              //           overflow: TextOverflow.ellipsis,
+              //         ),
+              //       ),
+              //       IconButton(
+              //         icon: Icon(Icons.close, color: Colors.red),
+              //         onPressed: () {
+              //           setState(() {
+              //             _selectedImage = null;
+              //           });
+              //           _updateState();
+              //         },
+              //       ),
+              //     ],
+              //   ),
               // Save button
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onSave(widget.descriptionController.text, _selectedImage);
-                },
+                onPressed: _hasChanges
+                    ? () {
+                        widget.onSave(
+                            widget.descriptionController.text, _selectedImage);
+                        _clearState();
+                        Navigator.pop(context);
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   minimumSize: Size(double.infinity, 50),
+                  disabledBackgroundColor: Colors.grey,
                 ),
                 child: Text(
                   "Save",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
