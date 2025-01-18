@@ -32,7 +32,9 @@ class _ServicesScreenState extends State<ServicesScreen> {
   Map<String, dynamic>? businessProfile;
   List<Map<String, dynamic>> allReviews = []; // Updated to fetch from API
   List<Map<String, dynamic>> filteredReviews = []; // Filtered list of reviews
-  List<String> activeFilters = []; // Active filters
+  List<String> selectedCategories = []; // Selected categories for filtering
+  List<double> selectedRatings = []; // Selected ratings for filtering
+  String? selectedSortOption; // Sorting option ("Newest" or "Rating")
   bool isLoading = true;
   String errorMessage = '';
   // Initialize rating distribution
@@ -118,7 +120,7 @@ class _ServicesScreenState extends State<ServicesScreen> {
         }).toList();
 
         filteredReviews = List.from(allReviews); // Initially show all reviews
-
+        _applyFiltersAndSorting(); // Apply filters and sorting initially
         // Calculate the rating distribution percentages
         int totalReviews = allReviews.length;
         ratingDistribution = {
@@ -136,62 +138,66 @@ class _ServicesScreenState extends State<ServicesScreen> {
     }
   }
 
-  void _applyFilters(List<String> filters) {
+  // Apply filters and sorting to allReviews
+  void _applyFiltersAndSorting({List<String> updatedFilters = const []}) {
     setState(() {
-      activeFilters = filters;
+      // Check if "All" is in the filters
+      if (updatedFilters.contains('All')) {
+        filteredReviews = List.from(allReviews); // Show all reviews
+        return; // Exit early, no further filtering needed
+      }
 
-      if (filters.isEmpty) {
-        // No filters applied, show all reviews
-        filteredReviews = List.from(allReviews);
-      } else {
-        filteredReviews = allReviews.where((review) {
-          bool matchesRating = true; // Default to true if no rating filter
-          bool matchesCategory = true; // Default to true if no category filter
+      // Otherwise, apply category and rating filters
+      filteredReviews = List.from(allReviews);
 
-          // Handle rating filters
-          if (filters.any((filter) => filter == "All" || double.tryParse(filter) != null)) {
-            matchesRating = filters.any((filter) {
-              if (filter == "All") {
-                return true; // Include all ratings
-              }
-              // Convert rating out of 10 to a 1-5 scale
-              double reviewRating = (review['rating'] ?? 0.0) ;
-              double filterRating = double.parse(filter);
-              return reviewRating >= filterRating; // Match ratings greater than or equal to the filter
-            });
-          }
+      // Separate ratings and categories dynamically from updatedFilters
+      List<double> selectedRatings = updatedFilters
+          .where((filter) => RegExp(r'^\d$')
+          .hasMatch(filter)) // Numeric ratings like 5, 4, etc.
+          .map((rating) => double.tryParse(rating)!)
+          .toList();
 
-          // Handle category filters
-          if (filters.any((filter) => !["All", "2", "3", "4", "5"].contains(filter))) {
-            matchesCategory = filters.any((filter) {
-              return review['category'] == filter; // Match the specific category
-            });
-          }
+      List<String> selectedCategories = updatedFilters
+          .where((filter) =>
+      !RegExp(r'^\d$').hasMatch(filter)) // Non-numeric categories
+          .toList();
 
-          // Return reviews that match both rating and category filters
-          return matchesRating && matchesCategory;
+      // Apply category filter
+      if (selectedCategories.isNotEmpty) {
+        filteredReviews = filteredReviews.where((review) {
+          return selectedCategories.contains(review['category']);
         }).toList();
       }
-    });
-  }
 
-  void _applySort(String sortOption) {
-    setState(() {
-      if (sortOption == "Newest") {
+      // Apply rating filter
+      if (selectedRatings.isNotEmpty) {
+        filteredReviews = filteredReviews.where((review) {
+          double reviewRating =
+              (double.tryParse(review['rating']?.toString() ?? '0') ?? 0) ;
+          return selectedRatings
+              .contains(reviewRating); // Match any selected rating
+        }).toList();
+      }
+
+      // Apply sorting
+      if (selectedSortOption == 'Newest') {
         filteredReviews.sort((a, b) {
-          DateTime dateA = DateTime.parse(a['created_at'] ?? '');
-          DateTime dateB = DateTime.parse(b['created_at'] ?? '');
+          DateTime dateA = DateTime.parse(a['created_at']);
+          DateTime dateB = DateTime.parse(b['created_at']);
           return dateB.compareTo(dateA); // Descending order
         });
-      } else if (sortOption == "Rating") {
+      } else if (selectedSortOption == 'Rating') {
         filteredReviews.sort((a, b) {
-          double ratingA = a['rating'] ?? 0.0;
-          double ratingB = b['rating'] ?? 0.0;
+          double ratingA =
+          (double.tryParse(a['rating']?.toString() ?? '0') ?? 0);
+          double ratingB =
+          (double.tryParse(b['rating']?.toString() ?? '0') ?? 0);
           return ratingB.compareTo(ratingA); // Descending order
         });
       }
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -285,51 +291,43 @@ class _ServicesScreenState extends State<ServicesScreen> {
 
                           const SizedBox(height: 16),
                           if (allReviews.isNotEmpty)
-
-                            // Filter and Sort Buttons
                             FilterSortButtons(
                               onFilter: (context) async {
-                                final selectedFilters =
-                                    await Navigator.push<List<String>>(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  FilterScreen()),
-                                        ) ??
-                                        [];
-                                _applyFilters(selectedFilters);
-                                return selectedFilters;
+                                // Navigate to the filter screen and await the selected filters
+                                final List<String>? filters =
+                                await Navigator.push<List<String>>(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => FilterScreen()),
+                                );
+
+                                // Return the latest filters or an empty list if null
+                                return filters ?? [];
                               },
                               onSort: (context) async {
-                                // Your sort logic here
-                                final sortOption =
-                                    await showModalBottomSheet<String>(
+                                final String? sortOption = await showModalBottomSheet<String>(
                                   context: context,
                                   shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(16)),
+                                    borderRadius:
+                                    BorderRadius.vertical(top: Radius.circular(16)),
                                   ),
                                   builder: (context) => const SortBottomSheet(
                                     title: 'Sort By',
-                                    sortOptions: [
-                                      'Rating',
-                                      'Newest'
-                                    ],
+                                    sortOptions: ['Rating', 'Newest'],
                                   ),
                                 );
 
-                                if (sortOption != null &&
-                                    sortOption.isNotEmpty) {
-                                  _applySort(sortOption);
+                                if (sortOption != null) {
+                                  setState(() {
+                                    selectedSortOption = sortOption;
+                                  });
+                                  _applyFiltersAndSorting(updatedFilters: []);
                                 }
-
-                                return sortOption ?? '';
                               },
                               onFiltersUpdated: (updatedFilters) {
-                                _applyFilters(updatedFilters);
+                                // Use the latest filters directly in the filtering logic
+                                _applyFiltersAndSorting(updatedFilters: updatedFilters);
                               },
                             ),
-
                           // Review List
                           ListView.builder(
                             physics: NeverScrollableScrollPhysics(),
