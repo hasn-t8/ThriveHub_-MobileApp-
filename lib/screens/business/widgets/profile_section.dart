@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class ProfileSection extends StatelessWidget {
+class ProfileSection extends StatefulWidget {
   final String fullName;
   final String email;
   final String profileImagePath;
-  final VoidCallback onEditProfile;
-  final VoidCallback onEditImage; // Callback for image or icon click
+  final Future<void> Function(String newName) onSaveName; // Callback for saving name
+  final VoidCallback onEditImage; // Callback for image click
   final bool showInfoBoxes;
   final List<Map<String, String>> infoBoxes;
 
@@ -14,23 +14,52 @@ class ProfileSection extends StatelessWidget {
     required this.fullName,
     required this.email,
     required this.profileImagePath,
-    required this.onEditProfile,
-    required this.onEditImage, // New callback
-    this.showInfoBoxes=false,
+    required this.onSaveName,
+    required this.onEditImage,
+    this.showInfoBoxes = false,
     required this.infoBoxes,
   }) : super(key: key);
+
+  @override
+  _ProfileSectionState createState() => _ProfileSectionState();
+}
+
+class _ProfileSectionState extends State<ProfileSection> {
+  bool _isEditingName = false;
+  late TextEditingController _nameController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.fullName);
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _saveName() async {
+    final newName = _nameController.text.trim();
+    if (newName.isNotEmpty && newName != widget.fullName) {
+      await widget.onSaveName(newName);
+    }
+    setState(() {
+      _isEditingName = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Profile Header
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: onEditImage, // Handle image click
+              onTap: widget.onEditImage,
               child: Stack(
                 children: [
                   Container(
@@ -40,9 +69,9 @@ class ProfileSection extends StatelessWidget {
                       color: const Color(0xFFD9D9D9),
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        image: profileImagePath.startsWith('http')
-                            ? NetworkImage(profileImagePath)
-                            : AssetImage(profileImagePath) as ImageProvider,
+                        image: widget.profileImagePath.startsWith('http')
+                            ? NetworkImage(widget.profileImagePath)
+                            : AssetImage(widget.profileImagePath) as ImageProvider,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -51,15 +80,11 @@ class ProfileSection extends StatelessWidget {
                     bottom: 0,
                     right: 0,
                     child: GestureDetector(
-                      onTap: onEditImage,
+                      onTap: widget.onEditImage,
                       child: CircleAvatar(
                         radius: 12,
-                        backgroundColor: Color(0xFFD9D9D9),
-                        child: Image.asset(
-                          'assets/edit_profile.png', // Replace with your image icon
-                          width: 20,
-                          height: 20,
-                        ),
+                        backgroundColor: const Color(0xFFD9D9D9),
+                        child: Icon(Icons.edit, size: 16, color: Colors.black),
                       ),
                     ),
                   ),
@@ -71,11 +96,31 @@ class ProfileSection extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    fullName.isNotEmpty ? fullName : 'Your Name',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  _isEditingName
+                      ? TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter your name',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onSubmitted: (_) => _saveName(),
+                  )
+                      : GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _isEditingName = true;
+                      });
+                    },
+                    child: Text(
+                      widget.fullName.isNotEmpty
+                          ? widget.fullName
+                          : 'Your Name',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   Row(
@@ -84,7 +129,7 @@ class ProfileSection extends StatelessWidget {
                       const SizedBox(width: 4),
                       Expanded(
                         child: Text(
-                          email.isNotEmpty ? email : 'example@gmail.com',
+                          widget.email.isNotEmpty ? widget.email : 'example@gmail.com',
                           style: const TextStyle(
                             fontSize: 12,
                             color: Colors.grey,
@@ -97,15 +142,15 @@ class ProfileSection extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.edit, color: Colors.black),
-              onPressed: onEditProfile,
-            ),
+            if (_isEditingName)
+              IconButton(
+                icon: const Icon(Icons.check, color: Colors.green),
+                onPressed: _saveName,
+              ),
           ],
         ),
         const SizedBox(height: 16),
-        if (showInfoBoxes)
-        // Info Boxes
+        if (widget.showInfoBoxes)
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
@@ -115,7 +160,7 @@ class ProfileSection extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: infoBoxes.map((box) {
+              children: widget.infoBoxes.map((box) {
                 return _buildInfoBox(box['title']!, box['subtitle']!);
               }).toList(),
             ),
@@ -123,6 +168,7 @@ class ProfileSection extends StatelessWidget {
       ],
     );
   }
+
   Widget _buildInfoBox(String title, String subtitle) {
     return Expanded(
       child: Column(

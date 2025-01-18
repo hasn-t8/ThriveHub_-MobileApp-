@@ -95,16 +95,27 @@ class _BusinessAccountScreenState extends State<BusinessAccountScreen> {
     };
 
     try {
-      await _apiService.UpdateBusinessProfile(updatedData);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Business details updated successfully')),
-      );
+      // Call the API and capture the success status
+      final isSuccessful = await _apiService.UpdateBusinessProfile(updatedData);
+
+      if (isSuccessful) {
+        // Show the Thank You popup
+        ThankYou.show(context);
+
+      } else {
+        // Show an error message if the update failed
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update business details')),
+        );
+      }
     } catch (error) {
+      // Handle unexpected errors
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update business details')),
+        SnackBar(content: Text('Error updating business details: $error')),
       );
     }
   }
+
 
   /// Update profile image only
   Future<void> _updateProfileImage() async {
@@ -155,9 +166,6 @@ class _BusinessAccountScreenState extends State<BusinessAccountScreen> {
           _isLoading = false; // Hide loader
           _isDataUpdated = false; // Reset update flag
         });
-
-        // Show the Thank You popup after successful update
-        ThankYou.show(context);
       } catch (error) {
         setState(() {
           _isLoading = false; // Hide loader

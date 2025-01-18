@@ -50,48 +50,104 @@ class ProfileService {
       print('Error creating profile: $e');
     }
   }
-
   // Function to update a business-profile with the business_profile_id
-  Future<void> UpdateBusinessProfile(Map<String, dynamic> profileData) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    final businessProfileId = prefs.getInt('business_profile_id') ?? -1;
-
-
+  Future<bool> UpdateName(Map<String, dynamic> inputData) async {
     try {
       // Fetch the access token
       final accessToken = await _getAccessToken();
-      print("Access Token: $accessToken");
-
       if (accessToken == null) {
         print('Access token is missing!');
-        return;
+        return false; // Indicate failure
       }
 
-      // Add the access token to the request headers
-      final response = await http.put(
-        Uri.parse('$_baseUrl//businessprofiles/$businessProfileId'),
+      // Check if `inputData` contains only `fullName`
+      Map<String, dynamic> profileData = {};
+      if (inputData.containsKey('fullName') && inputData.length == 1) {
+        profileData['fullName'] = inputData['fullName'];
+      } else {
+        profileData = inputData;
+      }
+      // Print the data to be sent
+      print('Sending data to API: ${jsonEncode(profileData)}');
+
+      // Send the update request
+      final response = await http.post(
+        Uri.parse('$_baseUrl/profiles'),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken', // Attach the token here
+          'Authorization': 'Bearer $accessToken',
         },
         body: jsonEncode(profileData),
       );
 
       if (response.statusCode == 200) {
-        // Profile created successfully
         final responseBody = jsonDecode(response.body);
-        print('Profile created successfully');
+        print('Profile updated successfully');
         print('Response: $responseBody');
+        return true; // Indicate success
       } else {
-        // Error handling for failed request
         final responseBody = jsonDecode(response.body);
-        print('Failed to create profile: ${response.statusCode}');
+        print('Failed to update profile: ${response.statusCode}');
         print('Error message: ${responseBody['message'] ?? 'No message'}');
+        return false; // Indicate failure
       }
     } catch (e) {
-      print('Error creating profile: $e');
+      print('Error updating profile: $e');
+      return false; // Indicate failure
     }
   }
+
+  // Function to update a business-profile with the business_profile_id
+  Future<bool> UpdateBusinessProfile(Map<String, dynamic> inputData) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final businessProfileId = prefs.getInt('business_profile_id') ?? -1;
+
+    try {
+      // Fetch the access token
+      final accessToken = await _getAccessToken();
+      if (accessToken == null) {
+        print('Access token is missing!');
+        return false; // Indicate failure
+      }
+
+      // Check if `inputData` contains only `fullName`
+      Map<String, dynamic> profileData = {};
+      if (inputData.containsKey('fullName') && inputData.length == 1) {
+        profileData['fullName'] = inputData['fullName'];
+      } else {
+        profileData = inputData;
+      }
+      // Print the data to be sent
+      print('Sending data to API: ${jsonEncode(profileData)}');
+
+      // Send the update request
+      final response = await http.put(
+        Uri.parse('$_baseUrl/businessprofiles/$businessProfileId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+        body: jsonEncode(profileData),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        print('Profile updated successfully');
+        print('Response: $responseBody');
+        return true; // Indicate success
+      } else {
+        final responseBody = jsonDecode(response.body);
+        print('Failed to update profile: ${response.statusCode}');
+        print('Error message: ${responseBody['message'] ?? 'No message'}');
+        return false; // Indicate failure
+      }
+    } catch (e) {
+      print('Error updating profile: $e');
+      return false; // Indicate failure
+    }
+  }
+
+
 
 
 
