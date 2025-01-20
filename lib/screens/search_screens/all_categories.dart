@@ -65,28 +65,52 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
   }
 
   // Apply filters based on selected criteria
+  // Apply filters based on selected criteria
   void applyFilters(List<String> filters) {
     print('Applying filters:');
     setState(() {
+      // If no filters are applied, show all companies
       if (filters.isEmpty) {
-        // If no filters are applied, show all companies
         filteredCompanies = List.from(companies);
-      } else {
-        print('Applying filters: $filters'); // Log the filters being applied
+        return;
+      }
+
+      // If "All" is in the filters, show all companies
+      if (filters.contains('All')) {
+        filteredCompanies = List.from(companies);
+        return;
+      }
+
+      // Separate ratings and categories from filters
+      List<double> selectedRatings = filters
+          .where((filter) => RegExp(r'^\d$').hasMatch(filter)) // Numeric ratings like 2, 3, 4, 5
+          .map((rating) => double.tryParse(rating)!)
+          .toList();
+
+      List<String> selectedCategories = filters
+          .where((filter) => !RegExp(r'^\d$').hasMatch(filter)) // Non-numeric categories
+          .toList();
+
+      if (selectedRatings.isNotEmpty) {
+        // Filter by ratings only
+        filteredCompanies = companies.where((company) {
+          double companyRating =
+          (double.tryParse(company['avg_rating']?.toString() ?? '0') ?? 0)/2;
+          return selectedRatings.contains(companyRating); // Match selected ratings
+        }).toList();
+      } else if (selectedCategories.isNotEmpty) {
+        // Filter by categories only
         filteredCompanies = companies.where((company) {
           final companyCategory = company['category']?.toLowerCase();
-          final matchesFilter = filters.any((filter) => companyCategory == filter.toLowerCase());
-
-          // Log each company's category and whether it matches any filter
-          print('Company Category: $companyCategory, Matches Filter: $matchesFilter');
-          return matchesFilter;
+          return selectedCategories.any((filter) => companyCategory == filter.toLowerCase());
         }).toList();
       }
-    });
 
-    // Log the filtered companies after filtering
-    print('Filtered Companies: ${filteredCompanies.map((c) => c['org_name']).toList()}');
+      // Log the filtered companies
+      print('Filtered Companies: ${filteredCompanies.map((c) => c['org_name']).toList()}');
+    });
   }
+
 
 
   // Apply sorting based on selected criteria
@@ -97,7 +121,10 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
           case 'Rating':
             return (b['avg_rating'] ?? 0.0).compareTo(a['avg_rating'] ?? 0.0);
           case 'Newest':
-            return (b['created_at'] ?? '').compareTo(a['created_at'] ?? '');
+          // Proper date parsing and sorting
+            DateTime dateA = DateTime.tryParse(a['created_at'] ?? '') ?? DateTime(1970);
+            DateTime dateB = DateTime.tryParse(b['created_at'] ?? '') ?? DateTime(1970);
+            return dateB.compareTo(dateA); // Descending order
           default:
             return 0;
         }
@@ -194,7 +221,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
                 return CompanyCard(
                   imageUrl: company['logo_url'] ?? 'https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png',
                   title: company['org_name'] ?? 'Unknown',
-                  rating: double.tryParse(company['avg_rating'] ?? '0.0') ?? 0.0,
+                  rating: (double.tryParse(company['avg_rating'] ?? '0.0') ?? 0.0)/2,
                   reviews: company['total_reviews'] ?? 0,
                   service: company['category'] ?? 'No Service',
                   description: company['about_business'] ?? 'No description available.',
