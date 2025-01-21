@@ -144,15 +144,16 @@ class _ReviewScreenState extends State<ReviewScreen> {
             // Tab Buttons (All / My Reviews)
             TabButtons(
               isAllSelected: isSavedSelected,
-              onSelectAll: () {
+              onSelectAll: () async {
                 setState(() {
                   isSavedSelected = true;
                 });
               },
-              onSelectMyReviews: () {
+              onSelectMyReviews: () async {
                 setState(() {
                   isSavedSelected = false;
                 });
+                await _fetchReviews();
               },
               allText: 'All',
               myReviewsText: 'My reviews',
