@@ -348,26 +348,26 @@ class _BusinessSignUpScreenState extends State<BusinessSignUpScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
-                  Column(
-                    children: [
-                      SocialMediaButton(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        image: AssetImage('assets/google.png'),
-                        label: 'Continue with Google',
-                      ),
-                      SizedBox(height: 10),
-                      SocialMediaButton(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        image: AssetImage('assets/facebook.png'),
-                        label: 'Continue with Facebook',
-                      ),
-                    ],
-                  ),
+                  // SizedBox(height: 16),
+                  // Column(
+                  //   children: [
+                  //     SocialMediaButton(
+                  //       onPressed: () {
+                  //         // Add your onPressed code here!
+                  //       },
+                  //       image: AssetImage('assets/google.png'),
+                  //       label: 'Continue with Google',
+                  //     ),
+                  //     SizedBox(height: 10),
+                  //     SocialMediaButton(
+                  //       onPressed: () {
+                  //         // Add your onPressed code here!
+                  //       },
+                  //       image: AssetImage('assets/facebook.png'),
+                  //       label: 'Continue with Facebook',
+                  //     ),
+                  //   ],
+                  // ),
                   SizedBox(height: 20),
                   Center(
                     child: Column(

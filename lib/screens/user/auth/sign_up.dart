@@ -395,26 +395,26 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 12),
-                        Column(
-                          children: [
-                            SocialMediaButton(
-                              onPressed: () {
-                                // Add your onPressed code here!
-                              },
-                              image: AssetImage('assets/google.png'),
-                              label: 'Continue with Google',
-                            ),
-                            SizedBox(height: 10),
-                            SocialMediaButton(
-                              onPressed: () {
-                                // Add your onPressed code here!
-                              },
-                              image: AssetImage('assets/facebook.png'),
-                              label: 'Continue with Facebook',
-                            ),
-                          ],
-                        ),
+                        // SizedBox(height: 12),
+                        // Column(
+                        //   children: [
+                        //     SocialMediaButton(
+                        //       onPressed: () {
+                        //         // Add your onPressed code here!
+                        //       },
+                        //       image: AssetImage('assets/google.png'),
+                        //       label: 'Continue with Google',
+                        //     ),
+                        //     SizedBox(height: 10),
+                        //     SocialMediaButton(
+                        //       onPressed: () {
+                        //         // Add your onPressed code here!
+                        //       },
+                        //       image: AssetImage('assets/facebook.png'),
+                        //       label: 'Continue with Facebook',
+                        //     ),
+                        //   ],
+                        // ),
                         SizedBox(height: 12),
                         Center(
                           child: Column(
