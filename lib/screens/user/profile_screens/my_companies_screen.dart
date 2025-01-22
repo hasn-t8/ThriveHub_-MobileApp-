@@ -32,17 +32,17 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
       List<String> visitedBusinessIds = prefs.getStringList('visitedBusinessIds') ?? [];
 
       setState(() {
-        // Separate the fetched companies into visited and unvisited
+        // Separate the fetched companies into visited and unvisited, limiting to 500
         visitedCompanies = fetchedCompanies.where((company) {
           return visitedBusinessIds.contains(company['id'].toString());
-        }).toList();
+        }).take(500).toList();
 
-        allCompanies = fetchedCompanies;
+        allCompanies = fetchedCompanies.take(500).toList();
 
-        // Dynamically update saved companies
+        // Dynamically update saved companies, limiting to 500
         savedCompanies = fetchedCompanies.where((company) {
           return company['bookmark'] == true;
-        }).toList();
+        }).take(500).toList();
 
         isLoading = false; // Mark loading as complete
       });
@@ -56,6 +56,7 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
       print('Error fetching company list: $e');
     }
   }
+
 
   @override
   void initState() {
