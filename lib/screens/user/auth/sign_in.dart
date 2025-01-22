@@ -326,18 +326,18 @@ class _SignInScreenState extends State<SignInScreen> {
                           thickness: 1,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text(
-                          'Or Log in with',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontFamily: 'Inter', // Set the font family to 'Inter'
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black.withOpacity(0.7), // Black with 70% opacity
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      //   child: Text(
+                      //     'Or Log in with',
+                      //     style: TextStyle(
+                      //       fontSize: 12,
+                      //       fontFamily: 'Inter', // Set the font family to 'Inter'
+                      //       fontWeight: FontWeight.w400,
+                      //       color: Colors.black.withOpacity(0.7), // Black with 70% opacity
+                      //     ),
+                      //   ),
+                      // ),
                       Expanded(
                         child: Divider(
                           color: Color(0xFFD9D9D9),
@@ -346,27 +346,27 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 16),
-                  // "Continue with" buttons vertically
-                  Column(
-                    children: [
-                      SocialMediaButton(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        image: AssetImage('assets/google.png'),
-                        label: 'Continue with Google',
-                      ),
-                      SizedBox(height: 10),
-                      SocialMediaButton(
-                        onPressed: () {
-                          // Add your onPressed code here!
-                        },
-                        image: AssetImage('assets/facebook.png'),
-                        label: 'Continue with Facebook',
-                      ),
-                    ],
-                  ),
+                  // SizedBox(height: 16),
+                  // // "Continue with" buttons vertically
+                  // Column(
+                  //   children: [
+                  //     SocialMediaButton(
+                  //       onPressed: () {
+                  //         // Add your onPressed code here!
+                  //       },
+                  //       image: AssetImage('assets/google.png'),
+                  //       label: 'Continue with Google',
+                  //     ),
+                  //     SizedBox(height: 10),
+                  //     SocialMediaButton(
+                  //       onPressed: () {
+                  //         // Add your onPressed code here!
+                  //       },
+                  //       image: AssetImage('assets/facebook.png'),
+                  //       label: 'Continue with Facebook',
+                  //     ),
+                  //   ],
+                  // ),
                   SizedBox(height: 65),
                   // "Don't have an account" row
                   Center(
