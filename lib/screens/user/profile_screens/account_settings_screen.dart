@@ -16,7 +16,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
   final _dateController = TextEditingController();
   final _locationController = TextEditingController();
   final _emailController = TextEditingController();
-
+  String profileImage='';
   bool _isFormModified = false;
   bool _isLoading = false; // Loading flag
 
@@ -29,12 +29,14 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
     _locationController.addListener(_onFieldChange);
     _emailController.addListener(_onFieldChange);
     _loadProfileData();
+
   }
 
   void _loadProfileData() async {
     final prefs = await SharedPreferences.getInstance();
     String fullName = prefs.getString('full_name') ?? '';
     String email = prefs.getString('email') ?? '';
+    profileImage = prefs.getString('profile_image')??'';
     String city = prefs.getString('city') ?? '';
     setState(() {
       _emailController.text = email;
@@ -53,6 +55,7 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
         _dateController.text = profileData['date_of_birth'] != null
             ? DateFormat('yyyy-MM-dd').format(DateTime.parse(profileData['date_of_birth']))
             : '';
+        prefs.setString('city', profileData['address_city'] ?? '');
       });
     }
   }
@@ -116,10 +119,12 @@ class _AccountSettingsScreenState extends State<AccountSettingsScreen> {
       "profileData": {
         "date_of_birth": _dateController.text,
         "address_city": _locationController.text,
+        "img_profile_url": profileImage ?? "",
       },
       "fullName": _fullNameController.text,
     };
     final prefs = await SharedPreferences.getInstance();
+    prefs.setString('city', _locationController.text);
     // Call the ProfileService to create the profile
     final profileService = ProfileService();
     await profileService.createAndUpdateProfile(profileData);
