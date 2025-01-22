@@ -15,6 +15,8 @@ class ProfileService {
 
   // Function to create a business-profile with the profile
   Future<void> createAndUpdateProfile(Map<String, dynamic> profileData) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final profileImage = prefs.getString('profile_image');
     try {
       // Fetch the access token
       final accessToken = await _getAccessToken();
@@ -50,8 +52,11 @@ class ProfileService {
       print('Error creating profile: $e');
     }
   }
-  // Function to update a business-profile with the business_profile_id
+  // Function to update a profile with the provided input data
   Future<bool> UpdateName(Map<String, dynamic> inputData) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final profileImage = prefs.getString('profile_image');
+
     try {
       // Fetch the access token
       final accessToken = await _getAccessToken();
@@ -60,26 +65,29 @@ class ProfileService {
         return false; // Indicate failure
       }
 
-      // Check if `inputData` contains only `fullName`
-      Map<String, dynamic> profileData = {};
-      if (inputData.containsKey('fullName') && inputData.length == 1) {
-        profileData['fullName'] = inputData['fullName'];
-      } else {
-        profileData = inputData;
-      }
+      // Prepare the profile data according to the required structure
+      Map<String, dynamic> requestBody = {
+        "profileType": "personal",
+        "profileData": {
+          "img_profile_url": profileImage ?? "",
+        },
+        "fullName": inputData['fullName'] ?? "",
+      };
+
       // Print the data to be sent
-      print('Sending data to API: ${jsonEncode(profileData)}');
+      print('Sending data to API: ${jsonEncode(requestBody)}');
 
       // Send the update request
       final response = await http.post(
         Uri.parse('$_baseUrl/profiles'),
-        headers: {
+        headers: <String, String>{
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
         },
-        body: jsonEncode(profileData),
+        body: jsonEncode(requestBody),
       );
 
+      // Handle response
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
         print('Profile updated successfully');
