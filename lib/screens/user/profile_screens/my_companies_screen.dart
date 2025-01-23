@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
 import 'package:thrive_hub/widgets/company_card.dart'; // Import the CompanyCard widget
 import 'package:thrive_hub/widgets/appbar.dart';
@@ -13,31 +14,49 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
   bool isSavedSelected = true; // Initially, Saved button is selected
   List<dynamic> allCompanies = []; // List to hold all companies from API
   List<dynamic> savedCompanies = []; // Companies with `bookmark: true`
+  List<dynamic> visitedCompanies = []; // Companies from history
   bool isLoading = true; // Track loading state
   String errorMessage = ''; // For error handling
 
   // Fetch the company list from the API
   void _fetchCompanyList() async {
     try {
+      // Initialize the company service
       CompanyService companyService = CompanyService();
+
+      // Fetch the list of companies from the service
       List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
 
+      // Retrieve the list of visited business IDs from SharedPreferences
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      List<String> visitedBusinessIds = prefs.getStringList('visitedBusinessIds') ?? [];
+
       setState(() {
-        allCompanies = fetchedCompanies;
+        // Separate the fetched companies into visited and unvisited, limiting to 500
+        visitedCompanies = fetchedCompanies.where((company) {
+          return visitedBusinessIds.contains(company['id'].toString());
+        }).take(500).toList();
 
-        // Filter saved companies based on the `bookmark` tag
-        savedCompanies = allCompanies.where((company) => company['bookmark'] == true).toList();
+        allCompanies = fetchedCompanies.take(500).toList();
 
-        isLoading = false;
+        // Dynamically update saved companies, limiting to 500
+        savedCompanies = fetchedCompanies.where((company) {
+          return company['bookmark'] == true;
+        }).take(500).toList();
+
+        isLoading = false; // Mark loading as complete
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
-        errorMessage = e.toString();
-        print('$errorMessage');
+        isLoading = false; // Reset loading state
+        errorMessage = e.toString(); // Save error message for display
       });
+
+      // Log the error for debugging
+      print('Error fetching company list: $e');
     }
   }
+
 
   @override
   void initState() {
@@ -48,7 +67,7 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
   @override
   Widget build(BuildContext context) {
     // Determine which list to display: Saved or History
-    final companies = isSavedSelected ? savedCompanies : allCompanies;
+    final companies = isSavedSelected ? savedCompanies : visitedCompanies;
 
     return Scaffold(
       appBar: CustomAppBar(title: 'My Companies', showBackButton: true, centerTitle: true),
@@ -100,7 +119,8 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
                 itemBuilder: (context, index) {
                   final company = companies[index];
                   return CompanyCard(
-                    imageUrl: company['logo_url'] ?? 'https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png',
+                    imageUrl: company['logo_url'] ??
+                        'https://cdn.pixabay.com/photo/2019/03/13/14/08/building-4052951_640.png',
                     title: company['org_name'] ?? 'No Title',
                     rating: (double.tryParse(company['avg_rating'] ?? '0.0') ?? 0.0) / 2,
                     reviews: company['total_reviews'] ?? 0,
@@ -111,15 +131,13 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
                       setState(() {
                         company['bookmark'] = !(company['bookmark'] ?? false);
                         // Update savedCompanies dynamically
-                        if (company['bookmark'] == true) {
-                          savedCompanies.add(company);
-                        } else {
-                          savedCompanies.removeWhere((c) => c['id'] == company['id']);
-                        }
+                        savedCompanies = allCompanies.where((company) {
+                          return company['bookmark'] == true;
+                        }).toList();
                       });
                     },
                     onTap: () {
-                      print('CompanyCard tapped: ${company['title']}');
+                      print('CompanyCard tapped: ${company['org_name']}');
                       // Navigate to another screen or perform an action
                     },
                   );
