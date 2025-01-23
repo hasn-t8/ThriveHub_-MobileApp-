@@ -319,6 +319,7 @@
  import 'package:http/http.dart' as http;
  import 'dart:typed_data';
  import 'package:image/image.dart' as img;
+import 'package:url_launcher/url_launcher.dart';
 
  class BusinessProfileScreen extends StatefulWidget {
    @override
@@ -537,6 +538,18 @@
                Navigator.pushNamed(context, '/business-account-settings');
              },
            },
+           {
+             'icon': Icons.subscriptions,
+             'text': 'Subscriptions',
+             'trailingIcon': Icons.arrow_forward_ios,
+             'onTap': () async {
+               final Uri _url = Uri.parse('https://thrivehub.ai/admin-area/pricing');
+               if (!await launchUrl(_url)) {
+                 throw Exception('Could not launch $_url');
+               };
+             },
+           },
+
          ];
          break;
      }
