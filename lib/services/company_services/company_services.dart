@@ -4,6 +4,28 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CompanyService {
+  // Helper function to save the businessId locally
+  Future<void> _saveBusinessIdLocally(String businessId) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Retrieve the existing list of visited business IDs
+    List<String> visitedBusinesses =
+        prefs.getStringList('visitedBusinessIds') ?? [];
+
+    // Add the new businessId to the list if it doesn't already exist
+    if (!visitedBusinesses.contains(businessId)) {
+      visitedBusinesses.add(businessId);
+      await prefs.setStringList('visitedBusinessIds', visitedBusinesses);
+    }
+  }
+
+// Helper function to retrieve the list of visited business IDs
+  Future<List<String>> getVisitedBusinessIds() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList('visitedBusinessIds') ?? [];
+  }
+
+
   Future<List<dynamic>> fetchCompanyList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? accessToken = prefs.getString('access_token');
@@ -72,6 +94,8 @@ class CompanyService {
     final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
     final String url =
         '$_baseUrl/businessprofiles/$businessId'; // Adjust the endpoint as needed
+    // Save the businessId to SharedPreferences
+    await _saveBusinessIdLocally(businessId);
     try {
       final response = await http.get(Uri.parse(url));
 
