@@ -172,7 +172,7 @@ class CompanyService {
       throw Exception('Access token is missing');
     }
 
-    final url = Uri.parse('$_baseUrl/reviews');
+    final url = Uri.parse('$_baseUrl/myreviews');
     final response = await http.get(
       url,
       headers: {
