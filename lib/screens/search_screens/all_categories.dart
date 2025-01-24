@@ -27,17 +27,61 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchCompanyList();
+    _fetchCompanyList(title: widget.categoryTitle);
   }
 
+  // // Fetch the company list from the API
+  // void _fetchCompanyList() async {
+  //   try {
+  //     CompanyService companyService = CompanyService();
+  //     List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
+  //     setState(() {
+  //       companies = fetchedCompanies;
+  //       filteredCompanies = fetchedCompanies; // Initially show all companies
+  //       isLoading = false;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       isLoading = false;
+  //       errorMessage = e.toString();
+  //       print('$errorMessage');
+  //     });
+  //   }
+  // }
   // Fetch the company list from the API
-  void _fetchCompanyList() async {
+  void _fetchCompanyList({String? title}) async {
     try {
       CompanyService companyService = CompanyService();
       List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
+
+      // Filter and sort companies based on title
+      List<dynamic> filtered;
+
+      if (title != null && title.isNotEmpty) {
+        if (title.toLowerCase() == 'top companies') {
+          // Show companies with high ratings sorted from high to low
+          filtered = fetchedCompanies
+              .where((company) => company['avg_rating'] != null)
+              .toList()
+            ..sort((a, b) => (b['avg_rating'] ?? 0).compareTo(a['avg_rating'] ?? 0));
+        } else {
+          // Filter companies by category
+          filtered = fetchedCompanies.where((company) {
+            return company['category'] != null &&
+                company['category']
+                    .toString()
+                    .toLowerCase()
+                    .contains(title.toLowerCase());
+          }).toList();
+        }
+      } else {
+        // No title provided, show all companies
+        filtered = fetchedCompanies;
+      }
+
       setState(() {
         companies = fetchedCompanies;
-        filteredCompanies = fetchedCompanies; // Initially show all companies
+        filteredCompanies = filtered; // Update filtered companies
         isLoading = false;
       });
     } catch (e) {
@@ -48,6 +92,8 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
       });
     }
   }
+
+
 
   // Filter companies based on selected category
   void _filterCompanies(String category) {
@@ -134,6 +180,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.categoryTitle);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(125),
