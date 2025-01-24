@@ -30,7 +30,11 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
       // Retrieve the list of visited business IDs from SharedPreferences
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String> visitedBusinessIds = prefs.getStringList('visitedBusinessIds') ?? [];
-
+      // Limit the visited companies to 500, removing the oldest 100 from local storage if exceeding 500
+      if (visitedBusinessIds.length > 500) {
+        visitedBusinessIds = visitedBusinessIds.skip(100).toList();
+        await prefs.setStringList('visitedBusinessIds', visitedBusinessIds);
+      }
       setState(() {
         // Separate the fetched companies into visited and unvisited, limiting to 500
         visitedCompanies = fetchedCompanies.where((company) {
