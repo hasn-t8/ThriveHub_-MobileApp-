@@ -204,7 +204,6 @@ class _BusinessNotificationScreenState extends State<BusinessNotificationScreen>
   Future<void> _fetchReviews() async {
     final prefs = await SharedPreferences.getInstance();
     final businessProfileId = prefs.getInt('business_profile_id') ?? -1;
-
     if (businessProfileId == -1) {
       setState(() {
         _errorMessage =
@@ -241,7 +240,7 @@ class _BusinessNotificationScreenState extends State<BusinessNotificationScreen>
       }
     } catch (error) {
       setState(() {
-        _errorMessage = 'Failed to load reviews. Please try again later.';
+        _errorMessage = 'No Notification found';
       });
       print('Error fetching reviews: $error');
     } finally {
