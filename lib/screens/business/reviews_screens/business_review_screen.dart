@@ -76,7 +76,7 @@ class _BusinessReviewScreenState extends State<BusinessReviewScreen> {
       }
     } catch (error) {
       setState(() {
-        _errorMessage = 'Failed to load reviews. Please try again later.';
+        _errorMessage = 'No Review found.';
       });
       print('Error fetching reviews: $error');
     } finally {
