@@ -7,7 +7,6 @@ import 'package:thrive_hub/services/profile_service/profile_service.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 
 class BusinessSliderScreen extends StatefulWidget {
-
   BusinessSliderScreen();
 
   @override
@@ -30,8 +29,7 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
   @override
   void initState() {
     super.initState();
-    _profileService = ProfileService(); // Initialize ProfileService without passing parameters
-
+    _profileService = ProfileService();
   }
 
   void _onCategorySelected(String category) {
@@ -67,6 +65,19 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
     }
   }
 
+  void _goToPreviousPage() {
+    if (_currentPage > 0) {
+      setState(() {
+        _currentPage--;
+      });
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   Future<void> _submitData() async {
     print('submit hit');
     if (_companyLogoPath == null) {
@@ -89,7 +100,6 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
     };
 
     print('data is $logoFile, $payload');
-    // Show loading indicator
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -97,10 +107,9 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
     );
 
     try {
-      // Perform API calls
       final logoUploaded = await _profileService.businessUploadLogo(logoFile);
       if (!logoUploaded) {
-        Navigator.of(context).pop(); // Dismiss loading indicator
+        Navigator.of(context).pop();
         print('Logo upload failed');
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -112,7 +121,7 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
       }
 
       final dataSent = await _profileService.businessProfileSetup(payload);
-      Navigator.of(context).pop(); // Dismiss loading indicator
+      Navigator.of(context).pop();
 
       if (dataSent) {
         print('All data sent successfully!');
@@ -122,7 +131,6 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        // Navigate to the main screen
         Navigator.of(context).pushReplacementNamed('/business-home');
       } else {
         print('Data submission failed');
@@ -134,7 +142,7 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
         );
       }
     } catch (e) {
-      Navigator.of(context).pop(); // Dismiss loading indicator
+      Navigator.of(context).pop();
       print('Unexpected error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -145,13 +153,13 @@ class _BusinessSliderScreenState extends State<BusinessSliderScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
         title: _titles[_currentPage],
-        showBackButton: true,
+        showBackButton: _currentPage > 0, // Show back button only if not on the first screen
+        onBackPressed: _goToPreviousPage, // Navigate to the previous page
         centerTitle: true,
       ),
       body: Column(
