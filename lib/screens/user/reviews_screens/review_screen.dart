@@ -39,10 +39,26 @@ class _ReviewScreenState extends State<ReviewScreen> {
 
     try {
       final CompanyService reviewService = CompanyService();
-      final List<dynamic> fetchedReviews =
-          await reviewService.fetchAllReviews();
-      final List<dynamic> fetchedReviewsByUserId =
-          await reviewService.fetchAllReviewsbyuserid();
+
+      // Fetch all reviews and reviews by user ID independently
+      List<dynamic> fetchedReviews = [];
+      List<dynamic> fetchedReviewsByUserId = [];
+
+      // Fetch all reviews
+      try {
+        fetchedReviews = await reviewService.fetchAllReviews();
+      } catch (e) {
+        print('Error fetching all reviews: $e');
+        fetchedReviews = []; // Set to an empty list if an error occurs
+      }
+
+      // Fetch reviews by user ID
+      try {
+        fetchedReviewsByUserId = await reviewService.fetchAllReviewsbyuserid();
+      } catch (e) {
+        print('Error fetching reviews by user ID: $e');
+        fetchedReviewsByUserId = []; // Set to an empty list if an error occurs
+      }
 
       setState(() {
         allReviews = fetchedReviews
@@ -58,11 +74,12 @@ class _ReviewScreenState extends State<ReviewScreen> {
     } catch (e) {
       setState(() {
         isLoading = false;
-        errorMessage = e.toString();
-        print('Error fetching reviews: $errorMessage');
+        errorMessage = 'An unexpected error occurred. Please try again later.';
+        print('Unexpected error: $e');
       });
     }
   }
+
 
   // Apply filters and sorting to allReviews
   void _applyFiltersAndSorting({List<String> updatedFilters = const []}) {
@@ -148,6 +165,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                 setState(() {
                   isSavedSelected = true;
                 });
+                await _fetchReviews();
               },
               onSelectMyReviews: () async {
                 setState(() {
@@ -218,7 +236,7 @@ class _ReviewScreenState extends State<ReviewScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'No reviews match your filter criteria.',
+                                    'No reviews found.',
                                     style: TextStyle(
                                       color: Color(0xFF000000),
                                       fontSize: 14,
