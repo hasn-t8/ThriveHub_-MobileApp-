@@ -142,10 +142,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
     try {
       final CompanyService reviewService = CompanyService();
-      final List<dynamic> fetchedReviews =
-      await reviewService.fetchAllReviews();
-      final List<dynamic> fetchedReviewsByUserId =
-      await reviewService.fetchAllReviewsbyuserid();
+
+      // Fetch all reviews and reviews by user ID independently
+      List<dynamic> fetchedReviews = [];
+      List<dynamic> fetchedReviewsByUserId = [];
+
+      // Fetch all reviews
+      try {
+        fetchedReviews = await reviewService.fetchAllReviews();
+      } catch (e) {
+        print('Error fetching all reviews: $e');
+        fetchedReviews = []; // Set to an empty list if an error occurs
+      }
+
+      // Fetch reviews by user ID
+      try {
+        fetchedReviewsByUserId = await reviewService.fetchAllReviewsbyuserid();
+      } catch (e) {
+        print('Error fetching reviews by user ID: $e');
+        fetchedReviewsByUserId = []; // Set to an empty list if an error occurs
+      }
 
       setState(() {
         allReviews = fetchedReviews
@@ -161,8 +177,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
     } catch (e) {
       setState(() {
         isLoading = false;
-        errorMessage = e.toString();
-        print('Error fetching reviews: $errorMessage');
+        errorMessage = 'An unexpected error occurred. Please try again later.';
+        print('Unexpected error: $e');
       });
     }
   }
