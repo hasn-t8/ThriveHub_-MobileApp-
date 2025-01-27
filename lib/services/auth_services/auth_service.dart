@@ -153,7 +153,7 @@ class AuthService {
   Future<Map<String, dynamic>> sendResetPasswordEmail(String email) async {
     try {
       final response = await http.post(
-        Uri.parse('$_baseUrl/auth/forget-password'),
+        Uri.parse('$_baseUrl/auth/forgot-password'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -220,7 +220,7 @@ class AuthService {
     required String token,
     required String newPassword,
   }) async {
-    final url = Uri.parse('$_baseUrl/auth/change-password'); // Replace with your endpoint
+    final url = Uri.parse('$_baseUrl/auth/forgot-password/change'); // Replace with your endpoint
     try {
       print("$email");
       print("$token");
@@ -237,10 +237,20 @@ class AuthService {
           'newPassword': newPassword,
         }),
       );
+      print("Response Body: ${response.body}");
      print(response.statusCode);
       if (response.statusCode == 200) {
-        // Successfully changed password
-        return json.decode(response.body);
+        return {
+          'success': true,
+          'message': json.decode(response.body)["message"] ??
+              'Password change successfuly',
+        };
+      } else if (response.statusCode == 400) {
+        return {
+          'success': false,
+          'message': json.decode(response.body)['message'] ??
+              'Invalid or expired reset token.',
+        };
       } else {
         // Handle error responses
         return {
