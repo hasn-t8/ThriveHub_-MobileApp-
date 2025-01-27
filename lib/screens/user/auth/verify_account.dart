@@ -65,7 +65,7 @@ class _VerifyAccountScreenState extends State<VerifyAccountScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => CreateNewPasswordScreen(),
+          builder: (context) => CreateNewPasswordScreen(email: this.widget.email,),
         ),
       );
     } else {

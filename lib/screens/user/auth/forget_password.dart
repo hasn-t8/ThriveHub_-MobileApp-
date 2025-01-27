@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thrive_hub/core/utils/email_validator.dart';
+import 'package:thrive_hub/screens/user/auth/create_new_password.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import 'verify_account.dart'; // Import the VerifyAccountScreen
 import '../../../widgets/input_fields.dart';
@@ -68,7 +69,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => VerifyAccountScreen(email: email),
+          builder: (context) => CreateNewPasswordScreen(email: email),
         ),
       );
     }

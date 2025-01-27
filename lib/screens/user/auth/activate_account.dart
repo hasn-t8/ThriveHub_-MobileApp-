@@ -16,13 +16,14 @@ class ActivateAccountScreen extends StatefulWidget {
   @override
   _ActivateAccountScreenState createState() => _ActivateAccountScreenState();
 }
+
 class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
   final _codeController = List<TextEditingController>.generate(4, (index) => TextEditingController());
   final _focusNodes = List<FocusNode>.generate(4, (index) => FocusNode());
   final _borderColors = List<Color>.generate(4, (index) => Color(0xFFA5A5A5)); // Default border colors
   Timer? _timer;
   int _startTimer = 60;
-  bool _isLoading = false;  // Track the loading state
+  bool _isLoading = false; // Track the loading state
 
   @override
   void initState() {
@@ -50,12 +51,11 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
   }
 
   void resendCode() async {
-    final authService = AuthService();  // Create an instance of AuthService
-    print(widget.email);
-    bool isCodeSend = await authService.ResendCodeApi(widget.email);  // Call the verifyCode method
-    if (isCodeSend) {
+    final authService = AuthService(); // Create an instance of AuthService
+    bool isCodeSent = await authService.ResendCodeApi(widget.email); // Call the resendCode API
+    if (isCodeSent) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Code Send successfully!'), backgroundColor: Colors.green),
+        SnackBar(content: Text('Code sent successfully!'), backgroundColor: Colors.green),
       );
       setState(() {
         _startTimer = 60;
@@ -63,10 +63,9 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('please try again.'), backgroundColor: Colors.red),
+        SnackBar(content: Text('Please try again.'), backgroundColor: Colors.red),
       );
     }
-
   }
 
   void verifyCode() async {
@@ -78,42 +77,34 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
     String enteredCode = _codeController.map((controller) => controller.text).join();
 
     // Call the API to verify the code
-    bool isCodeValid = await authService.ActivateCodeApi(widget.email, enteredCode); // Call the verifyCode method
+    bool isCodeValid = await authService.ActivateCodeApi(widget.email, enteredCode); // Verify code API
 
     setState(() {
       _isLoading = false; // Hide loading indicator
     });
 
     if (isCodeValid) {
-      print("Code verified successfully");
-
-      // Retrieve user type from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final userTypes = prefs.getStringList('user_types') ?? [];
 
-      // Check if the user is a business owner or registered user
       if (userTypes.contains('business-owner')) {
-        // Navigate to Business Slider Screen
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => BusinessSliderScreen()),
               (Route<dynamic> route) => false,
         );
       } else if (userTypes.contains('registered-user')) {
-        // Navigate to Main Screen
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => MainScreen()),
               (Route<dynamic> route) => false,
         );
       } else {
-        // Fallback for unexpected user type
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('User type not recognized.'), backgroundColor: Colors.orange),
         );
       }
     } else {
-      // Change borders to red if the code does not match
       setState(() {
         for (int i = 0; i < _borderColors.length; i++) {
           _borderColors[i] = Color(0xFFFB0000); // Red border color
@@ -125,8 +116,6 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
       );
     }
   }
-
-
 
   void resetBorders() {
     setState(() {
@@ -141,151 +130,141 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
     return Scaffold(
       appBar: CustomAppBar(title: '', showBackButton: true),
       backgroundColor: Color(0xFFFFFFFF),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(height: 20),
-            Center(
-              child: Column(
-                children: [
-                  Text(
-                    'Activate Account',
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontFamily: 'Inter',
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF475569),
-                        height: 1.8,
-                        letterSpacing: 0.01,
-                      ),
-                      children: [
-                        TextSpan(text: 'Code has been sent to '),
-                        TextSpan(
-                          text: widget.email,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                          ),
-                        ),
-                        TextSpan(text: '\nEnter the code to Activate your account.'),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(), // Dismiss keyboard on tap outside
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 20),
+                Center(
+                  child: Column(
                     children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          'Change e-mail',
+                      Text(
+                        'Activate Account',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
                           style: TextStyle(
                             fontSize: 14,
-                            color: Colors.black,
                             fontFamily: 'Inter',
-                            fontWeight: FontWeight.w600,
-                            decoration: TextDecoration.underline,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xFF475569),
+                            height: 1.8,
+                            letterSpacing: 0.01,
                           ),
+                          children: [
+                            TextSpan(text: 'Code has been sent to '),
+                            TextSpan(
+                              text: widget.email,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black,
+                              ),
+                            ),
+                            TextSpan(text: '\nEnter the code to Activate your account.'),
+                          ],
                         ),
+                      ),
+                      SizedBox(height: 30),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              'Change e-mail',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.black,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            // Code input fields
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List<Widget>.generate(4, (index) {
-                return SizedBox(
-                  width: 50,
-                  child: TextField(
-                    controller: _codeController[index],
-                    focusNode: _focusNodes[index],
-                    decoration: InputDecoration(
-                      counterText: "",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: _borderColors[index],
-                          width: 2,
+                ),
+                SizedBox(height: 20),
+                // Code input fields
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: List<Widget>.generate(4, (index) {
+                    return SizedBox(
+                      width: 50,
+                      child: TextField(
+                        controller: _codeController[index],
+                        focusNode: _focusNodes[index],
+                        decoration: InputDecoration(
+                          counterText: "",
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: _borderColors[index],
+                              width: 2,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide(
+                              color: _borderColors[index],
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                         ),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14),
+                        keyboardType: TextInputType.number,
+                        maxLength: 1,
+                        onChanged: (value) {
+                          if (value.length == 1) {
+                            resetBorders();
+                            if (index < 3) {
+                              FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
+                            } else {
+                              FocusScope.of(context).unfocus();
+                            }
+                          } else if (value.isEmpty) {
+                            if (index > 0) {
+                              FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
+                            }
+                          }
+                        },
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 2,
-                        ),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide(
-                          color: _borderColors[index],
-                          width: 2,
-                        ),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                    ),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14),
-                    keyboardType: TextInputType.number,
-                    maxLength: 1,
-                    onChanged: (value) {
-                      if (value.length == 1) {
-                        resetBorders();
-                        if (index < 3) {
-                          FocusScope.of(context).requestFocus(_focusNodes[index + 1]);
-                        } else {
-                          FocusScope.of(context).unfocus();
-                        }
-                      } else if (value.isEmpty) {
-                        if (index > 0) {
-                          FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
-                        }
-                      }
-                    },
-                  ),
-                );
-              }),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: Column(
-                children: [
-                  if (_startTimer > 0)
-                    Text(
-                      'Code expires in: ${_startTimer ~/ 60}:${(_startTimer % 60).toString().padLeft(2, '0')}',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xFF1E1E1E),
-                        fontFamily: 'Inter',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  if (_startTimer == 0)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+                    );
+                  }),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: Column(
+                    children: [
+                      if (_startTimer > 0)
                         Text(
-                          'Didn’t receive code? ',
+                          'Code expires in: ${_startTimer ~/ 60}:${(_startTimer % 60).toString().padLeft(2, '0')}',
                           style: TextStyle(
                             fontSize: 14,
                             color: Color(0xFF1E1E1E),
@@ -293,53 +272,68 @@ class _ActivateAccountScreenState extends State<ActivateAccountScreen> {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            resendCode();
-                          },
-                          child: Text(
-                            'Resend Code',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black,
-                              decoration: TextDecoration.underline,
+                      if (_startTimer == 0)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Didn’t receive code? ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Color(0xFF1E1E1E),
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
-                          ),
+                            GestureDetector(
+                              onTap: () {
+                                resendCode();
+                              },
+                              child: Text(
+                                'Resend Code',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: 'Inter',
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : verifyCode, // Disable button while loading
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF6A6A6A),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      minimumSize: Size(double.infinity, 50),
                     ),
-                ],
-              ),
-            ),
-            Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : verifyCode,  // Disable button while loading
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF6A6A6A),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  minimumSize: Size(double.infinity, 50),
-                ),
-                child: _isLoading
-                    ? CircularProgressIndicator(color: Colors.white)  // Show loader while loading
-                    : Text(
-                  'Activate Account',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w500,
+                    child: _isLoading
+                        ? CircularProgressIndicator(color: Colors.white) // Show loader while loading
+                        : Text(
+                      'Activate Account',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                SizedBox(height: 20),
+              ],
             ),
-            SizedBox(height: 20),
-          ],
+          ),
         ),
       ),
     );

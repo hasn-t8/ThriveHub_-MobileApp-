@@ -153,7 +153,7 @@ class AuthService {
   Future<Map<String, dynamic>> sendResetPasswordEmail(String email) async {
     try {
       final response = await http.post(
-        Uri.parse('$_baseUrl/auth/forget-password'),
+        Uri.parse('$_baseUrl/auth/forgot-password'),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -211,6 +211,60 @@ class AuthService {
       }
     } catch (e) {
       return {'success': false, 'message': 'An error occurred while logging out'};
+    }
+  }
+
+
+  Future<Map<String, dynamic>> changePassword({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) async {
+    final url = Uri.parse('$_baseUrl/auth/forgot-password/change'); // Replace with your endpoint
+    try {
+      print("$email");
+      print("$token");
+      print("$newPassword");
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'email': email,
+          'token': token,
+          'newPassword': newPassword,
+        }),
+      );
+      print("Response Body: ${response.body}");
+     print(response.statusCode);
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': json.decode(response.body)["message"] ??
+              'Password change successfuly',
+        };
+      } else if (response.statusCode == 400) {
+        return {
+          'success': false,
+          'message': json.decode(response.body)['message'] ??
+              'Invalid or expired reset token.',
+        };
+      } else {
+        // Handle error responses
+        return {
+          'success': false,
+          'message': json.decode(response.body)['message'] ??
+              'An error occurred while resetting the password.',
+        };
+      }
+    } catch (e) {
+      // Handle exceptions (e.g., network issues)
+      return {
+        'success': false,
+        'message': 'An error occurred. Please check your network connection.',
+      };
     }
   }
 }
