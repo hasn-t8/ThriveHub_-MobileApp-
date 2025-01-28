@@ -174,123 +174,137 @@ class _ProfileScreenState extends State<ProfileScreen> {
         centerTitle: true,
       ),
       backgroundColor: Color(0xFFFCFCFC),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Profile Image with Edit Icon
-            Stack(
-              alignment: Alignment.center,
-              children: [
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: Container(
-                    width: 98,
-                    height: 98,
-                    decoration: BoxDecoration(
-                      color: Color(0xFFD9D9D9),
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: _imageFile != null
-                            ? FileImage(_imageFile!) // Use local file
-                            : (_profileImageUrl != null && _profileImageUrl!.isNotEmpty
-                            ? NetworkImage(_profileImageUrl!) // Use URL
-                            : AssetImage('assets/avtar.jpg') as ImageProvider), // Default avatar
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: _pickImage,
-                    child: CircleAvatar(
-                      radius: 16,
-                      backgroundColor: Color(0xFFD9D9D9),
-                      child: Image.asset(
-                        'assets/edit_profile.png',
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 12),
-            Text(
-              _full_name,
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            Text(
-              _location,
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFFA5A5A5),
-              ),
-            ),
-            SizedBox(height: 10),
-            Container(
-              width: 343,
-              height: 104,
-              decoration: BoxDecoration(
-                color: Color(0xFFE9E8E8),
-                borderRadius: BorderRadius.circular(31),
-              ),
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Profile Image with Edit Icon
+              Stack(
+                alignment: Alignment.center,
                 children: [
-                  _buildInfoBox('Reviews\n$_reviews'),
-                  _buildInfoBox('Company\n$_companyCount'),
+                  GestureDetector(
+                    onTap: _pickImage,
+                    child: Container(
+                      width: 98,
+                      height: 98,
+                      decoration: BoxDecoration(
+                        color: Color(0xFFD9D9D9),
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: _imageFile != null
+                              ? FileImage(_imageFile!) // Use local file
+                              : (_profileImageUrl != null && _profileImageUrl!.isNotEmpty
+                              ? NetworkImage(_profileImageUrl!) // Use URL
+                              : AssetImage('assets/avtar.jpg') as ImageProvider), // Default avatar
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: _pickImage,
+                      child: CircleAvatar(
+                        radius: 16,
+                        backgroundColor: Color(0xFFD9D9D9),
+                        child: Image.asset(
+                          'assets/edit_profile.png',
+                          width: 20,
+                          height: 20,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            SizedBox(height: 16),
-            ProfileListItem(
-              leadingIcon: Icons.business,
-              text: 'My Companies',
-              trailingIcon: Icons.arrow_forward_ios,
-              onTap: () {
-                Navigator.pushNamed(context, '/my-companies');
-              },
-            ),
-            ProfileListItem(
-              leadingIcon: Icons.settings,
-              text: 'Account Settings',
-              trailingIcon: Icons.arrow_forward_ios,
-              onTap: () {
-                Navigator.pushNamed(context, '/account-settings').then((_) {
-                  setState(() {
-                    _loadUserData();
+              SizedBox(height: 12),
+              Text(
+                _full_name,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                _location,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFFA5A5A5),
+                ),
+              ),
+              SizedBox(height: 10),
+              Container(
+                width: 343,
+                height: 104,
+                decoration: BoxDecoration(
+                  color: Color(0xFFE9E8E8),
+                  borderRadius: BorderRadius.circular(31),
+                ),
+                padding: const EdgeInsets.all(20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildInfoBox('Reviews\n$_reviews'),
+                    _buildInfoBox('Company\n$_companyCount'),
+                  ],
+                ),
+              ),
+              SizedBox(height: 16),
+              ProfileListItem(
+                leadingIcon: Icons.business,
+                text: 'My Companies',
+                trailingIcon: Icons.arrow_forward_ios,
+                onTap: () {
+                  Navigator.pushNamed(context, '/my-companies');
+                },
+              ),
+              ProfileListItem(
+                leadingIcon: Icons.settings,
+                text: 'Account Settings',
+                trailingIcon: Icons.arrow_forward_ios,
+                onTap: () {
+                  Navigator.pushNamed(context, '/account-settings').then((_) {
+                    setState(() {
+                      _loadUserData();
+                    });
                   });
-                });
-              },
-            ),
-            ProfileListItem(
-              leadingIcon: Icons.help,
-              text: 'Help Center',
-              trailingIcon: Icons.arrow_forward_ios,
-              onTap: () {
-                Navigator.pushNamed(context, '/help-center');
-              },
-            ),
-            SizedBox(height: 16),
-            ProfileListItem(
-              leadingIcon: Icons.logout,
-              border: Border.all(color: Color(0xFFFBFBFB)),
-              text: _isLoading ? 'Logging out...' : 'Logout',
-              leadingIconColor: Color(0xFFFB0000),
-              textColor: Color(0xFFFB0000),
-              onTap: () => _logout(context),
-            ),
-          ],
+                },
+              ),
+              ProfileListItem(
+                leadingIcon: Icons.reviews,
+                text: 'MY Reviews',
+                trailingIcon: Icons.arrow_forward_ios,
+                onTap: () {
+                  Navigator.pushNamed(context, '/myreviews').then((_) {
+                    setState(() {
+                      _loadUserData();
+                    });
+                  });
+                },
+              ),
+              // ProfileListItem(
+              //   leadingIcon: Icons.help,
+              //   text: 'Help Center',
+              //   trailingIcon: Icons.arrow_forward_ios,
+              //   onTap: () {
+              //     Navigator.pushNamed(context, '/help-center');
+              //   },
+              // ),
+              // SizedBox(height: 16),
+              ProfileListItem(
+                leadingIcon: Icons.logout,
+                border: Border.all(color: Color(0xFFFBFBFB)),
+                text: _isLoading ? 'Logging out...' : 'Logout',
+                leadingIconColor: Color(0xFFFB0000),
+                textColor: Color(0xFFFB0000),
+                onTap: () => _logout(context),
+              ),
+            ],
+          ),
         ),
       ),
     );

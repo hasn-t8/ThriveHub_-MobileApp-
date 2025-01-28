@@ -159,23 +159,23 @@ class _ReviewScreenState extends State<ReviewScreen> {
         child: Column(
           children: [
             // Tab Buttons (All / My Reviews)
-            TabButtons(
-              isAllSelected: isSavedSelected,
-              onSelectAll: () async {
-                setState(() {
-                  isSavedSelected = true;
-                });
-                await _fetchReviews();
-              },
-              onSelectMyReviews: () async {
-                setState(() {
-                  isSavedSelected = false;
-                });
-                await _fetchReviews();
-              },
-              allText: 'All',
-              myReviewsText: 'My reviews',
-            ),
+            // TabButtons(
+            //   isAllSelected: isSavedSelected,
+            //   onSelectAll: () async {
+            //     setState(() {
+            //       isSavedSelected = true;
+            //     });
+            //     await _fetchReviews();
+            //   },
+            //   onSelectMyReviews: () async {
+            //     setState(() {
+            //       isSavedSelected = false;
+            //     });
+            //     await _fetchReviews();
+            //   },
+            //   allText: 'All',
+            //   myReviewsText: 'My reviews',
+            // ),
             SizedBox(height: 10.0),
             // Filter and Sort Buttons (Visible only for "All" tab)
             if (isSavedSelected)
