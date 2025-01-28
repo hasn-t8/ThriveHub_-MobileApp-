@@ -23,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   void _onItemTapped(int index) async {
-    if (index == 0) {
+    if (index == 0 || index == 1 || index == 2) {
       // Allow access to the Search tab (index 0) without login
       setState(() {
         _selectedIndex = index;
