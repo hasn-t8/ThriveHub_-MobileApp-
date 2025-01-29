@@ -205,11 +205,13 @@ class AuthService {
         return {'success': true, 'message': responseData['message'] ?? 'Logout successful'};
       } else if (response.statusCode == 401) {
         await prefs.clear(); // Clear the token on 401
-        return {'success': false, 'message': 'Unauthorized. Please log in again.'};
+        return {'success': true, 'message': 'Logout successful'};
+        // return {'success': false, 'message': 'Unauthorized. Please log in again.'};
       } else {
         return {'success': false, 'message': 'Logout failed'};
       }
     } catch (e) {
+      print("------- Error during logout: $e");
       return {'success': false, 'message': 'An error occurred while logging out'};
     }
   }
