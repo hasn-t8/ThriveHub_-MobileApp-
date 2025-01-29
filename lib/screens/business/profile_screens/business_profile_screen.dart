@@ -332,6 +332,7 @@ import 'package:url_launcher/url_launcher.dart';
    String _profileImageUrl = 'assets/avtar.jpg'; // Default image path
    String _role = 'business-owner'; // Default role
    bool _isLoading = false;
+   bool _isDeletingAccount = false;
    File? _image;
 
    int reviewsCount = 234;
@@ -497,6 +498,51 @@ import 'package:url_launcher/url_launcher.dart';
        return null;
      }
    }
+   void deleteAccount(BuildContext context) async {
+     setState(() {
+       _isDeletingAccount = true; // Show loader
+     });
+
+     AuthService deleteUserAccount = AuthService();
+     int statusCode = await deleteUserAccount.deleteUserAccount(); // Call API
+     print("$statusCode");
+
+     if (statusCode == 200) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+           content: Text('Account Deleted'),
+           backgroundColor: Colors.green,
+         ),
+       );
+
+       SharedPreferences prefs = await SharedPreferences.getInstance();
+       await prefs.clear(); // Clear user data
+
+       Future.microtask(() {
+         if (context.mounted) {
+           Navigator.of(context).pushNamed('/welcome');
+         }
+       });
+
+     } else if (statusCode == 401) {
+       ScaffoldMessenger.of(context).showSnackBar(
+         SnackBar(
+           content: Text('Account Deletion Error'),
+           backgroundColor: Colors.red,
+         ),
+       );
+
+       Future.microtask(() {
+         if (context.mounted) {
+           Navigator.of(context).pushNamed('/welcome');
+         }
+       });
+     }
+
+     setState(() {
+       _isDeletingAccount = false; // Hide loader
+     });
+   }
 
    List<Map<String, dynamic>> _getProfileItemsForRole(String role) {
      List<Map<String, dynamic>> commonItems = [
@@ -506,6 +552,14 @@ import 'package:url_launcher/url_launcher.dart';
          'trailingIcon': Icons.arrow_forward_ios,
          'onTap': () {
            Navigator.pushNamed(context, '/business-help-center');
+         },
+       },
+       {
+         'icon': Icons.delete_forever,
+         'text': _isDeletingAccount ? 'Deleting Account...' : 'Delete Account',
+         'trailingIcon': Icons.arrow_forward_ios,
+         'onTap': () {
+           deleteAccount(context);
          },
        },
        {
@@ -575,6 +629,11 @@ import 'package:url_launcher/url_launcher.dart';
 
      if (result['success']) {
        Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
+     }else {
+       Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+         content: Text(result['message']),
+       ));
      }
    }
 

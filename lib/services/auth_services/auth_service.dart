@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter/material.dart';
 class AuthService {
   // Get the base URL from the .env file
   final String _baseUrl = dotenv.env['BASE_URL'] ?? 'BASE_URL not found';
@@ -265,6 +265,27 @@ class AuthService {
         'success': false,
         'message': 'An error occurred. Please check your network connection.',
       };
+    }
+  }
+  Future<int> deleteUserAccount() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      String? userId = prefs.getInt('userid')?.toString(); // Ensure userId is a string
+      final response = await http.delete(
+        Uri.parse('$_baseUrl/user/$userId'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      print("Delete account response code: ${response.statusCode}");
+
+      return response.statusCode;
+    } catch (e) {
+      print("Error deleting account: $e");
+      return 500; // Internal Server Error
     }
   }
 }

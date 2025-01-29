@@ -15,6 +15,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false;
+  bool _isDeletingAccount = false;
   String _full_name = '';
   String _location = '';
   int _reviews = 0; // Default value for reviews
@@ -165,6 +166,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
+  void deleteAccount(BuildContext context) async {
+    setState(() {
+      _isDeletingAccount = true; // Show loader
+    });
+
+    AuthService deleteUserAccount = AuthService();
+    int statusCode = await deleteUserAccount.deleteUserAccount(); // Call API
+    print("$statusCode");
+
+    if (statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Account Deleted'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear(); // Clear user data
+
+      Future.microtask(() {
+        if (context.mounted) {
+          Navigator.of(context).pushNamed('/welcome');
+        }
+      });
+
+    } else if (statusCode == 401) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Account Deletion Error'),
+          backgroundColor: Colors.red,
+        ),
+      );
+
+      Future.microtask(() {
+        if (context.mounted) {
+          Navigator.of(context).pushNamed('/welcome');
+        }
+      });
+    }
+
+    setState(() {
+      _isDeletingAccount = false; // Hide loader
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -295,6 +342,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               //   },
               // ),
               // SizedBox(height: 16),
+              ProfileListItem(
+                leadingIcon: Icons.delete_forever,
+                text: _isDeletingAccount ? 'Deleting Account...' : 'Delete Account',
+                trailingIcon: Icons.arrow_forward_ios,
+                onTap: () => deleteAccount(context),
+              ),
               ProfileListItem(
                 leadingIcon: Icons.logout,
                 border: Border.all(color: Color(0xFFFBFBFB)),
