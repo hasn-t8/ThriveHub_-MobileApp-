@@ -326,4 +326,74 @@ class CompanyService {
       return null;
     }
   }
+
+  Future<List<int>?> getBookmarkedBusinesses() async {
+    try {
+      // Retrieve access token from shared preferences
+      final prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+
+      if (accessToken == null) {
+        throw Exception('Access token not found');
+      }
+
+      // Make API request
+      final response = await http.get(
+        Uri.parse('$_baseUrl/user/bookmarked-businesses'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Parse JSON response
+        final Map<String, dynamic> data = json.decode(response.body);
+        List<int> bookmarkedIds = List<int>.from(data['bookmarkedBusinessIds']);
+        return bookmarkedIds;
+      } else {
+        throw Exception('Failed to fetch bookmarked businesses');
+      }
+    } catch (e) {
+      print('Error: $e');
+      return null;
+    }
+  }
+
+
+  Future<bool> bookmarkBusiness(int businessId) async {
+    try {
+      // Get accessToken from SharedPreferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? accessToken = prefs.getString('access_token');
+      final String _baseUrl = dotenv.env['BASE_URL'] ?? '';
+      if (accessToken == null) {
+        throw Exception('Access token not found');
+      }
+
+      // API endpoint
+      String url = '$_baseUrl/business/$businessId/bookmark';
+
+      // Send the request
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      // Handle response
+      if (response.statusCode == 200 || response.statusCode == 201 ) {
+        return true; // Success
+      } else {
+        print('Failed to bookmark: ${response.body}');
+        return false; // Failed
+      }
+    } catch (e) {
+      print('Error bookmarking business: $e');
+      return false;
+    }
+  }
 }

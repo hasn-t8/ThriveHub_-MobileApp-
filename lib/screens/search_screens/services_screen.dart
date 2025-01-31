@@ -36,10 +36,12 @@ class _ServicesScreenState extends State<ServicesScreen> {
   List<double> selectedRatings = []; // Selected ratings for filtering
   String? selectedSortOption; // Sorting option ("Newest" or "Rating")
   bool isLoading = true;
+  bool isBookmarked = false; // Tracks bookmark state
   String errorMessage = '';
   // Initialize rating distribution
   Map<int, double> ratingDistribution = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0};
   List<String>? userTypes;
+  final CompanyService companyService = CompanyService();
 
   @override
   void initState() {
@@ -71,8 +73,13 @@ class _ServicesScreenState extends State<ServicesScreen> {
       CompanyService companyService = CompanyService();
       final profile = await companyService
           .getBusinessProfileById(widget.business_profile_id);
+      // Fetch bookmarked businesses
+      List<int>? bookmarkedIds = await companyService.getBookmarkedBusinesses();
+      bool bookmarked = bookmarkedIds!.contains(int.tryParse(widget.business_profile_id) ?? -1);
+
       setState(() {
         businessProfile = profile;
+        isBookmarked = bookmarked; // Set bookmark state
         isLoading = false;
       });
     } catch (e) {
@@ -198,6 +205,16 @@ class _ServicesScreenState extends State<ServicesScreen> {
     });
   }
 
+  Future<void> _toggleBookmark() async {
+    bool success = await companyService.bookmarkBusiness(int.parse(widget.business_profile_id));
+    if (success) {
+      setState(() {
+        isBookmarked = !isBookmarked; // Toggle bookmark in UI instantly
+      });
+    } else {
+      print("Failed to update bookmark status.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -211,10 +228,8 @@ class _ServicesScreenState extends State<ServicesScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.bookmark_border),
-            onPressed: () {
-              NoPageFound.show(context);
-            },
+            icon: Icon(isBookmarked ? Icons.bookmark : Icons.bookmark_border, color: Colors.blue),
+            onPressed: _toggleBookmark, // Toggle bookmark when clicked
           ),
         ],
         backgroundColor: Colors.white,

@@ -23,11 +23,18 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
   bool isLoading = true; // Track loading state
   String errorMessage = ''; // For error handling
   String selectedCategory = 'All'; // Track the currently selected category
+  Set<int> bookmarkedIds = {}; // Set of bookmarked business IDs
+  CompanyService companyService = CompanyService();
 
   @override
   void initState() {
     super.initState();
     _fetchCompanyList(title: widget.categoryTitle);
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetchCompanyList(title: widget.categoryTitle); // Fetch the updated list when returning
   }
 
   // // Fetch the company list from the API
@@ -51,8 +58,11 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
   // Fetch the company list from the API
   void _fetchCompanyList({String? title}) async {
     try {
-      CompanyService companyService = CompanyService();
+
       List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
+      // Fetch bookmarked businesses
+      List<int>? bookmarkedBusinessIds = await companyService.getBookmarkedBusinesses();
+      bookmarkedIds = bookmarkedBusinessIds?.toSet() ?? {};
 
       // Filter and sort companies based on title
       List<dynamic> filtered;
@@ -93,7 +103,16 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
     }
   }
 
-
+// Toggle bookmark status & refresh both lists
+  void _toggleBookmark(int businessId) async {
+    bool success = await companyService.bookmarkBusiness(businessId);
+    if (success) {
+      print("bookmark status for business ID: $businessId ok" );
+      // _fetchCompanyList(); // Refresh both saved & history lists
+    } else {
+      print("Failed to update bookmark status for business ID: $businessId");
+    }
+  }
 
   // Filter companies based on selected category
   void _filterCompanies(String category) {
@@ -272,12 +291,8 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
                   reviews: company['total_reviews'] ?? 0,
                   service: company['category'] ?? 'No Service',
                   description: company['about_business'] ?? 'No description available.',
-                  isBookmarked: company['isBookmarked'] ?? false,
-                  onBookmarkToggle: () {
-                    setState(() {
-                      company['isBookmarked'] = !(company['isBookmarked'] ?? false);
-                    });
-                  },
+                  isBookmarked: bookmarkedIds.contains(company['id']),
+                  onBookmarkToggle: () => _toggleBookmark(company['id']),
                   onTap: () {
                     final businessProfileId = company['business_profile_id']?.toString();
                     if (businessProfileId != null) {

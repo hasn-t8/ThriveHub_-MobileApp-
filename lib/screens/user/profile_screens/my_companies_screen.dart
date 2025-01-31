@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thrive_hub/services/company_services/company_services.dart';
-import 'package:thrive_hub/widgets/company_card.dart'; // Import the CompanyCard widget
+import 'package:thrive_hub/widgets/company_card.dart';
 import 'package:thrive_hub/widgets/appbar.dart';
 import '../../../widgets/tab_buttons.dart';
 
@@ -11,97 +11,109 @@ class MyCompaniesScreen extends StatefulWidget {
 }
 
 class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
-  bool isSavedSelected = true; // Initially, Saved button is selected
-  List<dynamic> allCompanies = []; // List to hold all companies from API
-  List<dynamic> savedCompanies = []; // Companies with `bookmark: true`
-  List<dynamic> visitedCompanies = []; // Companies from history
-  bool isLoading = true; // Track loading state
-  String errorMessage = ''; // For error handling
+  bool isSavedSelected = true;
+  List<dynamic> savedCompanies = []; // List of bookmarked companies
+  List<dynamic> visitedCompanies = []; // List of visited companies
+  Set<int> bookmarkedIds = {}; // Set of bookmarked business IDs
+  bool isLoading = true;
+  String errorMessage = '';
 
-  // Fetch the company list from the API
+  final CompanyService companyService = CompanyService();
+
+  // Fetch company list from API
   void _fetchCompanyList() async {
     try {
-      // Initialize the company service
-      CompanyService companyService = CompanyService();
+      setState(() {
+        isLoading = true;
+        errorMessage = '';
+      });
 
-      // Fetch the list of companies from the service
+      // Fetch the list of companies
       List<dynamic> fetchedCompanies = await companyService.fetchCompanyList();
 
       // Retrieve the list of visited business IDs from SharedPreferences
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       List<String> visitedBusinessIds = prefs.getStringList('visitedBusinessIds') ?? [];
-      // Limit the visited companies to 500, removing the oldest 100 from local storage if exceeding 500
+
+      // Keep only the latest 500 visited businesses
       if (visitedBusinessIds.length > 500) {
         visitedBusinessIds = visitedBusinessIds.skip(100).toList();
         await prefs.setStringList('visitedBusinessIds', visitedBusinessIds);
       }
+
+      // Fetch bookmarked business IDs from API
+      List<int>? bookmarkedBusinessIds = await companyService.getBookmarkedBusinesses();
+      bookmarkedIds = bookmarkedBusinessIds?.toSet() ?? {};
+
       setState(() {
-        // Separate the fetched companies into visited and unvisited, limiting to 500
-        visitedCompanies = fetchedCompanies.where((company) {
-          return visitedBusinessIds.contains(company['id'].toString());
-        }).take(500).toList();
+        // Filter visited companies
+        visitedCompanies = fetchedCompanies
+            .where((company) => visitedBusinessIds.contains(company['id'].toString()))
+            .take(500)
+            .toList();
 
-        allCompanies = fetchedCompanies.take(500).toList();
+        // Filter saved (bookmarked) companies
+        savedCompanies = fetchedCompanies
+            .where((company) => bookmarkedIds.contains(company['id']))
+            .take(500)
+            .toList();
 
-        // Dynamically update saved companies, limiting to 500
-        savedCompanies = fetchedCompanies.where((company) {
-          return company['bookmark'] == true;
-        }).take(500).toList();
-
-        isLoading = false; // Mark loading as complete
+        isLoading = false;
       });
     } catch (e) {
       setState(() {
-        isLoading = false; // Reset loading state
-        errorMessage = e.toString(); // Save error message for display
+        isLoading = false;
+        errorMessage = e.toString();
       });
 
-      // Log the error for debugging
       print('Error fetching company list: $e');
     }
   }
 
+  // Toggle bookmark status & refresh both lists
+  void _toggleBookmark(int businessId) async {
+    bool success = await companyService.bookmarkBusiness(businessId);
+    if (success) {
+      _fetchCompanyList(); // Refresh both saved & history lists
+    } else {
+      print("Failed to update bookmark status for business ID: $businessId");
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _fetchCompanyList(); // Fetch the company list on initialization
+    _fetchCompanyList();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Determine which list to display: Saved or History
     final companies = isSavedSelected ? savedCompanies : visitedCompanies;
 
     return Scaffold(
       appBar: CustomAppBar(title: 'My Companies', showBackButton: true, centerTitle: true),
       body: Container(
-        color: Color(0xFFFFFFFF), // Set the background color to white
+        color: Colors.white,
         child: Column(
           children: [
-            SizedBox(height: 10.0), // Space between AppBar and buttons
+            SizedBox(height: 10.0),
             TabButtons(
               isAllSelected: isSavedSelected,
               onSelectAll: () {
-                setState(() {
-                  isSavedSelected = true;
-                });
+                setState(() => isSavedSelected = true);
+                _fetchCompanyList();
               },
               onSelectMyReviews: () {
-                setState(() {
-                  isSavedSelected = false;
-                });
+                setState(() => isSavedSelected = false);
+                _fetchCompanyList();
               },
               allText: 'Saved',
               myReviewsText: 'History',
             ),
-            SizedBox(height: 8.0), // Space between buttons and cards
-
+            SizedBox(height: 8.0),
             Expanded(
               child: isLoading
-                  ? Center(
-                child: CircularProgressIndicator(),
-              )
+                  ? Center(child: CircularProgressIndicator())
                   : errorMessage.isNotEmpty
                   ? Center(
                 child: Text(
@@ -112,14 +124,12 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
                   : companies.isEmpty
                   ? Center(
                 child: Text(
-                  isSavedSelected
-                      ? 'No saved companies found'
-                      : 'No company history found',
+                  isSavedSelected ? 'No saved companies found' : 'No company history found',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               )
                   : ListView.builder(
-                itemCount: companies.length, // Use dynamic data length
+                itemCount: companies.length,
                 itemBuilder: (context, index) {
                   final company = companies[index];
                   return CompanyCard(
@@ -130,19 +140,10 @@ class _MyCompaniesScreenState extends State<MyCompaniesScreen> {
                     reviews: company['total_reviews'] ?? 0,
                     service: company['category'] ?? 'No Service Info',
                     description: company['about_business'] ?? 'No Description',
-                    isBookmarked: company['bookmark'] ?? false,
-                    onBookmarkToggle: () {
-                      setState(() {
-                        company['bookmark'] = !(company['bookmark'] ?? false);
-                        // Update savedCompanies dynamically
-                        savedCompanies = allCompanies.where((company) {
-                          return company['bookmark'] == true;
-                        }).toList();
-                      });
-                    },
+                    isBookmarked: bookmarkedIds.contains(company['id']),
+                    onBookmarkToggle: () => _toggleBookmark(company['id']),
                     onTap: () {
                       print('CompanyCard tapped: ${company['org_name']}');
-                      // Navigate to another screen or perform an action
                     },
                   );
                 },
