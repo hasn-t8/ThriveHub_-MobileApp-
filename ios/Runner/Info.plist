@@ -37,8 +37,6 @@
 	<string>Thrive Hub requires access to your photo library to upload images.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Thrive Hub needs permission to save images to your photo library.</string>
-    <key>NSMicrophoneUsageDescription</key>
-    <string>Thrive Hub requires microphone access for recording voice feedback and audio submissions.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Thrive Hub requires access to your photo library to allow you to select a profile picture.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
